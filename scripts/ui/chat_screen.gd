@@ -93,7 +93,7 @@ func _on_submitted(raw_text: String) -> void:
 
 func _apply_reply(reply: Dictionary, player_text: String) -> void:
 	_add_line(Text.f("UI-09-06", {"girl": GameState.girl_name, "text": reply["reply"]}))
-	GameState.girl_emotion = reply["emotion"]  # 第 5 步有模型后用它切表情，现在不显示
+	GameState.girl_emotion = reply["emotion"]  # demo 只有默认微笑和眨眼，暂不使用；以后开发表情时用它切换
 	GameState.chat_rounds_left -= 1
 	if str(reply["intent"]) != "none":
 		GameState.girl_intent = reply["intent"]
