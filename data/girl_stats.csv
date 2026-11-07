@@ -1,11 +1,11 @@
-id,category,min,max,initial,name_key,note
-stamina,state,0,stamina_max,70,UI-02-01,上限跟着 stamina_max 走
-stamina_max,state,100,130,100,UI-02-02,
-mood,state,0,100,70,UI-02-03,
-mechanics,skill,0,100,0,UI-02-04,
-ecology,skill,0,100,0,UI-02-05,
-comms,skill,0,100,0,UI-02-06,
-confidence,trait,0,100,40,UI-02-07,
-curiosity,trait,0,100,40,UI-02-08,
-empathy,trait,0,100,40,UI-02-09,
-trust,relation,0,100,50,UI-02-10,
+id,category,min,max,initial,name_key,desc_key,note
+stamina,state,0,stamina_max,70,UI-02-01,UI-02-21,上限跟着 stamina_max 走
+stamina_max,state,100,130,100,UI-02-02,,
+mood,state,0,100,70,UI-02-03,UI-02-22,
+mechanics,skill,0,100,0,UI-02-04,UI-02-23,
+ecology,skill,0,100,0,UI-02-05,UI-02-24,
+comms,skill,0,100,0,UI-02-06,UI-02-25,
+confidence,trait,0,100,40,UI-02-07,,
+curiosity,trait,0,100,40,UI-02-08,,
+empathy,trait,0,100,40,UI-02-09,,
+trust,relation,0,100,50,UI-02-10,,

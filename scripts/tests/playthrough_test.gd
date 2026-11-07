@@ -7,7 +7,8 @@ extends Node
 const MainScene := preload("res://scenes/main.tscn")
 const WEEKS := 6
 const SETTLE_WAIT_SEC := 0.2
-const WATCHDOG_SEC := 240.0
+const HOVER_WAIT_SEC := 1.2
+const WATCHDOG_SEC := 150.0
 
 var _main: Control
 var _step := "开始"
@@ -40,6 +41,7 @@ func _on_watchdog() -> void:
 func _play() -> void:
 	await _shot("schedule")
 	_set_first_week_plan()
+	await _hover_shot("OptionButton", _first_course_name(), "hover_course")
 	_click(Text.t("UI-04-08"))
 	await _frames()
 
@@ -48,6 +50,9 @@ func _play() -> void:
 		await _finish_settlement()
 		await _shot("hub_w%d" % week)
 		if week == 1:
+			await _hover_shot("Label", UiKit.stat_name("confidence"), "hover_stat")
+		if week == 1:
+			await _hover_course_again()
 			await _try_chat()
 			await _visit_town()
 		_click(Text.t("UI-01-04"))
@@ -78,6 +83,19 @@ func _set_first_week_plan() -> void:
 	var ids: Array = DataDB.table("courses").keys()
 	for day in pickers.size():
 		pickers[day].select(ids.find(plan[day]))
+
+
+## 进课表再悬停一次：这时模型已加载完，画面不再卡
+func _hover_course_again() -> void:
+	_click(Text.t("UI-01-03"))
+	await _frames()
+	await _hover_shot("OptionButton", _first_course_name(), "hover_course2")
+	_click(Text.t("UI-04-05"))
+	await _frames()
+
+
+func _first_course_name() -> String:
+	return Text.t("CR-NAME-01")
 
 
 func _finish_settlement() -> void:
@@ -139,10 +157,9 @@ func _test_timeout() -> void:
 
 
 func _wait_round(expected_left: int) -> void:
-	var waited := 0.0
-	while WeekSystem.chat_rounds_left() != expected_left and waited < 120.0:
+	var start := Time.get_ticks_msec()
+	while WeekSystem.chat_rounds_left() != expected_left and Time.get_ticks_msec() - start < 120000:
 		await get_tree().create_timer(0.05).timeout
-		waited += 0.05
 	_check(WeekSystem.chat_rounds_left() == expected_left, "这一轮应该剩 %d 轮" % expected_left)
 	await _frames()
 
@@ -159,6 +176,23 @@ func _confirm_end_week() -> void:
 	var dialogs := _find_all(_main.current, "ConfirmationDialog")
 	_check(dialogs.size() == 1, "应该弹出确认框")
 	dialogs[0].confirmed.emit()
+
+
+## 把鼠标事件发给画面，确认悬停时真的弹出说明。不动玩家真实的鼠标。
+func _hover_shot(type_name: String, text_start: String, shot_name: String) -> void:
+	for node: Control in _find_all(_main.current, type_name):
+		if node.text.begins_with(text_start):
+			# 刚开窗口时第一个鼠标事件可能只算"进入窗口"，所以发两次
+			for offset in [Vector2.ZERO, Vector2.ONE]:
+				var motion := InputEventMouseMotion.new()
+				motion.position = node.get_global_rect().get_center() + offset
+				motion.global_position = motion.position
+				get_viewport().push_input(motion)
+				await _frames()
+			await get_tree().create_timer(HOVER_WAIT_SEC).timeout
+			await _shot(shot_name)
+			return
+	_check(false, "找不到要悬停的控件：%s" % text_start)
 
 
 func _click(text: String) -> void:

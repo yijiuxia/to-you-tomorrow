@@ -3,6 +3,9 @@ extends Node
 ## Godot_console.exe --headless --path . res://scenes/tests/unit_tests.tscn
 ## 全部通过时退出码是 0。
 
+const HubScreen := preload("res://scripts/ui/hub_screen.gd")
+const ScheduleScreen := preload("res://scripts/ui/schedule_screen.gd")
+
 var _failures := 0
 var _count := 0
 
@@ -24,6 +27,7 @@ func _ready() -> void:
 	test_next_stage()
 	test_time_jump()
 	test_text_fills_names()
+	test_hover_texts()
 	test_reply_options_are_cleaned()
 	print("测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -231,6 +235,18 @@ func test_time_jump() -> void:
 	GameState.change_stat("mechanics", 30)
 	WeekSystem.apply_time_jump()
 	_eq(GameState.get_stat("mechanics"), 70, "只练机械封顶 70")
+	GameState.reset()
+
+
+func test_hover_texts() -> void:
+	GameState.reset()
+	_eq(HubScreen.stat_hover_text("confidence"), Text.t("UI-03-02"), "性格悬停显示对应档位文字")
+	GameState.change_stat("confidence", 30)
+	_eq(HubScreen.stat_hover_text("confidence"), Text.t("UI-03-03"), "数值变高后文字跟着变")
+	_eq(HubScreen.stat_hover_text("mood"), Text.t("UI-02-22").format({}), "心情悬停显示固定说明")
+	var course := ScheduleScreen.course_hover_text("mechanics")
+	_true(course.contains(Text.t("CR-DESC-01")), "课程悬停有说明")
+	_true(course.contains("+3") and course.contains("-15"), "课程悬停有效果")
 	GameState.reset()
 
 

@@ -36,22 +36,34 @@ func _add_day_row(parent: Control, day: int) -> void:
 	var picker := OptionButton.new()
 	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for id in _course_ids:
-		picker.add_item(_course_text(id))
+		picker.add_item(_course_name(id))
+		picker.get_popup().set_item_tooltip(picker.item_count - 1, course_hover_text(id))
 	picker.select(_course_ids.find(GameState.schedule[day]))
-	picker.item_selected.connect(func(_index: int) -> void: _refresh_warning())
+	picker.tooltip_text = course_hover_text(GameState.schedule[day])
+	picker.item_selected.connect(func(_index: int) -> void: _on_course_changed(picker))
 	line.add_child(picker)
 	_pickers.append(picker)
 
 
-## 课程名 + 说明 + 效果都从表格拼出来，改数值后这里自动变
-func _course_text(id: String) -> String:
+func _course_name(id: String) -> String:
+	return Text.t(DataDB.row("courses", id)["name_key"])
+
+
+func _on_course_changed(picker: OptionButton) -> void:
+	picker.tooltip_text = course_hover_text(_course_ids[picker.selected])
+	_refresh_warning()
+
+
+## yi 定的：列表只显示课程名，说明和效果放在鼠标悬停里。
+## 都从表格拼出来，改数值后这里自动变。
+static func course_hover_text(id: String) -> String:
 	var row := DataDB.row("courses", id)
 	var effects: PackedStringArray = []
 	for stat in EFFECT_ORDER:
 		var delta := int(row.get(stat, 0))
 		if delta != 0:
 			effects.append("%s %+d" % [UiKit.stat_name(stat), delta])
-	return "%s（%s）%s" % [Text.t(row["name_key"]), Text.t(row["desc_key"]), " · ".join(effects)]
+	return "%s\n%s" % [Text.t(row["desc_key"]), " · ".join(effects)]
 
 
 func _current_plan() -> Array[String]:
@@ -85,6 +97,7 @@ func _rest_all() -> void:
 func _fill(plan: Array[String]) -> void:
 	for day in _pickers.size():
 		_pickers[day].select(_course_ids.find(plan[day]))
+		_pickers[day].tooltip_text = course_hover_text(plan[day])
 	_refresh_warning()
 
 

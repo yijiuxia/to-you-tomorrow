@@ -49,7 +49,7 @@ func _ready() -> void:
 
 
 func _begin_conversation() -> void:
-	await ModelService.start_conversation(ChatPrompt.build(_is_closing_round()))
+	await ModelService.start_conversation(ChatPrompt.build())
 	_conversation_started = true
 
 
@@ -74,10 +74,13 @@ func _on_submitted(raw_text: String) -> void:
 		await ModelService.get_tree().process_frame  # 用 ModelService 的：玩家离开后这个画面已不在场景里
 	if not is_inside_tree():
 		return
-	if _is_closing_round():
-		ModelService.update_prompt(ChatPrompt.build(true))
 
-	var reply := await ModelService.ask(text)
+	# 收尾提示跟着这句话发，不中途改人设：改人设会让模型把整段对话重算一遍，最后一轮曾因此卡住
+	var message := text
+	if _is_closing_round():
+		message = "%s
+%s" % [text, Text.t("WK-05-01")]
+	var reply := await ModelService.ask(message)
 	if not is_inside_tree():
 		return  # 等回复时玩家已经离开了这个画面
 	_thinking.text = ""

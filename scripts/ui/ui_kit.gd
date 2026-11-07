@@ -35,6 +35,12 @@ static func short_label(parent: Control, text: String) -> Label:
 	return node
 
 
+## 鼠标放上去才显示的说明。Label 默认不接收鼠标，要打开才会弹出。
+static func set_hover_text(node: Control, text: String) -> void:
+	node.mouse_filter = Control.MOUSE_FILTER_STOP
+	node.tooltip_text = text
+
+
 static func title(parent: Control, text: String) -> Label:
 	var node := label(parent, text)
 	node.add_theme_font_size_override("font_size", TITLE_SIZE)

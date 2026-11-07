@@ -16,6 +16,7 @@ enum Status { NOT_LOADED, LOADING, READY, FAILED }
 var status := Status.NOT_LOADED
 var _chat: NobodyWhoChat = null
 var _junk := RegEx.create_from_string(JUNK_PATTERN)
+var _stuck := false  # 超时后叫它停也停不下来
 
 
 ## 启动时在后台加载。可以多次调用，只会加载一次。
@@ -57,13 +58,8 @@ func start_conversation(system_prompt: String) -> void:
 		_chat.reset_history()
 
 
-## 对话中途更新人设，比如告诉她该收尾了；已有的对话历史不变
-func update_prompt(system_prompt: String) -> void:
-	if status == Status.READY:
-		_chat.set_system_prompt(system_prompt)
-
-
 ## 发一句话，总会返回一份合格的回复。失败时 fallback 为 true。
+## 连续超时说明模型卡死了，之后不再等它，这一局聊天都用后备句，不让玩家反复干等。
 func ask(text: String) -> Dictionary:
 	await _wait_until_loaded()
 	if status != Status.READY:
@@ -73,16 +69,19 @@ func ask(text: String) -> Dictionary:
 		var parsed := parse_reply(raw)
 		if not parsed.is_empty():
 			return parsed
+		if _stuck:
+			status = Status.FAILED
+			push_warning("模型卡死，之后的聊天用后备句")
+			break
 	return fallback_reply()
 
 
 ## 玩家开口时模型可能还在加载，先等一等，不要直接给后备句；但也不能无限等
 func _wait_until_loaded() -> void:
-	var waited := 0.0
+	var start := Time.get_ticks_msec()
 	var limit := float(DataDB.balance("model_load_timeout_sec"))
-	while status == Status.LOADING and waited < limit:
+	while status == Status.LOADING and _seconds_since(start) < limit:
 		await get_tree().create_timer(POLL_SEC).timeout
-		waited += POLL_SEC
 	if status == Status.LOADING:
 		push_warning("模型加载超时，这次聊天用后备句")
 
@@ -91,20 +90,24 @@ func _wait_until_loaded() -> void:
 func _generate(text: String, timeout_sec: float) -> String:
 	var job := {"done": false, "text": ""}
 	_stream_into(text, job)
-	var waited := 0.0
+	# 用真实时间算：模型占满显卡时画面会掉帧，按帧累加的话"30 秒"可能变成几十分钟
+	var start := Time.get_ticks_msec()
 	while not job["done"]:
 		await get_tree().create_timer(POLL_SEC).timeout
-		waited += POLL_SEC
-		if waited >= timeout_sec:
+		if _seconds_since(start) >= timeout_sec:
 			_chat.stop_generation()
 			# 让它停下来也限时等，否则插件万一不响应，游戏会一直卡在"她正在想"
-			var stop_waited := 0.0
+			var stop_start := Time.get_ticks_msec()
 			var stop_limit := float(DataDB.balance("model_stop_wait_sec"))
-			while not job["done"] and stop_waited < stop_limit:
+			while not job["done"] and _seconds_since(stop_start) < stop_limit:
 				await get_tree().create_timer(POLL_SEC).timeout
-				stop_waited += POLL_SEC
+			_stuck = not job["done"]
 			return ""
 	return job["text"]
+
+
+func _seconds_since(start_msec: int) -> float:
+	return (Time.get_ticks_msec() - start_msec) / 1000.0
 
 
 func _stream_into(text: String, job: Dictionary) -> void:

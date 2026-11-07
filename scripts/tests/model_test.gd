@@ -60,7 +60,7 @@ func _system_prompt() -> String:
 	GameState.age = TEST_AGE
 	GameState.week = TEST_WEEK
 	GameState.last_schedule.assign(["mechanics", "mechanics", "ecology", "rest", "comms", "together", "rest"])
-	return ChatPrompt.build(false)
+	return ChatPrompt.build()
 
 
 ## 把句子逐个发给模型，每句前清空历史，这样每句互不影响、结果可比

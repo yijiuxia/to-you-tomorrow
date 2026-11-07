@@ -8,8 +8,7 @@ const TRAIT_STATS: Array[String] = ["confidence", "curiosity", "empathy", "trust
 const SKILL_STATS: Array[String] = ["mechanics", "ecology", "comms"]
 
 
-## closing 为 true 时告诉模型"这一轮该收尾了"（比赛版 4.3）
-static func build(closing: bool) -> String:
+static func build() -> String:
 	var template := FileAccess.get_file_as_string(TEMPLATE_DIR + "girl_%s.txt" % Text.language)
 	return template.format({
 		"girl": GameState.girl_name,
@@ -18,7 +17,6 @@ static func build(closing: bool) -> String:
 		"week": GameState.week,
 		"state": _state_text(),
 		"courses": _courses_text(),
-		"closing": Text.t("WK-05-01") if closing else "",
 	})
 
 

@@ -2,15 +2,14 @@ class_name PageText
 extends RefCounted
 ## 拼出周结算、时间跳跃、结局页的文字。
 
-const NUMBER_CATEGORIES: Array[String] = ["state", "skill"]
-const SKILL_CATEGORY := "skill"
+const JUMP_HIDDEN_CATEGORY := "state"  # 体力和心情跳跃后重置，不算"这些年"的成长
 const CHANGE_HIDDEN: Array[String] = ["stamina"]  # 体力单独一行说明，不混进变化里
 
 
-## 周结算：状态和技能写涨跌；性格和信任只在文字档位变化时写
-static func week_summary(recovered: int, before_age: int) -> PackedStringArray:
+## 周结算：所有属性都写数字涨跌
+static func week_summary(recovered: int) -> PackedStringArray:
 	var result := PackedStringArray([Text.f("UI-07-03", {"value": recovered})])
-	var changes := _changes(GameState.summary_stats, before_age)
+	var changes := _changes(GameState.summary_stats)
 	result.append(Text.t("UI-07-02"))
 	if changes.is_empty():
 		result.append(Text.t("UI-07-04"))
@@ -28,15 +27,8 @@ static func time_jump(before: Dictionary, old_age: int) -> PackedStringArray:
 		result.append(Text.t("TJ-01-%02d" % i))
 	result.append(Text.f("TJ-02-02", {"girl": GameState.girl_name, "old_age": old_age, "new_age": GameState.age}))
 	for id: String in DataDB.table("girl_stats"):
-		var category := str(DataDB.row("girl_stats", id)["category"])
-		var name := UiKit.stat_name(id)
-		if category == SKILL_CATEGORY:
-			result.append(Text.f("TJ-02-03", {"name": name, "old": before[id], "new": GameState.get_stat(id)}))
-		elif not NUMBER_CATEGORIES.has(category):
-			var old_text := GameState.trait_text(id, int(before[id]), old_age)
-			var new_text := GameState.trait_text(id, GameState.get_stat(id), GameState.age)
-			if old_text != new_text:
-				result.append(Text.f("TJ-02-04", {"name": name, "old": old_text, "new": new_text}))
+		if str(DataDB.row("girl_stats", id)["category"]) != JUMP_HIDDEN_CATEGORY:
+			result.append(Text.f("TJ-02-03", {"name": UiKit.stat_name(id), "old": before[id], "new": GameState.get_stat(id)}))
 	GameState.summary_stats = GameState.stats.duplicate()
 	return result
 
@@ -55,17 +47,11 @@ static func ending() -> PackedStringArray:
 	return result
 
 
-static func _changes(before: Dictionary, age: int) -> PackedStringArray:
+static func _changes(before: Dictionary) -> PackedStringArray:
 	var result := PackedStringArray()
 	for id: String in DataDB.table("girl_stats"):
 		var now := GameState.get_stat(id)
 		var old_value := int(before[id])
-		if NUMBER_CATEGORIES.has(str(DataDB.row("girl_stats", id)["category"])):
-			if now != old_value and not CHANGE_HIDDEN.has(id):
-				result.append(Text.f("UI-07-06", {"name": UiKit.stat_name(id), "delta": "%+d" % (now - old_value)}))
-		else:
-			var old_text := GameState.trait_text(id, old_value, age)
-			var new_text := GameState.trait_text(id, now, age)
-			if old_text != new_text:
-				result.append(Text.f("UI-07-05", {"name": UiKit.stat_name(id), "old": old_text, "new": new_text}))
+		if now != old_value and not CHANGE_HIDDEN.has(id):
+			result.append(Text.f("UI-07-06", {"name": UiKit.stat_name(id), "delta": "%+d" % (now - old_value)}))
 	return result

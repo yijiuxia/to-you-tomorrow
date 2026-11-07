@@ -58,7 +58,7 @@ func show_town() -> void:
 
 func show_week_summary() -> void:
 	var recovered := WeekSystem.end_week()
-	var lines := PageText.week_summary(recovered, GameState.age)
+	var lines := PageText.week_summary(recovered)
 	_show_page(Text.f("UI-07-01", {"week": GameState.week}), lines, Text.t("UI-06-01"), _after_summary)
 
 

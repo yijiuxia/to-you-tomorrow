@@ -57,5 +57,6 @@
 - 已有：文件夹结构、5 张数据表、DataDB、GameState、模型测试画面（`scenes/tests/model_test.tscn`）。
 - 第 0 步已测：Qwen 3B + NobodyWho 13 可用，结果和遗留问题见 `docs/第0步技术验证结果.md`。聊天和决策用同一个模型（yi 已定）。
 - 第 1 步：方块版流程能从第 1 周点到结局。流程规则在 `scripts/systems/`，画面在 `scripts/ui/`。改规则后跑 `scenes/tests/unit_tests.tscn` 和 `scenes/tests/playthrough_test.tscn`，退出码 0 才算过。
+- yi 试玩后定：属性（含性格、信任）都显示数字；属性和课程的文字说明只在鼠标悬停时显示。
 - 下一步：`制作清单（草稿）.md` 的第 2 步（地球核心玩法）。
 - 文案正在重新讨论，代码里先用临时文字，编号保持一致。

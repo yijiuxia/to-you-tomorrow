@@ -6,8 +6,7 @@ signal chat_pressed
 signal schedule_pressed
 signal end_week_confirmed
 
-const NUMBER_STATS: Array[String] = ["mood", "mechanics", "ecology", "comms"]
-const TRAIT_STATS: Array[String] = ["confidence", "curiosity", "empathy", "trust"]
+const NUMBER_STATS: Array[String] = ["mood", "mechanics", "ecology", "comms", "confidence", "curiosity", "empathy", "trust"]
 const GIRL_BLOCK_COLOR := Color(0.35, 0.45, 0.6)
 const PANEL_MIN_WIDTH := 420.0
 
@@ -56,12 +55,11 @@ func _build_stat_panel(parent: Control) -> void:
 	var panel := VBoxContainer.new()
 	panel.custom_minimum_size.x = PANEL_MIN_WIDTH
 	parent.add_child(panel)
-	UiKit.label(panel, "%s %d / %d" % [UiKit.stat_name("stamina"), GameState.get_stat("stamina"), GameState.get_stat("stamina_max")])
+	var stamina := UiKit.label(panel, "%s %d / %d" % [UiKit.stat_name("stamina"), GameState.get_stat("stamina"), GameState.get_stat("stamina_max")])
+	UiKit.set_hover_text(stamina, stat_hover_text("stamina"))
 	for id in NUMBER_STATS:
-		UiKit.label(panel, "%s %d" % [UiKit.stat_name(id), GameState.get_stat(id)])
-	# 性格和信任只显示一句话，不显示数字（比赛版 4.1）
-	for id in TRAIT_STATS:
-		UiKit.label(panel, "%s：%s" % [UiKit.stat_name(id), GameState.trait_text(id, GameState.get_stat(id), GameState.age)])
+		var line := UiKit.label(panel, "%s %d" % [UiKit.stat_name(id), GameState.get_stat(id)])
+		UiKit.set_hover_text(line, stat_hover_text(id))
 	var low_stamina := int(DataDB.balance("low_stamina"))
 	if GameState.get_stat("stamina") <= 0:
 		UiKit.label(panel, Text.t("UI-02-12"))
@@ -69,6 +67,16 @@ func _build_stat_panel(parent: Control) -> void:
 		UiKit.label(panel, Text.t("UI-02-11"))
 	if GameState.get_stat("mood") < int(DataDB.balance("low_mood")):
 		UiKit.label(panel, Text.t("UI-02-13"))
+
+
+## yi 定的：属性都显示数字，文字说明只在鼠标放上去时显示。
+## 性格和信任的说明随数值变化，其他属性是固定说明。
+static func stat_hover_text(id: String) -> String:
+	var row := DataDB.row("girl_stats", id)
+	var key := str(row.get("desc_key", ""))
+	if key.is_empty():
+		return GameState.trait_text(id, GameState.get_stat(id), GameState.age)
+	return Text.t(key)
 
 
 func _ask_end_week() -> void:
