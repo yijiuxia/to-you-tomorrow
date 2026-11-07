@@ -28,9 +28,17 @@ static func chat_rounds_left() -> int:
 	return GameState.chat_rounds_left
 
 
-## 点"结束本周"确认后：地球统一结算，体力每周固定恢复
+## 小镇这周开放了吗。第 1 周排完课一周就过去了，建造教学从第 2 周开始（yi 定）。
+static func is_earth_open() -> bool:
+	return GameState.week >= int(DataDB.balance("earth_open_week"))
+
+
+## 点"结束本周"确认后：地球统一结算，体力每周固定恢复。
+## 第 1 周还没上过课也没开小镇，两样都跳过：这样第一次上课时体力仍是初始值，课程数值核算不变。
 static func end_week() -> int:
-	GameState.last_earth_report = GameState.earth.end_week()
+	GameState.last_earth_report = GameState.earth.end_week() if is_earth_open() else {}
+	if GameState.week < int(DataDB.balance("first_class_week")):
+		return 0
 	var before := GameState.get_stat("stamina")
 	GameState.change_stat("stamina", int(DataDB.balance("stamina_weekly_recover")))
 	return GameState.get_stat("stamina") - before

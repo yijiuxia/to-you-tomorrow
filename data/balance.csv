@@ -21,8 +21,8 @@ earth_trait_weekly_cap,3,地球经历带来的性格变化每周上限
 week_days,7,一周几天
 child_age,8,幼年年龄
 teen_age,15,时间跳跃后的年龄
-timejump_after_week,2,第几周结算后时间跳跃
-last_week,6,最后一周；结算后进结局
+timejump_after_week,3,第几周结算后时间跳跃
+last_week,7,最后一周；结算后进结局
 timejump_skill_growth_mult,2,技能 = 原值 + 加成 + 前两周涨幅 × 这个倍数
 timejump_trait_mult,2,性格和信任 = 原值 + 前两周变化 × 这个倍数
 timejump_stamina_max_bonus,10,时间跳跃时体力上限加多少
@@ -39,6 +39,8 @@ model_top_p,0.9,候选的累计概率上限
 model_repeat_penalty,1.15,大于 1 时模型更不爱重复刚说过的词
 model_repeat_window,64,重复惩罚往回看多少个词
 model_context_tokens,4096,模型上下文长度
+earth_open_week,2,从第几周起开放小镇；第 1 周只有课程教学
+first_class_week,2,第 1 周排的课到这一周早上才结算，所以这之前不扣体力也不恢复
 earth_grid_size,30,A 区一边多少格
 earth_cell_size,2.0,一格多少米
 earth_start_robots,2,开局几台施工机器人

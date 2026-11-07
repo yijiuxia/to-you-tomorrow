@@ -74,10 +74,10 @@ func _current_plan() -> Array[String]:
 
 
 ## 程序按规则算出她哪天累倒（demo 文案：旁白不说谎）。
-## 预演要从下周开始时的体力算，所以先加上周末恢复。
+## 预演要从下周开始时的体力算，所以先加上周末恢复；第 1 周不恢复。
 func _refresh_warning() -> void:
 	var start := GameState.stats.duplicate()
-	if not first_time:
+	if GameState.week >= int(DataDB.balance("first_class_week")):
 		start["stamina"] = GameState.clamp_value("stamina", int(start["stamina"]) + int(DataDB.balance("stamina_weekly_recover")), start)
 	var day := CourseSystem.first_collapse_day(_current_plan(), start)
 	_warning.text = Text.f("UI-04-06", {"day": day_name(day)}) if day >= 0 else ""

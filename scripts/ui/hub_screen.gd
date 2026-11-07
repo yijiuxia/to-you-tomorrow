@@ -27,7 +27,8 @@ func _ready() -> void:
 	_build_stat_panel(middle)
 
 	var buttons := UiKit.row(box)
-	UiKit.button(buttons, Text.t("UI-01-01"), func() -> void: town_pressed.emit())
+	var town_button := UiKit.button(buttons, Text.t("UI-01-01"), func() -> void: town_pressed.emit())
+	town_button.disabled = not WeekSystem.is_earth_open()
 	UiKit.button(buttons, Text.t("UI-01-02"), func() -> void: chat_pressed.emit())
 	var schedule_button := UiKit.button(buttons, Text.t("UI-01-03"), func() -> void: schedule_pressed.emit())
 	# 最后一周结束直接进结局，课不会再结算，排了也没用

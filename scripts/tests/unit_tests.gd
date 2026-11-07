@@ -193,6 +193,9 @@ func test_rounds_fixed_after_first_ask() -> void:
 
 func test_end_week_recovers_stamina() -> void:
 	GameState.reset()
+	_eq(WeekSystem.end_week(), 0, "第 1 周没上课，不恢复")
+	_eq(GameState.get_stat("stamina"), 70, "第一次上课时体力还是初始值")
+	GameState.week = 2
 	GameState.change_stat("stamina", -50)
 	_eq(WeekSystem.end_week(), 20, "每周恢复 20")
 	GameState.change_stat("stamina", 100)
@@ -203,10 +206,14 @@ func test_end_week_recovers_stamina() -> void:
 func test_next_stage() -> void:
 	GameState.reset()
 	var stages: Array[String] = []
-	for _i in 6:
+	for _i in 7:
 		stages.append(WeekSystem.next_stage())
 		WeekSystem.start_next_week()
-	_eq(stages, ["morning", "jump", "morning", "morning", "morning", "ending"], "6 周流程顺序")
+	_eq(stages, ["morning", "morning", "jump", "morning", "morning", "morning", "ending"], "7 周流程顺序")
+	GameState.reset()
+	_true(not WeekSystem.is_earth_open(), "第 1 周小镇不开放")
+	GameState.week = 2
+	_true(WeekSystem.is_earth_open(), "第 2 周小镇开放")
 	GameState.reset()
 
 

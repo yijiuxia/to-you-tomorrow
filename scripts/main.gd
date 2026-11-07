@@ -1,7 +1,8 @@
 extends Control
 ## 游戏总流程：决定现在显示哪个画面。规则都在 systems/，这里只管切换。
-## 开局排课 → 课程结算 → 主界面（小镇 / 聊天 / 课表）→ 结束本周 → 周结算
-## → 下一周早上；第 2 周后插入时间跳跃，第 6 周后进结局。
+## 第 1 周：开局排课 → 主界面（聊天 / 课表）→ 结束本周 → 周结算
+## 之后每周：早上课程结算 → 主界面（小镇 / 聊天 / 课表）→ 结束本周 → 周结算
+## 第 3 周后插入时间跳跃，第 7 周后进结局。
 
 const HubScreen := preload("res://scripts/ui/hub_screen.gd")
 const ScheduleScreen := preload("res://scripts/ui/schedule_screen.gd")
@@ -22,7 +23,7 @@ func start_game() -> void:
 	GameState.reset()
 	var screen := ScheduleScreen.new()
 	screen.first_time = true
-	screen.finished.connect(show_settlement)
+	screen.finished.connect(show_hub)
 	_show(screen)
 
 

@@ -5,7 +5,7 @@ extends Node
 ## 通过时退出码是 0。
 
 const MainScene := preload("res://scenes/main.tscn")
-const WEEKS := 6
+const WEEKS := 7
 const SETTLE_WAIT_SEC := 0.2
 const HOVER_WAIT_SEC := 1.2
 const WATCHDOG_SEC := 150.0
@@ -47,15 +47,22 @@ func _play() -> void:
 
 	for week in range(1, WEEKS + 1):
 		_check(GameState.week == week, "应该在第 %d 周，实际第 %d 周" % [week, GameState.week])
-		await _finish_settlement()
-		await _shot("hub_w%d" % week)
 		if week == 1:
-			await _hover_shot("Label", UiKit.stat_name("confidence"), "hover_stat")
+			_check(GameState.get_stat("mechanics") == 0, "第 1 周还没上课")
+			_check(_button_disabled(Text.t("UI-01-01")), "第 1 周小镇应该锁着")
+		else:
+			await _finish_settlement()
+			_check(not _button_disabled(Text.t("UI-01-01")), "第 %d 周小镇应该开放" % week)
+		if week == 2:
+			_check(GameState.get_stat("mechanics") == 9, "第 2 周早上结算第一次的课，实际 %d" % GameState.get_stat("mechanics"))
+			_check(GameState.get_stat("stamina") >= 0, "体力有效")
+		await _shot("hub_w%d" % week)
 		if week == 1:
 			await _hover_course_again()
 			await _try_chat()
-			await _visit_town()
 		if week == 2:
+			await _visit_town()
+		if week == 3:
 			await _build_power_and_water()
 		else:
 			_click(Text.t("UI-01-04"))
@@ -65,8 +72,8 @@ func _play() -> void:
 		await _shot("summary_w%d" % week)
 		_click(Text.t("UI-06-01"))
 		await _frames()
-		if week == 2:
-			_check(GameState.age == 15, "第 2 周后应该 15 岁")
+		if week == 3:
+			_check(GameState.age == 15, "第 3 周后应该 15 岁")
 			await _shot("jump")
 			_click(Text.t("UI-06-01"))
 			await _frames()
@@ -78,7 +85,7 @@ func _play() -> void:
 	_check(GameState.get_stat("mechanics") == 0, "新游戏属性应该重置")
 
 
-## 第 1 周周一到周日：3 节机械课、休息、2 节生态课、休息
+## 第一次排课，周一到周日：3 节机械课、休息、2 节生态课、休息
 func _set_first_week_plan() -> void:
 	var plan := ["mechanics", "mechanics", "mechanics", "rest", "ecology", "ecology", "rest"]
 	var pickers := _find_all(_main.current, "OptionButton")
@@ -167,7 +174,7 @@ func _wait_round(expected_left: int) -> void:
 	await _frames()
 
 
-## 小镇：清理广场、切换视角、拆并捡小废料（第 1 周）
+## 小镇：清理广场、切换视角、拆并捡小废料（第 2 周）
 func _visit_town() -> void:
 	_step = "小镇俯视"
 	_click(Text.t("UI-01-01"))
@@ -216,7 +223,7 @@ func _visit_town() -> void:
 	await _frames()
 
 
-## 第 2 周：用测试键加满，接上水电，看通电、缺水和周结算
+## 第 3 周：用测试键加满，接上水电，看通电、缺水和周结算
 func _build_power_and_water() -> void:
 	_step = "小镇水电"
 	_click(Text.t("UI-01-01"))
@@ -297,6 +304,14 @@ func _hold_key(key: Key, duration: float) -> void:
 	up.pressed = false
 	Input.parse_input_event(up)
 	await _frames()
+
+
+func _button_disabled(text: String) -> bool:
+	for button: Button in _find_all(_main.current, "Button"):
+		if button.text == text:
+			return button.disabled
+	_check(false, "找不到按钮：%s" % text)
+	return true
 
 
 func _press_key(key: Key) -> void:

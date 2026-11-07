@@ -13,7 +13,7 @@ var _next_line := 0
 
 func _ready() -> void:
 	var box := UiKit.page(self)
-	UiKit.title(box, Text.t("WK-01-03") if GameState.week == 1 else Text.f("WK-01-02", {"week": GameState.week}))
+	UiKit.title(box, Text.f("WK-01-02", {"week": GameState.week}))
 	UiKit.label(box, Text.f("WK-01-01", {"player": GameState.player_name}))
 	_lines = VBoxContainer.new()
 	box.add_child(_lines)
