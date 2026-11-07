@@ -32,6 +32,8 @@ func _ready() -> void:
 		"system_prompt": FileAccess.get_file_as_string(SYSTEM_PROMPT_PATH),
 		"sampler": NobodyWhoSamplerPresets.constrain_with_json_schema(FileAccess.get_file_as_string(SCHEMA_PATH)),
 		"use_gpu": not args.has("cpu"),
+		# 新版 Qwen 默认会先"思考"一大段，游戏要快速回复，所以关掉；不支持的模型会忽略
+		"template_variables": {"enable_thinking": false},
 	}
 
 	var load_start := Time.get_ticks_msec()
