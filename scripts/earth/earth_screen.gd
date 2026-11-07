@@ -110,6 +110,15 @@ func toggle_view() -> void:
 
 
 func start_placing(type: String) -> void:
+	# 固定位置的建筑（修旧车间）只有一个地方能建，不用玩家再找地方，点一下就下单
+	var row := DataDB.row("buildings", type)
+	if row["placement"] == "fixed":
+		var reason := world.can_place(type, int(row["fixed_x"]), int(row["fixed_z"]))
+		if reason.is_empty():
+			world.place(type, int(row["fixed_x"]), int(row["fixed_z"]))
+		else:
+			_show_message(Text.f(reason["key"], reason["values"]))
+		return
 	placing_type = type
 	selected_ruin = ""
 	selected_building = 0
@@ -233,7 +242,7 @@ func _build_world() -> void:
 	view.setup(world)
 	top_camera = TopCamera.new()
 	top_camera.limit = view.region_size()
-	top_camera.focus = view.cell_center(ARK_START)
+	top_camera.focus = Vector3(view.region_size() / 2.0, 0.0, view.region_size() / 2.0)
 	view.add_child(top_camera)
 	ark = ArkController.new()
 	view.add_child(ark)
@@ -321,6 +330,9 @@ func _bottom_label(parent: Control) -> Label:
 	var label := UiKit.short_label(parent, "")
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 第三人称画面很亮，文字要描边才看得清
+	label.add_theme_constant_override("outline_size", 6)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	return label
 
 

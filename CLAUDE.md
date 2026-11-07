@@ -37,7 +37,7 @@
    - `Text`：读 `text/*.csv`，按编号取文字。`Text.t("UI-01-01")`，带占位符用 `Text.f("UI-01-05", {"week": 3})`。
    - `GameState`：属性、周数、年龄、认知状态（GAME / DOUBT / BELIEVE）、是否遇到幸存者、剧情标记。改属性一律用 `GameState.change_stat()`，它会按表格截断范围。
    - `ModelService`：加载模型、发话、检查回复，失败退回 FB- 后备句。
-   - 新系统放 `scripts/systems/`，计划有：课程、聊天和模型、地球建造、ARK-01 操控、剧情播放、界面、存档。
+   - 规则放 `scripts/systems/`（不碰画面，能测试），地球规则是 `earth_world.gd`。地球的画面和操作放 `scripts/earth/`，其他界面放 `scripts/ui/`。还没做：剧情播放、存档。
 3. **文字一律用编号**，和 `文案/00_目录.md` 一致：OP 开场 · WK 每周通用 · W1～W6 各周（W6A 遇到线、W6B 没遇到线）· TJ 时间跳跃 · ED 结局与尾声 · CR 课程 · UI 界面 · FB 后备句 · SV 幸存者。格式 `代号-段落-序号`，如 `W4-02-03`。改文字不改编号，删掉的编号不再用。
 4. **数据表**：第一列是 id；`#` 开头的行跳过。每个 `data/*.csv` 和 `text/*.csv` 旁边必须有 `.csv.import`（内容 `importer="keep"`），否则 Godot 会把它当翻译表导入。新增表格时也要加，并把表名加进 `data_db.gd` 的 `TABLES` 或 `text.gd` 的 `FILES`。
 5. 表格必须是 **UTF-8** 编码（Excel 要"另存为 CSV UTF-8"）。`DataDB` 会自动去掉 BOM。
@@ -56,7 +56,8 @@
 
 - 已有：文件夹结构、5 张数据表、DataDB、GameState、模型测试画面（`scenes/tests/model_test.tscn`）。
 - 第 0 步已测：Qwen 3B + NobodyWho 13 可用，结果和遗留问题见 `docs/第0步技术验证结果.md`。聊天和决策用同一个模型（yi 已定）。
-- 第 1 步：方块版流程能从第 1 周点到结局。流程规则在 `scripts/systems/`，画面在 `scripts/ui/`。改规则后跑 `scenes/tests/unit_tests.tscn` 和 `scenes/tests/playthrough_test.tscn`，退出码 0 才算过。
+- 第 1 步：方块版流程能从第 1 周点到结局。流程规则在 `scripts/systems/`，画面在 `scripts/ui/`。改规则后跑 `scenes/tests/` 里的 unit_tests、earth_tests、playthrough_test，退出码 0 才算过。
 - yi 试玩后定：属性（含性格、信任）都显示数字；属性的文字说明只在鼠标悬停时显示；课程直接写名字和属性变化，课程说明在悬停时显示。聊天里不显示情绪标签。demo 只有默认微笑和眨眼两个表情，其他表情以后开发；模型的 emotion 字段先保留不用。
-- 下一步：`制作清单（草稿）.md` 的第 2 步（地球核心玩法）。
+- 第 2 步：A 区地球玩法能玩（全是方块，建模还没做好）：俯视放蓝图和清理、水电网络、恢复度、周结算、机器人寻路、第三人称 ARK-01、游戏滤镜。测试版按 F9 加满技能和材料，打包版没有这个键。
+- 下一步：`制作清单（草稿）.md` 的第 3 步（补全系统和区域）。
 - 文案正在重新讨论，代码里先用临时文字，编号保持一致。

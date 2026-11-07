@@ -10,7 +10,9 @@ const NUMBER_STATS: Array[String] = ["mood", "mechanics", "ecology", "comms", "c
 const GIRL_BLOCK_COLOR := Color(0.35, 0.45, 0.6)
 const PANEL_MIN_WIDTH := 420.0
 
-var _confirm: ConfirmationDialog
+const EndWeekDialog := preload("res://scripts/ui/end_week_dialog.gd")
+
+var _confirm: EndWeekDialog
 
 
 func _ready() -> void:
@@ -30,11 +32,9 @@ func _ready() -> void:
 	var schedule_button := UiKit.button(buttons, Text.t("UI-01-03"), func() -> void: schedule_pressed.emit())
 	# 最后一周结束直接进结局，课不会再结算，排了也没用
 	schedule_button.disabled = GameState.week >= int(DataDB.balance("last_week"))
-	UiKit.button(buttons, Text.t("UI-01-04"), _ask_end_week)
+	UiKit.button(buttons, Text.t("UI-01-04"), func() -> void: _confirm.ask())
 
-	_confirm = ConfirmationDialog.new()
-	_confirm.ok_button_text = Text.t("UI-05-04")
-	_confirm.cancel_button_text = Text.t("UI-05-05")
+	_confirm = EndWeekDialog.new()
 	_confirm.confirmed.connect(func() -> void: end_week_confirmed.emit())
 	add_child(_confirm)
 
@@ -77,14 +77,3 @@ static func stat_hover_text(id: String) -> String:
 	if key.is_empty():
 		return GameState.trait_text(id, GameState.get_stat(id), GameState.age)
 	return Text.t(key)
-
-
-func _ask_end_week() -> void:
-	var lines := PackedStringArray([Text.t("UI-05-01")])
-	if GameState.week >= int(DataDB.balance("last_week")):
-		lines.append(Text.t("UI-05-06"))
-	else:
-		var same := GameState.schedule == GameState.last_schedule
-		lines.append(Text.t("UI-05-02") if same else Text.t("UI-05-03"))
-	_confirm.dialog_text = "\n".join(lines)
-	_confirm.popup_centered()

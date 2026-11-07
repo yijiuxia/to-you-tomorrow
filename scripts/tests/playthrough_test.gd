@@ -55,10 +55,13 @@ func _play() -> void:
 			await _hover_course_again()
 			await _try_chat()
 			await _visit_town()
-		_click(Text.t("UI-01-04"))
-		await _frames()
-		_confirm_end_week()
-		await _frames()
+		if week == 2:
+			await _build_power_and_water()
+		else:
+			_click(Text.t("UI-01-04"))
+			await _frames()
+			_confirm_end_week()
+			await _frames()
 		await _shot("summary_w%d" % week)
 		_click(Text.t("UI-06-01"))
 		await _frames()
@@ -164,12 +167,87 @@ func _wait_round(expected_left: int) -> void:
 	await _frames()
 
 
+## 小镇：清理广场、切换视角、拆并捡小废料（第 1 周）
 func _visit_town() -> void:
+	_step = "小镇俯视"
 	_click(Text.t("UI-01-01"))
 	await _frames()
-	await _shot("town")
-	_click(Text.t("UI-08-02"))
+	var earth: Control = _main.current
+	await _seconds(0.3)
+	await _shot("earth_top")
+	# 用真实的鼠标事件点地面，确认点击能穿过界面落到场景上
+	await _mouse_click_cell(earth, Vector2i(12, 7))
+	_check(earth.selected_ruin == "plaza", "鼠标点废墟应该选中广场，实际 [%s]" % earth.selected_ruin)
+	await _shot("earth_selected")
+	_click(Text.f("UI-16-08", {"work": 2}))
 	await _frames()
+	_check(GameState.earth.queue.size() == 1, "清理应该进队列")
+	_check(GameState.earth.work_units_left() == 4, "清理占 2 个工作单位")
+	await _seconds(2.0)
+	await _shot("earth_robots")
+	var robot: RobotAgent = earth._robots[0]
+	_check(robot.state != RobotAgent.State.IDLE, "机器人应该去干活")
+
+	_step = "小镇第三人称"
+	_press_key(KEY_V)
+	await _frames()
+	_check(earth.third_person, "按 V 应该切到第三人称")
+	var ark: ArkController = earth.ark
+	var start_position: Vector3 = ark.position
+	await _hold_key(KEY_W, 0.4)
+	_check(ark.position.distance_to(start_position) > 0.5, "按 W 应该走动")
+	ark.position = earth.view.cell_center(Vector2i(8, 13))
+	await _seconds(0.5)
+	await _shot("earth_third")
+	var target: String = ark.nearest_small_ruin()
+	_check(target == "scrap1", "应该在小废料旁边，实际 [%s]" % target)
+	await _hold_key(KEY_E, float(DataDB.balance("ark_cut_seconds")) + 0.3)
+	_check(GameState.earth.scraps.size() == 1, "按住 E 应该拆下废料")
+	_press_key(KEY_F)
+	await _frames()
+	_check(GameState.earth.metal == 1, "捡到金属，实际 %d" % GameState.earth.metal)
+	_press_key(KEY_Q)
+	await _frames()
+	await _shot("earth_scan")
+	_press_key(KEY_V)
+	await _frames()
+	_check(not earth.third_person, "按 V 回到俯视")
+	_click(Text.t("UI-17-04"))
+	await _frames()
+
+
+## 第 2 周：用测试键加满，接上水电，看通电、缺水和周结算
+func _build_power_and_water() -> void:
+	_step = "小镇水电"
+	_click(Text.t("UI-01-01"))
+	await _frames()
+	var earth: Control = _main.current
+	var world: EarthWorld = GameState.earth
+	_check(world.ruins["plaza"]["cleared"], "广场废墟上周应该清理完")
+	_check(world.metal >= 5, "清理后应该有金属，实际 %d" % world.metal)
+	earth.debug_boost()
+	for spec: Array in [["farm_plot", 6, 7], ["generator", 0, 3], ["purifier", 3, 2]]:
+		earth.start_placing(spec[0])
+		_check(earth.place_at(Vector2i(spec[1], spec[2])) != 0, "应该能放 %s" % spec[0])
+	await _seconds(0.3)
+	await _shot("earth_blueprints")
+	earth.start_placing("repair_station")
+	await _frames()
+	_check(world.building_at(Vector2i(4, 4)) != 0, "维修站点一下就下单到固定位置")
+	# 用真实的鼠标事件放供电节点
+	earth.start_placing("power_node")
+	await _seconds(0.2)
+	await _shot("earth_ghost")
+	await _mouse_click_cell(earth, Vector2i(20, 12))
+	_check(world.building_at(Vector2i(20, 12)) != 0, "鼠标点地面应该放下供电节点")
+	earth.cancel_placing()
+	_click(Text.t("UI-01-04"))
+	await _frames()
+	_confirm_end_week()
+	await _frames()
+	await _shot("summary_earth")
+	var farm := world.building_at(Vector2i(6, 7))
+	_check(world.problems(farm).has(EarthWorld.WATER_PROBLEM), "种植区应该缺水")
 
 
 func _confirm_end_week() -> void:
@@ -193,6 +271,46 @@ func _hover_shot(type_name: String, text_start: String, shot_name: String) -> vo
 			await _shot(shot_name)
 			return
 	_check(false, "找不到要悬停的控件：%s" % text_start)
+
+
+func _mouse_click_cell(earth: Control, cell: Vector2i) -> void:
+	var screen: Vector2 = earth.top_camera.unproject_position(earth.view.cell_center(cell))
+	for pressed: bool in [true, false]:
+		var click := InputEventMouseButton.new()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = pressed
+		click.position = screen
+		click.global_position = screen
+		get_viewport().push_input(click)
+		await _frames()
+
+
+## 通过 Input 模拟一直按住一个键，这样走动和切割的代码读到的和真实键盘一样
+func _hold_key(key: Key, duration: float) -> void:
+	var down := InputEventKey.new()
+	down.physical_keycode = key
+	down.pressed = true
+	Input.parse_input_event(down)
+	await _seconds(duration)
+	var up := InputEventKey.new()
+	up.physical_keycode = key
+	up.pressed = false
+	Input.parse_input_event(up)
+	await _frames()
+
+
+func _press_key(key: Key) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = key
+	event.pressed = true
+	get_viewport().push_input(event)
+	var release := InputEventKey.new()
+	release.physical_keycode = key
+	get_viewport().push_input(release)
+
+
+func _seconds(duration: float) -> void:
+	await get_tree().create_timer(duration).timeout
 
 
 func _click(text: String) -> void:

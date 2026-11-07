@@ -202,6 +202,7 @@ func _flat_distance(point: Vector3) -> float:
 
 func _build_visual() -> void:
 	_visual = Node3D.new()
+	_visual.rotation.y = PI  # 开局背对镜头，和"往前走"的方向一致
 	add_child(_visual)
 	var body := _box(BODY_SIZE, BODY_COLOR)
 	body.position = Vector3.UP * BODY_SIZE.y / 2.0

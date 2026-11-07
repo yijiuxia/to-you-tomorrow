@@ -8,6 +8,7 @@ const ScheduleScreen := preload("res://scripts/ui/schedule_screen.gd")
 const SettlementScreen := preload("res://scripts/ui/settlement_screen.gd")
 const ChatScreen := preload("res://scripts/ui/chat_screen.gd")
 const TextPageScreen := preload("res://scripts/ui/text_page_screen.gd")
+const EarthScreen := preload("res://scripts/earth/earth_screen.gd")
 
 var current: Control = null  # 当前画面，自动测试也用它来点按钮
 
@@ -53,7 +54,10 @@ func show_chat() -> void:
 
 
 func show_town() -> void:
-	_show_page(Text.t("UI-01-01"), PackedStringArray([Text.t("UI-08-01")]), Text.t("UI-08-02"), show_hub)
+	var screen := EarthScreen.new()
+	screen.back_pressed.connect(show_hub)
+	screen.end_week_confirmed.connect(show_week_summary)
+	_show(screen)
 
 
 func show_week_summary() -> void:

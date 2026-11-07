@@ -28,8 +28,9 @@ static func chat_rounds_left() -> int:
 	return GameState.chat_rounds_left
 
 
-## 点"结束本周"确认后：每周固定恢复体力
+## 点"结束本周"确认后：地球统一结算，体力每周固定恢复
 static func end_week() -> int:
+	GameState.last_earth_report = GameState.earth.end_week()
 	var before := GameState.get_stat("stamina")
 	GameState.change_stat("stamina", int(DataDB.balance("stamina_weekly_recover")))
 	return GameState.get_stat("stamina") - before

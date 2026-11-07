@@ -31,8 +31,13 @@ const WALL_HEIGHT := 10.0
 const WALL_THICKNESS := 2.0
 const SUN_ROTATION := Vector3(-55.0, -30.0, 0.0)
 const BACKGROUND_COLOR := Color(0.55, 0.57, 0.6)
-const FILTER_BRIGHTNESS := 1.2
+const FILTER_BRIGHTNESS := 1.1
 const FILTER_SATURATION := 1.5
+const SLAB_COLOR := Color(0.22, 0.21, 0.2)
+const SLAB_THICKNESS := 0.1
+const WORKSHOP_COLOR := Color(0.42, 0.33, 0.28)
+const WORKSHOP_HEIGHT := 2.8
+const WORKSHOP_TYPE := "repair_station"
 
 var world: EarthWorld
 var cell_size: float
@@ -44,6 +49,7 @@ var _building_nodes := {}  # 建筑编号 -> { node, state }
 var _scrap_nodes := {}     # 废料 id -> 节点
 var _selection: MeshInstance3D
 var _environment: Environment
+var _workshop: Node3D  # 坏掉的旧车间：修好之前一直立在那里
 
 
 func setup(earth_world: EarthWorld) -> void:
@@ -102,6 +108,10 @@ func refresh() -> void:
 	_sync_buildings()
 	_sync_scraps()
 	_update_astar()
+	_workshop.visible = true
+	for building: Dictionary in world.buildings.values():
+		if building["type"] == WORKSHOP_TYPE:
+			_workshop.visible = false
 
 
 func _build_environment() -> void:
@@ -139,6 +149,18 @@ func _build_ground() -> void:
 	_ground = MultiMeshInstance3D.new()
 	_ground.multimesh = multimesh
 	add_child(_ground)
+
+	# 格子之间留了缝当网格线；缝下面垫一层，不然描边滤镜会把缝当成很深的沟
+	var slab := _box_mesh(Vector3(region_size(), SLAB_THICKNESS, region_size()), SLAB_COLOR)
+	slab.position = Vector3(region_size() / 2.0, -0.05 - SLAB_THICKNESS, region_size() / 2.0)
+	add_child(slab)
+
+	var row := DataDB.row("buildings", WORKSHOP_TYPE)
+	var w := int(row["size_x"])
+	var h := int(row["size_z"])
+	_workshop = _box_mesh(Vector3(w * cell_size * 0.96, WORKSHOP_HEIGHT, h * cell_size * 0.96), WORKSHOP_COLOR)
+	_workshop.position = rect_center(int(row["fixed_x"]), int(row["fixed_z"]), w, h) + Vector3.UP * WORKSHOP_HEIGHT / 2.0
+	add_child(_workshop)
 
 	var body := StaticBody3D.new()
 	var shape := CollisionShape3D.new()

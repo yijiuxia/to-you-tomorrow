@@ -27,6 +27,7 @@ var buildings := {}     # 建筑编号 -> { uid, type, x, z, w, h, done, powered
 var queue: Array[Dictionary] = []  # 施工队列：{ kind, ref, total, done }
 var plants := {}        # 格子 -> true
 var scraps: Array[Dictionary] = [] # 拆下来还没捡的废料：{ id, cell, metal, electronics }
+var ark_position := Vector3.INF    # ARK-01 上次停在哪；进小镇时接着从那里开始
 
 var _ruin_cells := {}      # 格子 -> 废墟 id
 var _building_cells := {}  # 格子 -> 建筑编号
@@ -35,6 +36,8 @@ var _energy_output := 0
 var _energy_used := 0
 var _water_output := 0
 var _water_used := 0
+var _power_sources: Array[Dictionary] = []
+var _wet := {}
 
 
 func _init() -> void:
@@ -119,6 +122,19 @@ func robot_count() -> int:
 	return count
 
 
+## 这一格在不在供电范围内 / 有没有水，画面用来显示覆盖范围
+func is_cell_powered(cell: Vector2i) -> bool:
+	for source in _power_sources:
+		var radius := float(_row(source["type"])["power_radius"])
+		if Vector2(cell).distance_to(_center(source)) <= radius:
+			return true
+	return false
+
+
+func is_cell_wet(cell: Vector2i) -> bool:
+	return _wet.has(cell)
+
+
 ## 建筑现在有什么问题：缺电 / 缺水 / 土壤污染
 func problems(uid: int) -> Array[String]:
 	var result: Array[String] = []
@@ -168,8 +184,8 @@ func recovery() -> Dictionary:
 
 # ---------- 建造 ----------
 
-## 能不能建。能建返回空字典；不能建返回 {key, values}，界面用它显示原因。
-func can_place(type: String, x: int, z: int) -> Dictionary:
+## 还没解锁的原因（剧情或技能）；已解锁返回空字典。建造菜单用它标出差多少。
+func unlock_reason(type: String) -> Dictionary:
 	var row := _row(type)
 	if not str(row["unlock_story"]).is_empty() and not GameState.flags.get(row["unlock_story"], false):
 		return {"key": "UI-13-07", "values": {}}
@@ -178,6 +194,15 @@ func can_place(type: String, x: int, z: int) -> Dictionary:
 		var skill: String = SKILL_COLUMNS[column]
 		if GameState.get_stat(skill) < need:
 			return {"key": "UI-13-04", "values": {"skill": UiKit.stat_name(skill), "need": need, "now": GameState.get_stat(skill)}}
+	return {}
+
+
+## 能不能建。能建返回空字典；不能建返回 {key, values}，界面用它显示原因。
+func can_place(type: String, x: int, z: int) -> Dictionary:
+	var row := _row(type)
+	var locked := unlock_reason(type)
+	if not locked.is_empty():
+		return locked
 	if row["placement"] == "fixed" and (x != int(row["fixed_x"]) or z != int(row["fixed_z"])):
 		return {"key": "UI-13-06", "values": {}}
 	for cell in _rect_cells(x, z, int(row["size_x"]), int(row["size_z"])):
@@ -386,6 +411,7 @@ func _recompute_networks() -> void:
 				sources.append(building)
 				grew = true
 
+	_power_sources = sources
 	_energy_used = 0
 	for uid: int in sorted:
 		var building: Dictionary = buildings[uid]
@@ -418,6 +444,7 @@ func _recompute_networks() -> void:
 				wet[next] = true
 				frontier.append(next)
 
+	_wet = wet
 	_water_used = 0
 	for uid: int in sorted:
 		var building: Dictionary = buildings[uid]

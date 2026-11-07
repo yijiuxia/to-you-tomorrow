@@ -8,7 +8,8 @@ const CHANGE_HIDDEN: Array[String] = ["stamina"]  # 体力单独一行说明，�
 
 ## 周结算：所有属性都写数字涨跌
 static func week_summary(recovered: int) -> PackedStringArray:
-	var result := PackedStringArray([Text.f("UI-07-03", {"value": recovered})])
+	var result := _earth_lines()
+	result.append(Text.f("UI-07-03", {"value": recovered}))
 	var changes := _changes(GameState.summary_stats)
 	result.append(Text.t("UI-07-02"))
 	if changes.is_empty():
@@ -45,6 +46,29 @@ static func ending() -> PackedStringArray:
 	if GameState.is_high("trust"):
 		result.append(Text.f("ED-01-05", girl))
 	return result
+
+
+## 周结算里的地球部分：施工完成、获得资源、四项恢复度
+static func _earth_lines() -> PackedStringArray:
+	var report: Dictionary = GameState.last_earth_report
+	var result := PackedStringArray()
+	if report.is_empty():
+		return result
+	var finished: Array = report["finished"]
+	if not finished.is_empty():
+		result.append(Text.f("UI-07-07", {"names": "、".join(PackedStringArray(finished))}))
+	if int(report["metal"]) != 0 or int(report["electronics"]) != 0:
+		result.append(Text.f("UI-07-08", {"metal": report["metal"], "electronics": report["electronics"]}))
+	result.append(Text.f("UI-07-09", {"recovery": recovery_text(report["recovery"])}))
+	return result
+
+
+static func recovery_text(values: Dictionary) -> String:
+	var parts: PackedStringArray = []
+	var names := {"ruins": "UI-15-01", "power": "UI-15-02", "water": "UI-15-03", "plants": "UI-15-04"}
+	for key: String in names:
+		parts.append(Text.f("UI-15-05", {"name": Text.t(names[key]), "value": values[key]}))
+	return " · ".join(parts)
 
 
 static func _changes(before: Dictionary) -> PackedStringArray:

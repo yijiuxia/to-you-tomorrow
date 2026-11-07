@@ -8,7 +8,7 @@ const MIN_DISTANCE := 15.0
 const MAX_DISTANCE := 80.0
 const ROTATE_SPEED := 0.3
 const PITCH_DEGREES := -55.0
-const START_DISTANCE := 55.0
+const START_DISTANCE := 58.0
 
 var active := true
 var focus := Vector3.ZERO
