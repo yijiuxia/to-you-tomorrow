@@ -21,6 +21,7 @@ var last_schedule: Array[String] = []   # 上一次实际结算的课表（"沿�
 var chat_rounds_left := -1              # 本周还能聊几轮；-1 表示本周还没算过
 var chat_week_changes := {}             # 本周聊天已带来的属性变化，用来封顶防刷
 var girl_intent := "none"               # 她最近一次说的建造意向
+var girl_emotion := "calm"              # 她最近一次的情绪，用来切表情
 var initial_stats := {}                 # 开局属性，时间跳跃按"前两周变化"计算
 var summary_stats := {}                 # 上次周结算时的属性，周结算显示和它的差
 
@@ -48,6 +49,7 @@ func reset() -> void:
 	chat_rounds_left = -1
 	chat_week_changes.clear()
 	girl_intent = "none"
+	girl_emotion = "calm"
 
 
 func get_stat(id: String) -> int:

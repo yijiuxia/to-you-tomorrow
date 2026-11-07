@@ -33,4 +33,9 @@ model_timeout_sec,30,模型一次回复最多等多少秒，超时就重试
 model_load_timeout_sec,120,玩家开口时最多等模型加载多少秒
 model_stop_wait_sec,5,超时后最多等模型停下多少秒
 model_retries,1,模型失败后重试几次，再失败用后备句
+model_temperature,0.7,模型回答的随机程度；越高越多变，越低越稳
+model_top_k,40,每个字只从最可能的这么多候选里选
+model_top_p,0.9,候选的累计概率上限
+model_repeat_penalty,1.15,大于 1 时模型更不爱重复刚说过的词
+model_repeat_window,64,重复惩罚往回看多少个词
 model_context_tokens,4096,模型上下文长度

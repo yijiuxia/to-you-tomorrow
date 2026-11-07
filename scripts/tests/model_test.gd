@@ -10,6 +10,8 @@ const TEST_AGE := 15
 const TEST_WEEK := 3
 const LINES_PATH := "res://tests/model_test/lines.csv"
 const SCHEMA_PATH := "res://data/model_output_schema.json"
+const POLL_SEC := 0.05
+const STALL_LIMIT_MS := 60000
 const REQUIRED_KEYS: Array[String] = ["reply", "emotion", "player_attitude", "intent", "options"]
 
 var _chat: NobodyWhoChat
@@ -31,7 +33,7 @@ func _ready() -> void:
 	# 直接传文件原文：Godot 解析 JSON 会把 3 变成 3.0，插件不接受。
 	var config := {
 		"system_prompt": _system_prompt(),
-		"sampler": NobodyWhoSamplerPresets.constrain_with_json_schema(FileAccess.get_file_as_string(SCHEMA_PATH)),
+		"sampler": ModelService.make_sampler(),
 		"use_gpu": not args.has("cpu"),
 		# 新版 Qwen 默认会先"思考"一大段，游戏要快速回复，所以关掉；不支持的模型会忽略
 		"template_variables": {"enable_thinking": false},
@@ -93,13 +95,16 @@ func _ask(text: String) -> Dictionary:
 	var first_token_ms := -1
 	var response := ""
 	var stream: NobodyWhoTokenStream = _chat.ask(text)
-	while true:
-		var token: Variant = await stream.next_token()
-		if token == null:
+	var job := {"done": false, "text": "", "first": -1}
+	_read_stream(stream, job, start)
+	while not job["done"]:
+		await get_tree().create_timer(POLL_SEC).timeout
+		if Time.get_ticks_msec() - start > STALL_LIMIT_MS:
+			print("卡住：", text, " 已生成 ", str(job["text"]).length(), " 字：", str(job["text"]).right(200))
+			_chat.stop_generation()
 			break
-		if first_token_ms < 0:
-			first_token_ms = Time.get_ticks_msec() - start
-		response += str(token)
+	first_token_ms = job["first"]
+	response = job["text"]
 	var result := {
 		"raw": response,
 		"first_token_ms": first_token_ms,
@@ -111,6 +116,17 @@ func _ask(text: String) -> Dictionary:
 		result["valid"] = true
 		result.merge(parsed)
 	return result
+
+
+func _read_stream(stream: NobodyWhoTokenStream, job: Dictionary, start: int) -> void:
+	while true:
+		var token: Variant = await stream.next_token()
+		if token == null:
+			break
+		if job["first"] < 0:
+			job["first"] = Time.get_ticks_msec() - start
+		job["text"] += str(token)
+	job["done"] = true
 
 
 ## 字段齐全，且 options 正好 3 个，才算合法

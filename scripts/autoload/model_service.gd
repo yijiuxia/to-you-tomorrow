@@ -17,6 +17,7 @@ var status := Status.NOT_LOADED
 var _chat: NobodyWhoChat = null
 var _junk := RegEx.create_from_string(JUNK_PATTERN)
 var _stuck := false  # 超时后叫它停也停不下来
+var _said: Array[String] = []  # 这段对话里双方说过的话
 
 
 ## 启动时在后台加载。可以多次调用，只会加载一次。
@@ -30,12 +31,29 @@ func ensure_loaded() -> void:
 		return
 	status = Status.LOADING
 	_chat = await NobodyWhoChat.create(path, {
-		"sampler": NobodyWhoSamplerPresets.constrain_with_json_schema(FileAccess.get_file_as_string(SCHEMA_PATH)),
+		"sampler": make_sampler(),
 		"n_ctx": int(DataDB.balance("model_context_tokens")),
 		# 新版 Qwen 默认会先"思考"一大段，游戏要快速回复，所以关掉；不支持的模型会忽略
 		"template_variables": {"enable_thinking": false},
 	})
 	status = Status.READY if _chat != null else Status.FAILED
+
+
+## 控制模型怎么选字。默认设置下同样的话总得到同样的回答，所以每次开游戏换一个随机种子，
+## 并加上重复惩罚。--seed= 可以固定种子，方便测试时复现结果。
+static func make_sampler() -> NobodyWhoSamplerConfig:
+	var seed_value := randi()
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--seed="):
+			seed_value = arg.trim_prefix("--seed=").to_int()
+	var builder := NobodyWhoSamplerBuilder.new()
+	builder = builder.json_schema(FileAccess.get_file_as_string(SCHEMA_PATH))
+	builder = builder.penalties(int(DataDB.balance("model_repeat_window")), float(DataDB.balance("model_repeat_penalty")), 0.0, 0.0)
+	builder = builder.top_k(int(DataDB.balance("model_top_k")))
+	builder = builder.top_p(float(DataDB.balance("model_top_p")), 1)
+	builder = builder.temperature(float(DataDB.balance("model_temperature")))
+	builder = builder.seed(seed_value)
+	return builder.dist()
 
 
 ## 模型文件路径：--model= 优先（方便测试换模型）；否则看 models 文件夹，
@@ -53,6 +71,7 @@ func model_path() -> String:
 ## 开始一段新对话：清空历史，设置人设
 func start_conversation(system_prompt: String) -> void:
 	await _wait_until_loaded()
+	_said.clear()
 	if status == Status.READY:
 		_chat.set_system_prompt(system_prompt)
 		_chat.reset_history()
@@ -67,7 +86,11 @@ func ask(text: String) -> Dictionary:
 	for _attempt in 1 + int(DataDB.balance("model_retries")):
 		var raw := await _generate(text, float(DataDB.balance("model_timeout_sec")))
 		var parsed := parse_reply(raw)
-		if not parsed.is_empty():
+		# 和这段对话里说过的话一字不差就不要，再生成一次
+		if not parsed.is_empty() and not _said.has(str(parsed["reply"]).strip_edges()):
+			_said.append(text.strip_edges())
+			_said.append(str(parsed["reply"]).strip_edges())
+			_replace_said_options(parsed)
 			return parsed
 		if _stuck:
 			status = Status.FAILED
@@ -143,6 +166,14 @@ func parse_reply(raw: String) -> Dictionary:
 	data["options"] = clean
 	data["fallback"] = false
 	return data
+
+
+## 已经说过的话不再当选项，否则玩家会被引着一遍遍说同一句
+func _replace_said_options(data: Dictionary) -> void:
+	var options: Array[String] = data["options"]
+	for i in OPTION_COUNT:
+		if _said.has(options[i]):
+			options[i] = _fallback_option(i)
 
 
 func fallback_reply() -> Dictionary:

@@ -244,9 +244,9 @@ func test_hover_texts() -> void:
 	GameState.change_stat("confidence", 30)
 	_eq(HubScreen.stat_hover_text("confidence"), Text.t("UI-03-03"), "数值变高后文字跟着变")
 	_eq(HubScreen.stat_hover_text("mood"), Text.t("UI-02-22").format({}), "心情悬停显示固定说明")
-	var course := ScheduleScreen.course_hover_text("mechanics")
-	_true(course.contains(Text.t("CR-DESC-01")), "课程悬停有说明")
-	_true(course.contains("+3") and course.contains("-15"), "课程悬停有效果")
+	var label := ScheduleScreen.course_label("mechanics")
+	_true(label.contains(Text.t("CR-NAME-01")) and label.contains("+3") and label.contains("-15"), "课程名后面直接写属性变化")
+	_eq(ScheduleScreen.course_hover_text("mechanics"), Text.t("CR-DESC-01"), "课程悬停只有说明")
 	GameState.reset()
 
 
