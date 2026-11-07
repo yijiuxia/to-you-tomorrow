@@ -1,0 +1,20 @@
+id,value,note
+work_units_per_week,6,每周基础工作单位
+stamina_weekly_recover,20,每周结束固定恢复体力
+low_stamina,30,体力低于这个值：课程收益减半
+low_mood,30,心情低于这个值：可能拒绝上课
+low_mood_refuse_chance,0.5,心情低时拒绝上课的概率
+trait_high,60,性格/信任大于等于这个值算"高"
+trait_low,30,性格/信任小于等于这个值算"低"
+chat_rounds_base,3,聊天轮数 = 基础 + 信任 ÷ 除数 + 心情加成 − 体力减成
+chat_rounds_trust_divisor,25,
+chat_rounds_mood_bonus_at,60,心情大于等于这个值 +1 轮
+chat_rounds_min,2,
+chat_rounds_max,8,
+chat_change_cap,5,一次聊天里每个属性最多变化多少
+course_event_chance,0.1,每天上课触发小事件的概率
+same_skill_streak_days,3,同一技能课连续几天自信 +1
+timejump_skill_bonus,10,时间跳跃时技能各加多少
+timejump_skill_cap,70,时间跳跃后技能最高多少
+comment_cooldown_sec,20,实时评论最短间隔（秒）
+earth_trait_weekly_cap,3,地球经历带来的性格变化每周上限

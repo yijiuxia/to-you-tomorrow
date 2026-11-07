@@ -1,0 +1,12 @@
+; Godot 4 项目文件。用 Godot 编辑器打开这个文件夹即可。
+
+config_version=5
+
+[application]
+
+config/name="致明日的你"
+
+[autoload]
+
+DataDB="*res://scripts/autoload/data_db.gd"
+GameState="*res://scripts/autoload/game_state.gd"

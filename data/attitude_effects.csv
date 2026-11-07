@@ -1,0 +1,6 @@
+id,confidence,trust,mood,note
+encourage,3,2,0,鼓励
+restrict,-2,-1,0,限制
+comfort,0,3,10,安慰
+ignore,0,-3,-5,忽视
+neutral,0,0,0,中性

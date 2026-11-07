@@ -1,0 +1,11 @@
+id,category,min,max,initial,note
+stamina,state,0,stamina_max,70,上限跟着 stamina_max 走
+stamina_max,state,100,130,100,
+mood,state,0,100,70,
+mechanics,skill,0,100,0,
+ecology,skill,0,100,0,
+comms,skill,0,100,0,
+confidence,trait,0,100,40,
+curiosity,trait,0,100,40,
+empathy,trait,0,100,40,
+trust,relation,0,100,50,

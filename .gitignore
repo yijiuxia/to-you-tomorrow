@@ -1,0 +1,5 @@
+# Godot 自动生成的缓存，不进仓库
+.godot/
+/android/
+export/
+*.tmp
