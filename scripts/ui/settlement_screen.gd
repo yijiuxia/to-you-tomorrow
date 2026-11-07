@@ -1,0 +1,60 @@
+extends Control
+## 早上 + 课程结算：一天一行结果文字，可以点"继续"跳过等待。
+
+signal finished
+
+const Schedule := preload("res://scripts/ui/schedule_screen.gd")
+
+var _lines: VBoxContainer
+var _button: Button
+var _pending: PackedStringArray = []
+var _next_line := 0
+
+
+func _ready() -> void:
+	var box := UiKit.page(self)
+	UiKit.title(box, Text.t("WK-01-03") if GameState.week == 1 else Text.f("WK-01-02", {"week": GameState.week}))
+	UiKit.label(box, Text.f("WK-01-01", {"player": GameState.player_name}))
+	_lines = VBoxContainer.new()
+	box.add_child(_lines)
+	UiKit.spacer(box)
+	_button = UiKit.button(box, Text.t("UI-06-01"), _on_button)
+
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	for result in WeekSystem.settle_schedule(rng):
+		_pending.append(_line_text(result))
+	_reveal_next()
+
+
+func _line_text(result: Dictionary) -> String:
+	var row := DataDB.row("courses", result["course"])
+	var text := Text.t(row["result_key"])
+	match result["status"]:
+		CourseSystem.STATUS_SICK:
+			text = Text.t("CR-STATUS-SICK")
+		CourseSystem.STATUS_REFUSED:
+			text = Text.t("CR-STATUS-REFUSED")
+		CourseSystem.STATUS_TIRED:
+			text = Text.t("CR-STATUS-TIRED")
+	if result["event"]:
+		text += " " + Text.t("CR-EVENT-01")
+	return Text.f("CR-LINE", {"day": Schedule.day_name(result["day"]), "course": Text.t(row["name_key"]), "result": text})
+
+
+func _reveal_next() -> void:
+	if _next_line >= _pending.size() or not is_inside_tree():
+		return
+	UiKit.label(_lines, _pending[_next_line])
+	_next_line += 1
+	if _next_line < _pending.size():
+		get_tree().create_timer(float(DataDB.balance("settle_line_sec"))).timeout.connect(_reveal_next)
+
+
+## 还没放完时点一下先全部放完，放完再点才离开
+func _on_button() -> void:
+	if _next_line < _pending.size():
+		while _next_line < _pending.size():
+			_reveal_next()
+		return
+	finished.emit()

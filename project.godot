@@ -5,8 +5,18 @@ config_version=5
 [application]
 
 config/name="致明日的你"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.6")
 
 [autoload]
 
 DataDB="*res://scripts/autoload/data_db.gd"
+Text="*res://scripts/autoload/text.gd"
 GameState="*res://scripts/autoload/game_state.gd"
+ModelService="*res://scripts/autoload/model_service.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"

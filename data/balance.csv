@@ -18,3 +18,19 @@ timejump_skill_bonus,10,时间跳跃时技能各加多少
 timejump_skill_cap,70,时间跳跃后技能最高多少
 comment_cooldown_sec,20,实时评论最短间隔（秒）
 earth_trait_weekly_cap,3,地球经历带来的性格变化每周上限
+week_days,7,一周几天
+child_age,8,幼年年龄
+teen_age,15,时间跳跃后的年龄
+timejump_after_week,2,第几周结算后时间跳跃
+last_week,6,最后一周；结算后进结局
+timejump_skill_growth_mult,2,技能 = 原值 + 加成 + 前两周涨幅 × 这个倍数
+timejump_trait_mult,2,性格和信任 = 原值 + 前两周变化 × 这个倍数
+timejump_stamina_max_bonus,10,时间跳跃时体力上限加多少
+timejump_reset_value,70,时间跳跃后体力和心情重置成多少
+settle_line_sec,0.4,课程结算每行出现的间隔（秒）
+model_file,qwen3.5-2b-q4_k_m.gguf,当前用的模型文件名，放在 models 文件夹；换模型只改这里
+model_timeout_sec,30,模型一次回复最多等多少秒，超时就重试
+model_load_timeout_sec,120,玩家开口时最多等模型加载多少秒
+model_stop_wait_sec,5,超时后最多等模型停下多少秒
+model_retries,1,模型失败后重试几次，再失败用后备句
+model_context_tokens,4096,模型上下文长度

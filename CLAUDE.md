@@ -34,10 +34,12 @@
 1. **数据和代码分开**。数值只放 `data/*.csv`，文字只放 `text/` 和 `story/`。代码里不写死数字和中文句子。
 2. **一个模块只管一件事**。全局模块在 `scripts/autoload/`：
    - `DataDB`：读 `data/` 的表格。`DataDB.row("courses", "mechanics")`、`DataDB.balance("work_units_per_week")`。
+   - `Text`：读 `text/*.csv`，按编号取文字。`Text.t("UI-01-01")`，带占位符用 `Text.f("UI-01-05", {"week": 3})`。
    - `GameState`：属性、周数、年龄、认知状态（GAME / DOUBT / BELIEVE）、是否遇到幸存者、剧情标记。改属性一律用 `GameState.change_stat()`，它会按表格截断范围。
+   - `ModelService`：加载模型、发话、检查回复，失败退回 FB- 后备句。
    - 新系统放 `scripts/systems/`，计划有：课程、聊天和模型、地球建造、ARK-01 操控、剧情播放、界面、存档。
 3. **文字一律用编号**，和 `文案/00_目录.md` 一致：OP 开场 · WK 每周通用 · W1～W6 各周（W6A 遇到线、W6B 没遇到线）· TJ 时间跳跃 · ED 结局与尾声 · CR 课程 · UI 界面 · FB 后备句 · SV 幸存者。格式 `代号-段落-序号`，如 `W4-02-03`。改文字不改编号，删掉的编号不再用。
-4. **数据表**：第一列是 id；`#` 开头的行跳过。每个 `data/*.csv` 旁边必须有 `.csv.import`（内容 `importer="keep"`），否则 Godot 会把它当翻译表导入。新增表格时也要加，并把表名加进 `data_db.gd` 的 `TABLES`。
+4. **数据表**：第一列是 id；`#` 开头的行跳过。每个 `data/*.csv` 和 `text/*.csv` 旁边必须有 `.csv.import`（内容 `importer="keep"`），否则 Godot 会把它当翻译表导入。新增表格时也要加，并把表名加进 `data_db.gd` 的 `TABLES` 或 `text.gd` 的 `FILES`。
 5. 表格必须是 **UTF-8** 编码（Excel 要"另存为 CSV UTF-8"）。`DataDB` 会自动去掉 BOM。
 6. 剧情用 Dialogue Manager 插件（装在 `addons/`），台词文件放 `story/`，按周分文件。
 7. 模型调用要有后备：生成失败或超时，用 `FB-` 编号的固定句。
@@ -48,11 +50,12 @@
 - 仓库用 GitHub Desktop 管理，远程是用户的 GitHub 私有仓库。
 - 每完成一个能运行的小步骤就提交一次，提交说明用中文写清楚改了什么。
 - 不提交 `.godot/`（Godot 自动生成的缓存）。
-- 模型文件（.gguf，几个 G）不要放进仓库。
+- 模型文件（.gguf，几个 G）不要放进仓库。放在 `models/`，文件名写在 `data/balance.csv` 的 `model_file`；打包后放在游戏程序旁边的 `models/`。
 
 ## 当前进度
 
 - 已有：文件夹结构、5 张数据表、DataDB、GameState、模型测试画面（`scenes/tests/model_test.tscn`）。
 - 第 0 步已测：Qwen 3B + NobodyWho 13 可用，结果和遗留问题见 `docs/第0步技术验证结果.md`。聊天和决策用同一个模型（yi 已定）。
-- 下一步：`制作清单（草稿）.md` 的第 1 步（最简流程）。
+- 第 1 步：方块版流程能从第 1 周点到结局。流程规则在 `scripts/systems/`，画面在 `scripts/ui/`。改规则后跑 `scenes/tests/unit_tests.tscn` 和 `scenes/tests/playthrough_test.tscn`，退出码 0 才算过。
+- 下一步：`制作清单（草稿）.md` 的第 2 步（地球核心玩法）。
 - 文案正在重新讨论，代码里先用临时文字，编号保持一致。
