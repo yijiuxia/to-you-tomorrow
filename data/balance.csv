@@ -39,3 +39,18 @@ model_top_p,0.9,候选的累计概率上限
 model_repeat_penalty,1.15,大于 1 时模型更不爱重复刚说过的词
 model_repeat_window,64,重复惩罚往回看多少个词
 model_context_tokens,4096,模型上下文长度
+earth_grid_size,30,A 区一边多少格
+earth_cell_size,2.0,一格多少米
+earth_start_robots,2,开局几台施工机器人
+earth_plant_max_pollution,1,污染不超过这一级才能种（2 重度 1 轻度 0 无）
+earth_clear_pollution_drop,1,清理废墟后那片地污染降低多少级
+earth_farm_spread_radius,3,种植区向周围扩散的最远距离（格）
+earth_farm_spread_per_week,4,每个种植区每周扩散几格
+earth_plant_wither_per_week,4,缺水时每周枯死几格植物
+earth_scan_radius,12,ARK-01 扫描范围（米）
+earth_robot_speed,4.0,施工机器人速度（米/秒）
+ark_speed,6.0,ARK-01 速度（米/秒）
+ark_cut_seconds,1.0,按住 E 切割小废料要多久（秒）
+ark_interact_range,3.0,ARK-01 交互距离（米）
+debug_skill_boost,100,测试按键一次给技能加多少；打包版没有这个按键
+debug_material_boost,50,测试按键一次给多少材料
