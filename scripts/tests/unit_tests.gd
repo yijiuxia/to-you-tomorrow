@@ -23,6 +23,8 @@ func _ready() -> void:
 	test_end_week_recovers_stamina()
 	test_next_stage()
 	test_time_jump()
+	test_text_fills_names()
+	test_reply_options_are_cleaned()
 	print("测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -230,6 +232,25 @@ func test_time_jump() -> void:
 	WeekSystem.apply_time_jump()
 	_eq(GameState.get_stat("mechanics"), 70, "只练机械封顶 70")
 	GameState.reset()
+
+
+func test_text_fills_names() -> void:
+	GameState.girl_name = "小雨"
+	_true(Text.t("CR-RES-01").contains("小雨"), "固定文字用她的名字")
+	_true(not Text.t("CR-RES-01").contains("{girl}"), "占位符被替换")
+	GameState.girl_name = "朝禾"
+
+
+func test_reply_options_are_cleaned() -> void:
+	var raw := JSON.stringify({
+		"player_attitude": "neutral", "intent": "none", "emotion": "calm", "reply": "好的。",
+		"options": ["，今天没学什么", "好的。", "}]{json"],
+	})
+	var parsed := ModelService.parse_reply(raw)
+	_eq(parsed["options"][0], "今天没学什么", "去掉开头的标点")
+	_eq(parsed["options"][1], Text.t("FB-02-02"), "和她的话相同的选项换成后备")
+	_eq(parsed["options"][2], Text.t("FB-02-03"), "乱码选项换成后备")
+	_true(ModelService.parse_reply("不是 JSON").is_empty(), "不合格回复返回空")
 
 
 func _stats() -> Dictionary:

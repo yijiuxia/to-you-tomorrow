@@ -24,7 +24,10 @@ func t(key: String) -> String:
 		push_warning("文字表里没有这个编号：" + key)
 		return key
 	var value: String = row.get(language, "")
-	return value if not value.is_empty() else str(row.get(DEFAULT_LANGUAGE, key))
+	if value.is_empty():
+		value = str(row.get(DEFAULT_LANGUAGE, key))
+	# 她和你的名字玩家可以改，所以每句都自动填，文字表里写 {girl} {player} 就行
+	return value.format({"girl": GameState.girl_name, "player": GameState.player_name})
 
 
 ## 取一句带占位符的文字，如 f("UI-01-05", {"week": 3})，替换 {week}

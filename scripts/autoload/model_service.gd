@@ -7,6 +7,7 @@ const MODELS_DIR := "models"
 const REQUIRED_KEYS: Array[String] = ["reply", "emotion", "player_attitude", "intent", "options"]
 const OPTION_COUNT := 3
 const POLL_SEC := 0.05
+const LEADING_PUNCTUATION := ",，.。、;；:：!！?？/ "
 ## 模型有时把 JSON 碎片或转义符写进文字里，这种选项不能给玩家看
 const JUNK_PATTERN := "[{}\\[\\]<>`\\\\]|/n|reply|json"
 
@@ -133,8 +134,8 @@ func parse_reply(raw: String) -> Dictionary:
 		return {}
 	var clean: Array[String] = []
 	for i in OPTION_COUNT:
-		var option := str(options[i]).strip_edges()
-		var unusable := option.is_empty() or _junk.search(option) != null
+		var option := str(options[i]).strip_edges().lstrip(LEADING_PUNCTUATION)
+		var unusable := option.is_empty() or _junk.search(option) != null or option == str(data["reply"]).strip_edges()
 		clean.append(_fallback_option(i) if unusable else option)
 	data["options"] = clean
 	data["fallback"] = false

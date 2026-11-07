@@ -1,4 +1,10 @@
-; Godot 4 项目文件。用 Godot 编辑器打开这个文件夹即可。
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 

@@ -17,6 +17,7 @@ static func build(closing: bool) -> String:
 		"age": GameState.age,
 		"week": GameState.week,
 		"state": _state_text(),
+		"courses": _courses_text(),
 		"closing": Text.t("WK-05-01") if closing else "",
 	})
 
@@ -28,6 +29,15 @@ static func _state_text() -> String:
 	for id: String in TRAIT_STATS:
 		parts.append(Text.f("WK-06-03", {"name": _name(id), "text": GameState.trait_text(id, GameState.get_stat(id), GameState.age)}))
 	return Text.f("WK-06-01", {"stats": "，".join(parts)})
+
+
+static func _courses_text() -> String:
+	var names: PackedStringArray = []
+	for course: String in GameState.last_schedule:
+		var name := Text.t(str(DataDB.row("courses", course)["name_key"]))
+		if not names.has(name):
+			names.append(name)
+	return Text.f("WK-06-04", {"courses": "、".join(names)})
 
 
 static func _name(id: String) -> String:

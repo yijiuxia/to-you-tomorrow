@@ -59,6 +59,7 @@ func _ready() -> void:
 func _system_prompt() -> String:
 	GameState.age = TEST_AGE
 	GameState.week = TEST_WEEK
+	GameState.last_schedule.assign(["mechanics", "mechanics", "ecology", "rest", "comms", "together", "rest"])
 	return ChatPrompt.build(false)
 
 
