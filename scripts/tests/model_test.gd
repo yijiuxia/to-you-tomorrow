@@ -6,7 +6,8 @@ extends Control
 ## 2. 自动跑分：加 --auto，把 lines.csv 的句子全跑一遍，结果写到 --out= 指定的文件。
 ##    可选：--cpu 只用 CPU（模拟没有独立显卡）；--limit=10 只跑前 10 句。
 
-const SYSTEM_PROMPT_PATH := "res://tests/model_test/system_prompt.txt"
+const TEST_AGE := 15
+const TEST_WEEK := 3
 const LINES_PATH := "res://tests/model_test/lines.csv"
 const SCHEMA_PATH := "res://data/model_output_schema.json"
 const REQUIRED_KEYS: Array[String] = ["reply", "emotion", "player_attitude", "intent", "options"]
@@ -29,7 +30,7 @@ func _ready() -> void:
 	# 用格式约束让模型只能输出 4.3 节规定的 JSON，比生成后再检查更可靠。
 	# 直接传文件原文：Godot 解析 JSON 会把 3 变成 3.0，插件不接受。
 	var config := {
-		"system_prompt": FileAccess.get_file_as_string(SYSTEM_PROMPT_PATH),
+		"system_prompt": _system_prompt(),
 		"sampler": NobodyWhoSamplerPresets.constrain_with_json_schema(FileAccess.get_file_as_string(SCHEMA_PATH)),
 		"use_gpu": not args.has("cpu"),
 		# 新版 Qwen 默认会先"思考"一大段，游戏要快速回复，所以关掉；不支持的模型会忽略
@@ -52,6 +53,13 @@ func _ready() -> void:
 	else:
 		_input.editable = true
 		_input.grab_focus()
+
+
+## 和游戏用同一份人设文字，测的才是游戏里的效果。这些句子是按 15 岁写的。
+func _system_prompt() -> String:
+	GameState.age = TEST_AGE
+	GameState.week = TEST_WEEK
+	return ChatPrompt.build(false)
 
 
 ## 把句子逐个发给模型，每句前清空历史，这样每句互不影响、结果可比

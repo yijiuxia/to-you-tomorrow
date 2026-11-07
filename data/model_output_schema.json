@@ -2,12 +2,12 @@
   "x-guidance": { "whitespace_flexible": false },
   "type": "object",
   "properties": {
-    "reply": { "type": "string", "minLength": 1, "maxLength": 80 },
-    "emotion": { "enum": ["happy", "sad", "angry", "surprised", "confused", "calm"] },
     "player_attitude": { "enum": ["encourage", "restrict", "comfort", "ignore", "neutral"] },
     "intent": { "enum": ["clear", "plant", "generator", "purifier", "greenhouse", "explore", "relay", "continue", "switch", "rest", "investigate", "withdraw", "ask_help", "none"] },
+    "reply": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "emotion": { "enum": ["happy", "sad", "angry", "surprised", "confused", "calm"] },
     "options": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 30 }, "minItems": 3, "maxItems": 3 }
   },
-  "required": ["reply", "emotion", "player_attitude", "intent", "options"],
+  "required": ["player_attitude", "intent", "reply", "emotion", "options"],
   "additionalProperties": false
 }
