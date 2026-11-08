@@ -16,6 +16,8 @@ else
 扫描仪：检测到生物信号 [ID:W3-03-02]
 girl: ……绿色的？ [ID:W3-03-03]
 girl: {player}！小镇里长叶子了！ [ID:W3-03-04]
+$> model_line("W3-03-05")
+girl: 好小呀……可是它是真的绿色的。 [ID:W3-03-05]
 girl: 哇……是叶子！ [ID:W3-03-06]
 if flag("w1_night_maybe")
 	girl: {player}你说对了，真的有！ [ID:W3-03-07]
@@ -34,7 +36,7 @@ $> set_flag("plant_event_done")
 ~ naming
 girl: 叶子是 ARK-01 找到的！你立大功了！ [ID:W3-05-01]
 girl: 一直叫你 ARK-01 好奇怪哦……我要给你起个名字！ [ID:W3-05-02]
-$> name_ark("UI-54-06")
+$> model_name_ark("UI-54-06", "W3-05-04")
 girl: 就叫你"阿克"吧！ARK，阿克！ [ID:W3-05-04]
 ARK-01 现在叫：{ark} [ID:W3-05-05]
 if flag("seed_jar_found")

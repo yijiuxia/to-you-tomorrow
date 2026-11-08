@@ -178,8 +178,9 @@ func test_energy_budget() -> void:
 	var w := _rich_world()
 	_built(w, "generator", 0, 25)  # 产 10
 	var ids: Array[int] = []
-	for i in 6:  # 每个用 2，第 6 个不够
-		ids.append(_built(w, "soil_improver", 2 + i, 24))
+	# 土壤改良器占 2×1，围着发电设备摆 6 个；每个用 2，第 6 个不够
+	for spot: Vector2i in [Vector2i(2, 23), Vector2i(4, 23), Vector2i(2, 27), Vector2i(4, 27), Vector2i(2, 28), Vector2i(4, 28)]:
+		ids.append(_built(w, "soil_improver", spot.x, spot.y))
 	_eq(w.energy_output(), 10, "产能 10")
 	_eq(w.energy_used(), 10, "用满")
 	_true(w.buildings[ids[4]]["powered"], "第 5 个还有电")
@@ -215,10 +216,10 @@ func test_farm_grows_spreads_and_withers() -> void:
 	_pipes(w, 2, 6)
 	_true(w.buildings[farm]["watered"], "接上水")
 	w.end_week()
-	_eq(w.plants.size(), 8, "长满 4 格并扩散 4 格")
+	_eq(w.plants.size(), 6, "种植区 1×2 长满 2 格并扩散 4 格")
 	_true(w.plants.has(Vector2i(6, 7)), "种植区本身有植物")
 	w.end_week()
-	_eq(w.plants.size(), 12, "继续扩散")
+	_eq(w.plants.size(), 10, "继续扩散")
 	w.demolish(purifier)
 	var before := w.plants.size()
 	w.end_week()
@@ -518,7 +519,7 @@ func test_germination() -> void:
 	_pipes(w, 2, 6)
 	GameState.stats["ecology"] = 0
 	w.end_week()
-	_eq(w.plants.size(), 4 + 2, "生态 0：4 格只发芽 2 格（0.4 × 4 四舍五入）")
+	_eq(w.plants.size(), 2 + 2, "生态 0：扩散的 4 格只发芽 2 格（0.4 × 4 四舍五入）")
 
 
 func test_tutorial_once() -> void:

@@ -123,3 +123,8 @@ chat_lie_trust,-2,之后每次乱说，信任变化多少（也受每周封顶�
 story_w3_repair_mechanics,10,第 3 周修机器人要的机械，她据此说会不会修（文案 W3-02）；和地球的修复门槛保持一致
 earth_plant_story_margin,2,第 3 周植物事件：ARK-01 走到广场周围几格内就触发
 earth_tutorial_scraps,3,拆完几块小废料后提示回俯视整片清理（文案 W2-04）
+model_quit_wait_sec,15,关游戏时最多等模型加载完多少秒（直接退出插件会崩）
+chat_ark_name_max_zh,4,她给 ARK-01 起的名字，中文最多几个字
+chat_ark_name_max_en,12,她给 ARK-01 起的名字，英文最多几个字母
+chat_ark_name_pattern,"(?i)(?:叫你|叫它|call you|call it)?[^“""「'‘]{0,3}[“""「'‘](?<name>[^”""」'’，。！？,.!?\s]+)[”""」'’]",从她的话里取名字：引号里的字（她是对玩家说话，说“叫它”也算）
+chat_ark_name_banned,名字|新名字|name|ark|arky,她把这些当名字时不算（模型会把提示里的“名字”原样抄出来）
