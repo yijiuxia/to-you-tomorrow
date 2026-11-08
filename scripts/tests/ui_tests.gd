@@ -9,6 +9,7 @@ const NameScreen := preload("res://scripts/ui/name_screen.gd")
 const TitleScreen := preload("res://scripts/ui/title_screen.gd")
 const ScheduleScreen := preload("res://scripts/ui/schedule_screen.gd")
 const WATCHDOG_SEC := 60.0
+const DictObject := preload("res://scripts/tests/ui_test_dict_object.gd")
 
 var _failures := 0
 var _count := 0
@@ -28,6 +29,7 @@ func _ready() -> void:
 	test_name_cleaning()
 	test_save_round_trip()
 	test_broken_save_is_ignored()
+	test_save_uses_to_dict()
 	test_settings_round_trip()
 	test_story_triggers_and_fallback()
 	await test_story_runner_choice_changes_state()
@@ -96,6 +98,18 @@ func test_save_round_trip() -> void:
 	SaveSystem.delete_save()
 	_ok(not SaveSystem.has_save(), "能删存档")
 	GameState.reset()
+
+
+## 记忆这类自己会转字典的对象：存档用它的 to_dict() / from_dict()
+func test_save_uses_to_dict() -> void:
+	var holder := DictHolder.new()
+	holder.store = DictObject.from_dict({"items": ["a", "b"]})
+	var packed := SaveSystem._pack(holder)
+	_ok(packed["store"].has(SaveSystem.DICT_KEY), "存档调用了 to_dict")
+	var restored := DictHolder.new()
+	SaveSystem._unpack(restored, str_to_var(var_to_str(packed)))
+	_ok(restored.store is DictObject, "读档用 from_dict 还原对象")
+	_eq(restored.store.items, ["a", "b"], "对象内容还原")
 
 
 func test_broken_save_is_ignored() -> void:
@@ -264,3 +278,8 @@ func _ok(condition: bool, message: String) -> void:
 
 func _eq(actual: Variant, expected: Variant, message: String) -> void:
 	_ok(actual == expected, "%s（期望 %s，实际 %s）" % [message, expected, actual])
+
+
+class DictHolder:
+	extends RefCounted
+	var store: RefCounted = null

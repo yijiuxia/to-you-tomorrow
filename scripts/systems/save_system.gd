@@ -3,10 +3,12 @@ extends RefCounted
 ## 存档：每周开始自动存一次，标题页"继续"读它（yi 定：不做手动多档）。
 ## 存的是 GameState 里的全部脚本变量。以后谁往 GameState 加变量，会自动跟着存，不用改这里。
 ## 变量里的纯数据对象（比如地球 EarthWorld）也会把它自己的变量一起存下来。
+## 对象自己写了 to_dict() 和静态的 from_dict(数据) 时（比如人物 AI 的记忆 MemoryStore），用它自己的方法存取。
 
 const VERSION := 1
 const OBJECT_KEY := "__object"
 const VARS_KEY := "vars"
+const DICT_KEY := "dict"
 
 ## 自动测试会把它改成别的文件，免得覆盖玩家的存档
 static var save_path := "user://autosave.sav"
@@ -79,7 +81,11 @@ static func _pack(source: Object) -> Dictionary:
 		if value is Object:
 			# 只存纯数据对象（RefCounted 脚本）；节点之类是画面，不属于存档
 			if value is RefCounted and value.get_script() != null:
-				value = {OBJECT_KEY: value.get_script().resource_path, VARS_KEY: _pack(value)}
+				var path: String = value.get_script().resource_path
+				if value.has_method("to_dict"):
+					value = {OBJECT_KEY: path, DICT_KEY: value.to_dict()}
+				else:
+					value = {OBJECT_KEY: path, VARS_KEY: _pack(value)}
 			else:
 				continue
 		result[property["name"]] = value
@@ -96,9 +102,12 @@ static func _unpack(target: Object, data: Dictionary) -> void:
 		var current: Variant = target.get(name)
 		if saved is Dictionary and saved.has(OBJECT_KEY):
 			var script: Script = load(str(saved[OBJECT_KEY]))
-			var object: Object = script.new()
-			_unpack(object, saved[VARS_KEY])
-			target.set(name, object)
+			if saved.has(DICT_KEY):
+				target.set(name, script.call("from_dict", saved[DICT_KEY]))
+			else:
+				var object: Object = script.new()
+				_unpack(object, saved[VARS_KEY])
+				target.set(name, object)
 		elif current is Array and saved is Array:
 			# 带类型的数组（Array[String] 等）不能直接整个替换，要一个个装进去
 			var array: Array = current
