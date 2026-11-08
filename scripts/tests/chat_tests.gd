@@ -33,6 +33,7 @@ func _ready() -> void:
 	test_childhood_after_jump()
 	test_copied_memory()
 	test_claims()
+	await test_story_free_talk()
 	await test_event_chat_flow()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -427,6 +428,27 @@ func test_claims() -> void:
 	_eq(ChatPrompt.top_fact("上次你说你会弹钢琴"), "", "没有相关记忆就没有证据")
 	MemoryWriter.record_correction(GameState.memory, "被挖走的是净水站旁边的苗")
 	_eq(GameState.memory.recall("苗被挖走", 1, GameState.week, GameState.age).size(), 1, "提醒记下来，之后想得起")
+
+
+## 剧情选项下的自由聊天：只能说一次，不占聊天轮数；没模型时用后备句、不改数值
+func test_story_free_talk() -> void:
+	_fresh()
+	GameState.week = 2
+	var rounds := WeekSystem.chat_rounds_left()
+	var before := GameState.stats.duplicate()
+	var talk := ChatStoryInput.new("地球上真的有人吗？")
+	var got := {"text": ""}
+	talk.replied.connect(func(text: String) -> void: got["text"] = text)
+	add_child(talk)
+	await talk.submit("我也不知道，我们一起去看看。")
+	_eq(got["text"], Text.t("FB-01-01"), "没模型时她回后备句")
+	_ok(talk.is_used(), "说过一次就不能再说")
+	got["text"] = ""
+	await talk.submit("再说一句")
+	_eq(got["text"], "", "第二句不会发出去")
+	_eq(WeekSystem.chat_rounds_left(), rounds, "不占每周聊天轮数")
+	_eq(GameState.stats, before, "后备句不改数值")
+	talk.free()
 
 
 # ---------- 工具 ----------
