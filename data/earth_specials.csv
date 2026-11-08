@@ -1,0 +1,4 @@
+id,prop,tool,skill,need,state_after,flag,name_key,note
+old_power,old_power,assembler,mechanics,30,fixed,old_power_fixed,UI-15-30,第 4 周：现场修旧备用电源（比赛版：机械 30）
+bridge,bridge,assembler,mechanics,50,fixed,bridge_open,UI-15-31,第 6 周：现场修桥（门槛是我定的，待试玩）
+transceiver,,assembler,comms,55,,transceiver_fixed,UI-15-32,第 7 周：修 ARK-01 的音频收发器（比赛版：通信 55）

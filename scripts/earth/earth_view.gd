@@ -38,6 +38,24 @@ const SLAB_THICKNESS := 0.1
 const WORKSHOP_COLOR := Color(0.42, 0.33, 0.28)
 const WORKSHOP_HEIGHT := 2.8
 const WORKSHOP_TYPE := "repair_station"
+const LOCKED_TINT := Color(0.12, 0.12, 0.14)
+const LOCKED_STRENGTH := 0.55
+const RIVER_COLOR := Color(0.42, 0.35, 0.27)
+const SEEDLING_COLOR := Color(0.55, 0.78, 0.4)
+const HOLE_COLOR := Color(0.2, 0.15, 0.1)
+const CLUE_COLOR := Color(0.3, 1.0, 0.95)
+const CLUE_SIZE := Vector3(0.6, 0.15, 0.6)
+const TERRAIN_WALL_HEIGHT := 12.0
+## 剧情物件按"种类_状态"给颜色和高度；高度 0 表示这个状态不显示
+const PROP_LOOKS := {
+	"gate_closed": [Color(0.5, 0.3, 0.2), 4.0], "gate_open": [Color(0.5, 0.3, 0.2), 0.3],
+	"old_power_broken": [Color(0.4, 0.35, 0.3), 2.0], "old_power_fixed": [Color(0.9, 0.75, 0.3), 2.2],
+	"bridge_broken": [Color(0.45, 0.42, 0.4), 0.0], "bridge_temp": [Color(0.55, 0.4, 0.25), 0.3], "bridge_fixed": [Color(0.6, 0.6, 0.62), 0.6],
+	"pile_high": [Color(0.55, 0.5, 0.45), 2.5], "pile_low": [Color(0.55, 0.5, 0.45), 1.0],
+	"tank_full": [Color(0.3, 0.5, 0.7), 2.5], "tank_empty": [Color(0.45, 0.45, 0.48), 2.5],
+	"greenhouse_broken": [Color(0.6, 0.8, 0.85, 0.35), 3.5], "greenhouse_half": [Color(0.6, 0.85, 0.85, 0.5), 3.5], "greenhouse_fixed": [Color(0.4, 0.8, 0.5, 0.5), 3.5],
+	"underground_hidden": [Color.BLACK, 0.0], "underground_shown": [Color(0.15, 0.15, 0.15), 0.2],
+}
 
 var world: EarthWorld
 var cell_size: float
@@ -50,6 +68,10 @@ var _scrap_nodes := {}     # 废料 id -> 节点
 var _selection: MeshInstance3D
 var _environment: Environment
 var _workshop: Node3D  # 坏掉的旧车间：修好之前一直立在那里
+var _prop_nodes := {}    # 物件 id -> { node, state }
+var _clue_nodes := {}    # 线索 id -> 节点
+var _terrain_walls: Node3D
+var _terrain_key := ""   # 区域开放和桥的状态；变了才重建挡墙
 
 
 func setup(earth_world: EarthWorld) -> void:
@@ -58,7 +80,7 @@ func setup(earth_world: EarthWorld) -> void:
 	_build_environment()
 	_build_ground()
 	_build_boundary()
-	astar.region = Rect2i(0, 0, world.grid_size, world.grid_size)
+	astar.region = Rect2i(0, 0, world.grid_width, world.grid_height)
 	astar.cell_size = Vector2.ONE
 	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar.update()
@@ -81,8 +103,9 @@ func cell_at(position_3d: Vector3) -> Vector2i:
 	return Vector2i(floori(position_3d.x / cell_size), floori(position_3d.z / cell_size))
 
 
-func region_size() -> float:
-	return world.grid_size * cell_size
+## 整张地图的大小（米）：x 是东西，y 是南北
+func map_size() -> Vector2:
+	return Vector2(world.grid_width, world.grid_height) * cell_size
 
 
 ## 第三人称才有的"游戏滤镜"：调亮、加饱和。俯视保持灰暗的真实颜色（比赛版 4.4）。
@@ -107,6 +130,9 @@ func refresh() -> void:
 	_sync_ruins()
 	_sync_buildings()
 	_sync_scraps()
+	_sync_props()
+	_sync_clues()
+	_update_terrain_walls()
 	_update_astar()
 	_workshop.visible = true
 	for building: Dictionary in world.buildings.values():
@@ -141,9 +167,9 @@ func _build_ground() -> void:
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.use_colors = true
 	multimesh.mesh = mesh
-	multimesh.instance_count = world.grid_size * world.grid_size
-	for z in world.grid_size:
-		for x in world.grid_size:
+	multimesh.instance_count = world.grid_width * world.grid_height
+	for z in world.grid_height:
+		for x in world.grid_width:
 			var center := cell_center(Vector2i(x, z)) + Vector3.DOWN * 0.05
 			multimesh.set_instance_transform(_cell_index(Vector2i(x, z)), Transform3D(Basis.IDENTITY, center))
 	_ground = MultiMeshInstance3D.new()
@@ -151,8 +177,8 @@ func _build_ground() -> void:
 	add_child(_ground)
 
 	# 格子之间留了缝当网格线；缝下面垫一层，不然描边滤镜会把缝当成很深的沟
-	var slab := _box_mesh(Vector3(region_size(), SLAB_THICKNESS, region_size()), SLAB_COLOR)
-	slab.position = Vector3(region_size() / 2.0, -0.05 - SLAB_THICKNESS, region_size() / 2.0)
+	var slab := _box_mesh(Vector3(map_size().x, SLAB_THICKNESS, map_size().y), SLAB_COLOR)
+	slab.position = Vector3(map_size().x / 2.0, -0.05 - SLAB_THICKNESS, map_size().y / 2.0)
 	add_child(slab)
 
 	var row := DataDB.row("buildings", WORKSHOP_TYPE)
@@ -165,22 +191,21 @@ func _build_ground() -> void:
 	var body := StaticBody3D.new()
 	var shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	box.size = Vector3(region_size(), 1.0, region_size())
+	box.size = Vector3(map_size().x, 1.0, map_size().y)
 	shape.shape = box
-	shape.position = Vector3(region_size() / 2.0, -0.5, region_size() / 2.0)
+	shape.position = Vector3(map_size().x / 2.0, -0.5, map_size().y / 2.0)
 	body.add_child(shape)
 	add_child(body)
 
 
 ## 四周的隐形墙，ARK-01 走不出这片区域
 func _build_boundary() -> void:
-	var size := region_size()
-	var half := size / 2.0
+	var size := map_size()
 	var walls: Array[Array] = [
-		[Vector3(half, WALL_HEIGHT / 2.0, -WALL_THICKNESS / 2.0), Vector3(size, WALL_HEIGHT, WALL_THICKNESS)],
-		[Vector3(half, WALL_HEIGHT / 2.0, size + WALL_THICKNESS / 2.0), Vector3(size, WALL_HEIGHT, WALL_THICKNESS)],
-		[Vector3(-WALL_THICKNESS / 2.0, WALL_HEIGHT / 2.0, half), Vector3(WALL_THICKNESS, WALL_HEIGHT, size)],
-		[Vector3(size + WALL_THICKNESS / 2.0, WALL_HEIGHT / 2.0, half), Vector3(WALL_THICKNESS, WALL_HEIGHT, size)],
+		[Vector3(size.x / 2.0, WALL_HEIGHT / 2.0, -WALL_THICKNESS / 2.0), Vector3(size.x, WALL_HEIGHT, WALL_THICKNESS)],
+		[Vector3(size.x / 2.0, WALL_HEIGHT / 2.0, size.y + WALL_THICKNESS / 2.0), Vector3(size.x, WALL_HEIGHT, WALL_THICKNESS)],
+		[Vector3(-WALL_THICKNESS / 2.0, WALL_HEIGHT / 2.0, size.y / 2.0), Vector3(WALL_THICKNESS, WALL_HEIGHT, size.y)],
+		[Vector3(size.x + WALL_THICKNESS / 2.0, WALL_HEIGHT / 2.0, size.y / 2.0), Vector3(WALL_THICKNESS, WALL_HEIGHT, size.y)],
 	]
 	for wall in walls:
 		var body := _static_box(wall[1])
@@ -190,12 +215,19 @@ func _build_boundary() -> void:
 
 func _update_ground() -> void:
 	var multimesh := _ground.multimesh
-	for z in world.grid_size:
-		for x in world.grid_size:
+	for z in world.grid_height:
+		for x in world.grid_width:
 			var cell := Vector2i(x, z)
+			var region := world.region_of(cell)
 			var color: Color = GROUND_COLORS[clampi(int(world.pollution.get(cell, 0)), 0, GROUND_COLORS.size() - 1)]
+			if region == EarthWorld.RIVER:
+				color = RIVER_COLOR
 			if world.plants.has(cell):
-				color = PLANT_COLOR
+				color = PLANT_COLOR if world.plant_grown(cell) else SEEDLING_COLOR
+			elif world.holes.has(cell):
+				color = HOLE_COLOR
+			if not world.is_region_open(region):
+				color = color.lerp(LOCKED_TINT, LOCKED_STRENGTH)
 			if world.is_cell_wet(cell):
 				color = color.lerp(WATER_TINT, OVERLAY_STRENGTH)
 			elif world.is_cell_powered(cell):
@@ -263,10 +295,89 @@ func _sync_scraps() -> void:
 
 
 func _update_astar() -> void:
-	for z in world.grid_size:
-		for x in world.grid_size:
+	for z in world.grid_height:
+		for x in world.grid_width:
 			var cell := Vector2i(x, z)
-			astar.set_point_solid(cell, world.is_blocked(cell))
+			astar.set_point_solid(cell, not world.is_walkable(cell))
+
+
+func _sync_props() -> void:
+	for id: String in world.props:
+		var row := DataDB.row("earth_props", id)
+		var look_key := "%s_%s" % [row["kind"], world.props[id]]
+		if _prop_nodes.has(id):
+			if _prop_nodes[id]["state"] == look_key:
+				continue
+			_prop_nodes[id]["node"].queue_free()
+			_prop_nodes.erase(id)
+		var look: Array = PROP_LOOKS.get(look_key, [Color.MAGENTA, 1.0])
+		var rect := world.prop_rect(id)
+		var node := Node3D.new()
+		if float(look[1]) > 0.0:
+			var mesh := _box_mesh(Vector3(rect.size.x * cell_size * 0.96, float(look[1]), rect.size.y * cell_size * 0.96), look[0])
+			mesh.position = Vector3.UP * float(look[1]) / 2.0
+			node.add_child(mesh)
+		node.position = rect_center(rect.position.x, rect.position.y, rect.size.x, rect.size.y)
+		add_child(node)
+		_prop_nodes[id] = {"node": node, "state": look_key}
+
+
+## 线索：俯视看到地上的标记，第三人称看到发光路标（美术清单），这里先用同一个发光方块
+func _sync_clues() -> void:
+	var live := {}
+	for id in world.active_clues():
+		if not GirlEarth.reveals_clues():
+			continue
+		live[id] = true
+		if not _clue_nodes.has(id):
+			var node := _box_mesh(CLUE_SIZE, CLUE_COLOR)
+			var material: StandardMaterial3D = node.mesh.material
+			material.emission_enabled = true
+			material.emission = CLUE_COLOR
+			node.position = cell_center(world.clue_cell(id)) + Vector3.UP * CLUE_SIZE.y / 2.0
+			add_child(node)
+			_clue_nodes[id] = node
+	for id: String in _clue_nodes.keys():
+		if not live.has(id):
+			_clue_nodes[id].queue_free()
+			_clue_nodes.erase(id)
+
+
+## 没开放的区域和干河道立隐形墙，ARK-01 过不去；桥能过时在桥那段留口子
+func _update_terrain_walls() -> void:
+	var key := ""
+	for id: String in DataDB.table("earth_regions"):
+		key += "%s%s" % [id, str(world.is_region_open(id))]
+	key += str(world.props.get(EarthWorld.BRIDGE, ""))
+	if key == _terrain_key:
+		return
+	_terrain_key = key
+	if _terrain_walls != null:
+		_terrain_walls.queue_free()
+	_terrain_walls = Node3D.new()
+	add_child(_terrain_walls)
+	var bridge := world.prop_rect(EarthWorld.BRIDGE)
+	var bridge_open: bool = world.props[EarthWorld.BRIDGE] != "broken"
+	for id: String in DataDB.table("earth_regions"):
+		var row := DataDB.row("earth_regions", id)
+		var z_from := int(row["z_from"])
+		var depth := int(row["z_to"]) - z_from + 1
+		if not world.is_region_open(id):
+			_add_wall(0, z_from, world.grid_width, depth)
+		elif id == EarthWorld.RIVER:
+			if bridge_open:
+				_add_wall(0, z_from, bridge.position.x, depth)
+				_add_wall(bridge.end.x, z_from, world.grid_width - bridge.end.x, depth)
+			else:
+				_add_wall(0, z_from, world.grid_width, depth)
+
+
+func _add_wall(x: int, z: int, w: int, h: int) -> void:
+	if w <= 0 or h <= 0:
+		return
+	var body := _static_box(Vector3(w * cell_size, TERRAIN_WALL_HEIGHT, h * cell_size))
+	body.position = rect_center(x, z, w, h) + Vector3.UP * TERRAIN_WALL_HEIGHT / 2.0
+	_terrain_walls.add_child(body)
 
 
 ## 带碰撞的方块，脚底在 y=0
@@ -304,4 +415,4 @@ func _box_mesh(size: Vector3, color: Color) -> MeshInstance3D:
 
 
 func _cell_index(cell: Vector2i) -> int:
-	return cell.y * world.grid_size + cell.x
+	return cell.y * world.grid_width + cell.x

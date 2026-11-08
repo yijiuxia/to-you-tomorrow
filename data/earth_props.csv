@@ -1,0 +1,8 @@
+id,region,kind,x,z,w,h,states,solid_states,default_state,name_key,note
+gate,a,gate,10,29,10,1,closed|open,closed,closed,UI-15-20,锈铁大门：通电或修好旧备用电源后打开
+old_power,a,old_power,22,26,2,2,broken|fixed,broken|fixed,broken,UI-15-21,旧备用电源：特殊施工修好
+bridge,river,bridge,13,60,4,8,broken|temp|fixed,,broken,UI-15-22,断桥：修好或搭临时便桥后能过河
+material_pile,a,pile,24,11,3,2,high|low,high|low,high,UI-15-23,材料堆：第 5 周被拿走一截
+rain_tank,a,tank,26,1,2,2,full|empty,full|empty,full,UI-15-24,雨水罐
+greenhouse_ruin,c,greenhouse,11,74,5,5,broken|half|fixed,,broken,UI-15-25,大玻璃温室：剧情固定建筑，修好时换成温室
+underground,c,underground,4,94,2,2,hidden|shown,,hidden,UI-15-26,地下入口（待定）

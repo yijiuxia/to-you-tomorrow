@@ -41,7 +41,8 @@ model_repeat_window,64,重复惩罚往回看多少个词
 model_context_tokens,4096,模型上下文长度
 earth_open_week,2,从第几周起开放小镇；第 1 周只有课程教学
 first_class_week,2,第 1 周排的课到这一周早上才结算，所以这之前不扣体力也不恢复
-earth_grid_size,30,A 区一边多少格
+earth_grid_width,30,地图东西方向多少格
+earth_grid_height,98,地图南北方向多少格：A 30 + B 30 + 干河道 8 + C 30
 earth_cell_size,2.0,一格多少米
 earth_start_robots,2,开局几台施工机器人
 earth_plant_max_pollution,1,污染不超过这一级才能种（2 重度 1 轻度 0 无）
@@ -56,6 +57,30 @@ ark_cut_seconds,1.0,按住 E 切割小废料要多久（秒）
 ark_interact_range,3.0,ARK-01 交互距离（米）
 debug_skill_boost,100,测试按键一次给技能加多少；打包版没有这个按键
 debug_material_boost,50,测试按键一次给多少材料
+earth_trait_from_build,1,每建成一项（含特殊施工）自信加多少；每周封顶见 earth_trait_weekly_cap
+earth_trait_from_plant,1,每种下植物共情加多少
+earth_trait_from_clue,1,每发现线索好奇加多少
+ark_tired_fail_chance,0.5,体力低时特殊施工失败的概率
+ark_special_seconds,2.0,按住 E 做特殊施工要多久（秒）
+girl_proposals_per_week,2,她每周最多提几次方案（比赛版 4.4）
+girl_proposal_chance,0.6,每次进小镇她提方案的概率
+girl_proposal_chance_drop,0.1,每被直接否决一次，提方案的概率降多少
+girl_mood_object_chance,0.3,心情低时你放建筑她出声反对的概率
+girl_goal_reward,2,完成她自己定的目标：自信和信任各加多少
+girl_comment_cooldown_sec,20,实时评论最短间隔（秒）
+event_per_week,1,普通突发事件每周最多几次（比赛版 4.3）
+event_chance,0.35,每次进小镇触发突发事件的概率
+event_self_handle_chance,0.5,自信高时她自己处理、不找你的概率
+event_self_repair_mechanics,30,设备停运时她自己修需要的机械
+ui_volume_default,80,主音量默认值（0～100）
+ui_fullscreen_default,0,默认全屏吗（1 是 0 否）
+ui_text_speed_default,40,剧情文字默认每秒出现几个字
+ui_text_speed_min,10,设置里文字速度最慢
+ui_text_speed_max,120,设置里文字速度最快
+ui_name_max_length,8,起名最多几个字
+story_fast_forward_sec,0.15,剧情快进时每句停多少秒
+story_skip_max_lines,500,跳过剧情时最多连跳多少句；防止台词写成死循环时卡住
+story_op_greet_trust,1,开场回应她时信任加多少（临时）
 memory_recall_count,5,每次聊天最多带几条相关的事件记忆（2026-11-08 实测 3 / 5 / 8 条后定 5，见 docs/人物AI测试结果.md）
 memory_topic_weight,3,相关度：和这句话每有一个共同话题加多少分
 memory_word_weight,2,相关度：每有一个共同的词加多少分

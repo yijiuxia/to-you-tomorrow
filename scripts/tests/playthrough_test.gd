@@ -1,10 +1,13 @@
 extends Node
 ## 从头点到结局的自动测试：像玩家一样按按钮，顺便给每种画面截图。
-## 运行（要截图不能加 --headless）：
+## 平时在后台运行，不弹窗口（yi 要求）：加 --headless，此时不截图。
+## 只有需要看截图时才去掉 --headless：
 ## Godot_console.exe --path . res://scenes/tests/playthrough_test.tscn -- --out=截图文件夹
 ## 通过时退出码是 0。
 
 const MainScene := preload("res://scenes/main.tscn")
+const TitleScreen := preload("res://scripts/ui/title_screen.gd")
+const StoryScreen := preload("res://scripts/ui/story_screen.gd")
 const WEEKS := 7
 const SETTLE_WAIT_SEC := 0.2
 const HOVER_WAIT_SEC := 1.2
@@ -23,6 +26,10 @@ func _ready() -> void:
 			_out_dir = arg.trim_prefix("--out=")
 	# 卡死时自己退出并报失败，不要让测试永远挂着
 	get_tree().create_timer(WATCHDOG_SEC).timeout.connect(_on_watchdog)
+	# 存档和设置写到测试专用文件，不覆盖玩家的
+	SaveSystem.save_path = "user://test_playthrough.sav"
+	SaveSettings.settings_path = "user://test_playthrough_settings.cfg"
+	SaveSystem.delete_save()
 	_main = MainScene.instantiate()
 	add_child(_main)
 	await _frames()
@@ -39,11 +46,13 @@ func _on_watchdog() -> void:
 
 
 func _play() -> void:
+	await _start_new_game()
 	await _shot("schedule")
 	_set_first_week_plan()
 	await _hover_shot("OptionButton", _first_course_name(), "hover_course")
 	_click(Text.t("UI-04-08"))
 	await _frames()
+	await _finish_stories()
 
 	for week in range(1, WEEKS + 1):
 		_check(GameState.week == week, "应该在第 %d 周，实际第 %d 周" % [week, GameState.week])
@@ -69,6 +78,7 @@ func _play() -> void:
 			await _frames()
 			_confirm_end_week()
 			await _frames()
+		await _finish_stories()
 		await _shot("summary_w%d" % week)
 		_click(Text.t("UI-06-01"))
 		await _frames()
@@ -77,12 +87,49 @@ func _play() -> void:
 			await _shot("jump")
 			_click(Text.t("UI-06-01"))
 			await _frames()
+			await _finish_stories()
 
+	await _finish_stories()
 	await _shot("ending")
-	_click(Text.t("ED-03-01"))
+	_click(Text.t("UI-06-01"))
 	await _frames()
-	_check(GameState.week == 1 and GameState.age == 8, "结局后应该回到新游戏")
-	_check(GameState.get_stat("mechanics") == 0, "新游戏属性应该重置")
+	await _shot("credits")
+	_click(Text.t("UI-56-09"))
+	await _frames()
+	_check(_main.current is TitleScreen, "制作人员名单后应该回到标题页")
+	# 继续：读第 7 周开始时的自动存档
+	_click(Text.t("UI-50-03"))
+	await _frames()
+	_check(GameState.week == WEEKS and GameState.age == 15, "继续应该回到第 %d 周，实际第 %d 周" % [WEEKS, GameState.week])
+	SaveSystem.delete_save()
+
+
+## 标题页 → 开始游戏 → 起名（用默认名字）→ 开场剧情
+func _start_new_game() -> void:
+	_step = "标题页"
+	_check(_main.current is TitleScreen, "启动后应该是标题页")
+	await _shot("title")
+	_click(Text.t("UI-50-02"))
+	await _frames()
+	await _shot("naming")
+	_click(Text.t("UI-51-04"))
+	await _frames()
+	await _finish_stories()
+
+
+## 有剧情在播就一路跳过，遇到选择选第一个
+func _finish_stories() -> void:
+	for _i in 50:
+		if not _main.current is StoryScreen:
+			return
+		var story: Control = _main.current
+		await _seconds(0.05)
+		await story.skip()
+		await _frames()
+		if story == _main.current and story.line != null:
+			story.choose(0)
+			await _frames()
+	_check(false, "剧情没有播完")
 
 
 ## 第一次排课，周一到周日：3 节机械课、休息、2 节生态课、休息
@@ -181,6 +228,9 @@ func _visit_town() -> void:
 	await _frames()
 	var earth: Control = _main.current
 	await _seconds(0.3)
+	await _shot("earth_card")
+	_dismiss_girl_card(earth)
+	await _frames()
 	await _shot("earth_top")
 	# 用真实的鼠标事件点地面，确认点击能穿过界面落到场景上
 	await _mouse_click_cell(earth, Vector2i(12, 7))
@@ -229,6 +279,7 @@ func _build_power_and_water() -> void:
 	_click(Text.t("UI-01-01"))
 	await _frames()
 	var earth: Control = _main.current
+	_dismiss_girl_card(earth)
 	var world: EarthWorld = GameState.earth
 	_check(world.ruins["plaza"]["cleared"], "广场废墟上周应该清理完")
 	_check(world.metal >= 5, "清理后应该有金属，实际 %d" % world.metal)
@@ -280,7 +331,23 @@ func _hover_shot(type_name: String, text_start: String, shot_name: String) -> vo
 	_check(false, "找不到要悬停的控件：%s" % text_start)
 
 
+## 她的方案和突发事件是随机出现的；测试里遇到就回答掉，不影响后面的步骤
+func _dismiss_girl_card(earth: Control) -> void:
+	if not earth.proposal.is_empty():
+		earth.answer_proposal(GirlEarth.EXPLAIN)
+	if not earth.event.is_empty():
+		earth.answer_event("rest")
+
+
 func _mouse_click_cell(earth: Control, cell: Vector2i) -> void:
+	# 后台运行没有窗口，鼠标坐标算不出来，直接调同一个处理函数；开窗口运行时才测真实鼠标
+	if DisplayServer.get_name() == "headless":
+		if earth.placing_type.is_empty():
+			earth.select_cell(cell)
+		else:
+			earth.place_at(cell)
+		await _frames()
+		return
 	var screen: Vector2 = earth.top_camera.unproject_position(earth.view.cell_center(cell))
 	for pressed: bool in [true, false]:
 		var click := InputEventMouseButton.new()
@@ -347,7 +414,8 @@ func _frames() -> void:
 
 
 func _shot(shot_name: String) -> void:
-	if _out_dir.is_empty() or _shot_names.has(shot_name):
+	# 后台（--headless）运行时没有画面，跳过截图
+	if _out_dir.is_empty() or _shot_names.has(shot_name) or DisplayServer.get_name() == "headless":
 		return
 	_shot_names[shot_name] = true
 	await RenderingServer.frame_post_draw

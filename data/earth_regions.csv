@@ -1,0 +1,5 @@
+id,z_from,z_to,name_key,open_flag,buildable,comm_free,note
+a,0,29,UI-15-10,,1,1,A 维修站：开局开放，不用通信中继也能操作
+b,30,59,UI-15-11,gate_open,1,0,B 工业区：大门通电后打开（比赛版 4.4）
+river,60,67,UI-15-12,gate_open,0,0,干河道：不能建，只能从桥上过
+c,68,97,UI-15-13,bridge_open,1,0,C 温室与旧居民区：修好断桥或搭了临时便桥才打开

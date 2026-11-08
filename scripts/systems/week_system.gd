@@ -37,6 +37,13 @@ static func is_earth_open() -> bool:
 ## 第 1 周还没上过课也没开小镇，两样都跳过：这样第一次上课时体力仍是初始值，课程数值核算不变。
 static func end_week() -> int:
 	GameState.last_earth_report = GameState.earth.end_week() if is_earth_open() else {}
+	var traits: Dictionary = GameState.last_earth_report.get("traits", {})
+	for id: String in traits:
+		GameState.change_stat(id, int(traits[id]))
+	if is_earth_open():
+		GameState.last_earth_report["goal_done"] = GirlEarth.goal_reward(GameState.earth, GameState.weekly.get("goal", {}))
+		GameState.last_earth_report["girl_clue"] = GirlEarth.week_end_discovery(GameState.earth)
+		GameState.last_earth_report["self_handled"] = GameState.weekly.get("self_handled", "")
 	if GameState.week < int(DataDB.balance("first_class_week")):
 		return 0
 	var before := GameState.get_stat("stamina")
@@ -58,6 +65,7 @@ static func start_next_week() -> void:
 	GameState.week += 1
 	GameState.chat_rounds_left = -1
 	GameState.chat_week_changes.clear()
+	GameState.weekly = {}
 
 
 ## 时间跳跃（比赛版 4.1）。返回跳跃前的属性，用于"这些年"总结页。

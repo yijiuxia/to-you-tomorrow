@@ -1,11 +1,17 @@
 class_name ArkController
 extends CharacterBody3D
 ## ARK-01：第三人称下玩家操控。WASD 移动，按住右键转视角，空格跳，
-## 按住 E 用切割头拆小废料，F 拾取，Q 扫描（比赛版 4.4、demo 文案 1-2）。
+## Tab 换工具头，按住 E 用当前工具，F 拾取，Q 扫描（比赛版 4.4、demo 文案 1-2）。
+## 四个工具头：切割（拆小废料）、焊接（修坏掉的设备）、装配（特殊施工）、喷洒（种植）。
 ## 现场操作不消耗工作单位。
 
 signal message(text: String)
 signal prompt_changed(text: String)
+signal tool_changed(tool: String)
+signal girl_comment(text: String)
+
+const TOOLS: Array[String] = ["cutter", "welder", "assembler", "sprayer"]
+const TOOL_KEYS := {"cutter": "UI-18-20", "welder": "UI-18-21", "assembler": "UI-18-22", "sprayer": "UI-18-23"}
 
 const BODY_SIZE := Vector3(1.4, 1.6, 1.8)
 const BODY_COLOR := Color(0.95, 0.95, 0.9)
@@ -37,6 +43,9 @@ var _speed: float
 var _cut_seconds: float
 var _range: float
 var _last_prompt := ""
+var tool := "cutter"
+var _special_seconds: float
+var _rng := RandomNumberGenerator.new()
 
 
 func setup(earth_view: EarthView, start: Vector3) -> void:
@@ -45,6 +54,8 @@ func setup(earth_view: EarthView, start: Vector3) -> void:
 	_speed = float(DataDB.balance("ark_speed"))
 	_cut_seconds = float(DataDB.balance("ark_cut_seconds"))
 	_range = float(DataDB.balance("ark_interact_range"))
+	_special_seconds = float(DataDB.balance("ark_special_seconds"))
+	_rng.randomize()
 	var shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
 	box.size = BODY_SIZE
@@ -108,6 +119,79 @@ func _unhandled_input(event: InputEvent) -> void:
 				pick_up_nearest()
 			KEY_Q:
 				scan()
+			KEY_TAB:
+				next_tool()
+
+
+func next_tool() -> void:
+	tool = TOOLS[(TOOLS.find(tool) + 1) % TOOLS.size()]
+	_cut_progress = 0.0
+	tool_changed.emit(tool)
+
+
+## 当前工具对准的目标：{ kind, id, seconds, prompt }；没有目标返回空字典
+func current_target() -> Dictionary:
+	match tool:
+		"cutter":
+			var ruin := nearest_small_ruin()
+			if not ruin.is_empty():
+				return {"kind": "cut", "id": ruin, "seconds": _cut_seconds, "prompt": Text.t("UI-18-05")}
+		"welder":
+			for building: Dictionary in world.buildings.values():
+				if building.get("broken", false) and _near_rect(Rect2i(int(building["x"]), int(building["z"]), int(building["w"]), int(building["h"]))):
+					return {"kind": "repair", "id": building["uid"], "seconds": _cut_seconds, "prompt": Text.t("UI-18-24")}
+		"assembler":
+			var special := nearest_special()
+			if not special.is_empty():
+				var name := Text.t(str(DataDB.row("earth_specials", special)["name_key"]))
+				return {"kind": "special", "id": special, "seconds": _special_seconds, "prompt": Text.f("UI-18-25", {"name": name})}
+		"sprayer":
+			var cell := view.cell_at(position)
+			if not world.plants.has(cell):
+				return {"kind": "plant", "id": cell, "seconds": _cut_seconds, "prompt": Text.t("UI-18-26")}
+	return {}
+
+
+## 附近能做的特殊施工；收发器在 ARK-01 自己身上，剧情允许后哪里都能修
+func nearest_special() -> String:
+	for id: String in DataDB.table("earth_specials"):
+		if world.is_special_done(id):
+			continue
+		var prop := str(DataDB.row("earth_specials", id)["prop"])
+		if prop.is_empty():
+			if GameState.flags.get("transceiver_allowed", false):
+				return id
+		elif _near_rect(world.prop_rect(prop)):
+			return id
+	return ""
+
+
+## 用当前工具做一次（按住 E 的计时在 _update_cutting 里，测试也可以直接调这里）
+func use_tool(target: Dictionary) -> void:
+	match target["kind"]:
+		"cut":
+			cut(target["id"])
+		"repair":
+			if world.repair_building(target["id"]):
+				message.emit(Text.t("UI-18-27"))
+				girl_comment.emit(Text.t("UI-20-22"))
+		"special":
+			var result := world.try_special(target["id"], _rng)
+			if result["ok"]:
+				message.emit(Text.t("UI-18-28"))
+			elif not str(result["key"]).is_empty():
+				message.emit(Text.f(result["key"], result["values"]))
+		"plant":
+			if world.hand_plant(target["id"]):
+				message.emit(Text.t("UI-18-29"))
+			else:
+				message.emit(Text.t("UI-13-03"))
+
+
+func _near_rect(rect: Rect2i) -> bool:
+	var cell := view.cell_at(position)
+	var grown := rect.grow(int(ceil(_range / view.cell_size)))
+	return grown.has_point(cell)
 
 
 ## 最近的小废料 id；范围内没有返回空字符串
@@ -157,30 +241,39 @@ func scan() -> void:
 	for building: Dictionary in world.buildings.values():
 		if _flat_distance(view.rect_center(int(building["x"]), int(building["z"]), int(building["w"]), int(building["h"]))) <= radius:
 			counts["buildings"] += 1
-	message.emit(Text.f("UI-18-04", counts))
+	var found := 0
+	for id in world.active_clues():
+		if _flat_distance(view.cell_center(world.clue_cell(id))) <= radius:
+			world.discover_clue(id)
+			found += 1
+	message.emit(Text.f("UI-18-04", counts) + ("" if found == 0 else " " + Text.f("UI-18-30", {"count": found})))
+	if found > 0:
+		girl_comment.emit(Text.t("UI-20-21"))
 
 
 func _update_cutting(delta: float) -> void:
-	var target := nearest_small_ruin()
+	var target := current_target()
 	if target.is_empty() or not Input.is_physical_key_pressed(KEY_E):
 		_cut_progress = 0.0
 		_cut_target = ""
 		return
-	if target != _cut_target:
-		_cut_target = target
+	var key := "%s%s" % [target["kind"], str(target["id"])]
+	if key != _cut_target:
+		_cut_target = key
 		_cut_progress = 0.0
 	_cut_progress += delta
-	if _cut_progress >= _cut_seconds:
-		cut(target)
+	if _cut_progress >= float(target["seconds"]):
+		use_tool(target)
 		_cut_progress = 0.0
 
 
 func _update_prompt() -> void:
-	var text := ""
-	if not nearest_small_ruin().is_empty():
-		text = Text.t("UI-18-05")
-	elif _near_big_ruin():
-		text = Text.t("UI-18-06")
+	var text := Text.f("UI-18-31", {"tool": Text.t(TOOL_KEYS[tool])})
+	var target := current_target()
+	if not target.is_empty():
+		text += "  " + str(target["prompt"])
+	elif tool == "cutter" and _near_big_ruin():
+		text += "  " + Text.t("UI-18-06")
 	if text != _last_prompt:
 		_last_prompt = text
 		prompt_changed.emit(text)
@@ -202,7 +295,7 @@ func _flat_distance(point: Vector3) -> float:
 
 func _build_visual() -> void:
 	_visual = Node3D.new()
-	_visual.rotation.y = PI  # 开局背对镜头，和"往前走"的方向一致
+	_visual.rotation.y = 0.0  # 开局朝北，背对镜头
 	add_child(_visual)
 	var body := _box(BODY_SIZE, BODY_COLOR)
 	body.position = Vector3.UP * BODY_SIZE.y / 2.0
@@ -216,6 +309,7 @@ func _build_visual() -> void:
 func _build_camera() -> void:
 	_pivot = Node3D.new()
 	_pivot.position = Vector3.UP * CAMERA_HEIGHT
+	_pivot.rotation.y = PI  # 镜头在南边往北看，和俯视方向一致
 	add_child(_pivot)
 	_spring = SpringArm3D.new()
 	_spring.spring_length = CAMERA_DISTANCE

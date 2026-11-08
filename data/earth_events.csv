@@ -1,0 +1,4 @@
+id,stat,min_stat,weight,say_key,option1_key,option1_intent,option2_key,option2_intent,option3_key,option3_intent,note
+device_stop,confidence,0,3,UI-21-01,UI-21-11,continue,UI-21-12,ask_help,UI-21-13,rest,设备停运：她自己修 / 让你来修 / 先不管
+ark_failure,confidence,0,2,UI-21-02,UI-21-21,continue,UI-21-22,ask_help,UI-21-23,withdraw,ARK-01 故障：她自己修 / 让你接管 / 撤回
+danger_zone,curiosity,60,2,UI-21-03,UI-21-31,explore,UI-21-32,investigate,UI-21-33,withdraw,想进危险区域：去 / 先扫描 / 不去

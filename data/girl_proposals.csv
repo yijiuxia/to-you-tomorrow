@@ -1,0 +1,6 @@
+id,trait,min_trait,kind,target,say_key,note
+fix_shed,confidence,0,clear,shed,UI-20-01,她想把塌掉的棚屋清出来（谨慎务实：先清理）
+save_tank,empathy,50,intent,protect,UI-20-02,热爱自然：想保护储罐旁边冒出来的草
+clear_wall,curiosity,50,clear,wall,UI-20-03,好奇：想看断墙后面有什么
+power_first,confidence,55,intent,generator,UI-20-04,独立主动：想先修发电设备
+b_factory,curiosity,40,clear,b_factory1,UI-20-05,工业区开放后：想清理厂房

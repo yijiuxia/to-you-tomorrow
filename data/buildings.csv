@@ -1,11 +1,11 @@
-id,name_key,placement,fixed_x,fixed_z,size_x,size_z,unlock_mechanics,unlock_ecology,unlock_comms,unlock_story,metal,electronics,work_units,needs_power,needs_water,power_radius,energy_output,energy_use,water_output,water_use,metal_output,cleanse_radius,bonus_work_units,note
-recycler,UI-BLD-01,free,0,0,2,1,0,0,0,,3,0,2,0,0,0,0,0,0,0,3,0,0,每周 +3 金属
-generator,UI-BLD-02,free,0,0,2,2,45,0,0,,8,4,4,0,0,6,10,0,0,0,0,0,0,范围内通电
-purifier,UI-BLD-03,free,0,0,2,2,40,40,0,,5,3,3,1,0,0,0,3,6,0,0,0,0,产出清洁水
-repair_station,UI-BLD-04,fixed,4,4,3,2,10,0,0,,4,2,3,0,0,0,0,0,0,0,0,0,3,修旧车间；每周工作单位 +3
-farm_plot,UI-BLD-05,free,0,0,2,2,0,0,0,,0,0,1,0,1,0,0,0,0,1,0,0,0,有水才生长；第 4 步改成植物事件后解锁
-soil_improver,UI-BLD-06,free,0,0,1,1,0,45,0,,2,2,2,1,0,0,0,2,0,0,0,3,0,每周降低周围污染
-greenhouse,UI-BLD-07,fixed,-1,-1,4,4,0,0,0,week6,10,6,8,1,1,0,0,4,0,2,0,0,0,花费待定（文案讨论）；在 C 区
-relay,UI-BLD-08,free,0,0,1,1,0,0,45,,0,6,3,0,0,0,0,0,0,0,0,0,0,扩大可操作范围
-power_node,UI-BLD-09,free,0,0,1,1,0,0,0,,1,0,0,0,0,4,0,0,0,0,0,0,0,延长供电网络
-water_pipe,UI-BLD-10,free,0,0,1,1,0,0,0,,1,0,0,0,0,0,0,0,0,0,0,0,0,按段连接
+id,name_key,placement,fixed_x,fixed_z,size_x,size_z,unlock_mechanics,unlock_ecology,unlock_comms,unlock_story,metal,electronics,work_units,needs_power,needs_water,power_radius,energy_output,energy_use,water_output,water_use,metal_output,cleanse_radius,bonus_work_units,comm_radius,note
+recycler,UI-BLD-01,free,0,0,2,1,0,0,0,,3,0,2,0,0,0,0,0,0,0,3,0,0,0,每周 +3 金属
+generator,UI-BLD-02,free,0,0,2,2,45,0,0,,8,4,4,0,0,6,10,0,0,0,0,0,0,0,范围内通电
+purifier,UI-BLD-03,free,0,0,2,2,40,40,0,,5,3,3,1,0,0,0,3,6,0,0,0,0,0,产出清洁水
+repair_station,UI-BLD-04,fixed,4,4,3,2,10,0,0,,4,2,3,0,0,0,0,0,0,0,0,0,3,0,修旧车间；每周工作单位 +3
+farm_plot,UI-BLD-05,free,0,0,2,2,0,0,0,,0,0,1,0,1,0,0,0,0,1,0,0,0,0,有水才生长；第 4 步改成植物事件后解锁
+soil_improver,UI-BLD-06,free,0,0,1,1,0,45,0,,2,2,2,1,0,0,0,2,0,0,0,3,0,0,每周降低周围污染
+greenhouse,UI-BLD-07,fixed,11,74,5,5,0,0,0,greenhouse_unlocked,10,6,8,1,1,0,0,4,0,2,0,0,0,0,在 C 区大玻璃温室原址；yi 定：不管建没建完都进结局
+relay,UI-BLD-08,free,0,0,1,1,0,0,45,,0,6,3,0,0,0,0,0,0,0,0,0,0,14,扩大可操作范围
+power_node,UI-BLD-09,free,0,0,1,1,0,0,0,,1,0,0,0,0,4,0,0,0,0,0,0,0,0,延长供电网络
+water_pipe,UI-BLD-10,free,0,0,1,1,0,0,0,,1,0,0,0,0,0,0,0,0,0,0,0,0,0,按段连接

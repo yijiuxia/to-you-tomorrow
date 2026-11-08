@@ -1,0 +1,161 @@
+keys,en
+# 英文补充表：只补别的表里 en 列还空着的编号（Text 加载时合并）。原表 en 列写了就优先用原表。
+UI-01-05,"Week {week} · {girl}, age {age}"
+UI-01-06,{girl} wants to: {intent}
+UI-01-07,({girl}'s 3D model will go here)
+UI-02-01,Stamina
+UI-02-02,Max stamina
+UI-02-03,Mood
+UI-02-04,Mechanics
+UI-02-05,Ecology
+UI-02-06,Comms
+UI-02-07,Confidence
+UI-02-08,Curiosity
+UI-02-09,Empathy
+UI-02-10,Trust
+UI-02-11,{girl} is very tired. Classes only give half the gain.
+UI-02-12,{girl} has collapsed from exhaustion and needs rest before class.
+UI-02-13,{girl} is in a bad mood and may not want to go to class.
+UI-02-21,Classes use stamina. When it's low she learns slowly; at 0 she collapses.
+UI-02-22,"When her mood is too low, {girl} may refuse to go to class."
+UI-02-23,Decides what {girl} can repair and which machines she can build.
+UI-02-24,Decides what {girl} can grow and whether she can improve the soil.
+UI-02-25,Decides whether {girl} can fix communication equipment.
+UI-03-01,A little timid
+UI-03-02,Looks to you first when something happens
+UI-03-03,Wants to try everything herself
+UI-03-04,Always asks you before deciding
+UI-03-05,Sometimes makes her own decisions
+UI-03-06,Dares to make her own decisions
+UI-03-07,Likes staying in familiar places
+UI-03-08,A bit interested in new things
+UI-03-09,"Asks ""why"" about everything"
+UI-03-10,Only does what's in front of her
+UI-03-11,Now and then wants to see a little more
+UI-03-12,Always wants to know what else is out there
+UI-03-13,Doesn't pay much attention to others
+UI-03-14,Notices little things
+UI-03-15,Even feels sorry for robots
+UI-03-16,Gets the job done first
+UI-03-17,Takes care of things around her
+UI-03-18,Cares a lot about how others feel
+UI-03-19,Doesn't tell you much
+UI-03-20,Happy to talk with you
+UI-03-21,Relies on you a lot
+UI-04-01,Schedule · Week {week}
+UI-04-02,"Plan 7 days of classes. When you end the week, she follows the current schedule."
+UI-04-03,Same as last week
+UI-04-04,Rest all week
+UI-04-05,Save
+UI-04-06,"With this schedule, {girl} will collapse on {day}."
+UI-04-08,Confirm this week's plan
+UI-04-11,Mon
+UI-04-12,Tue
+UI-04-13,Wed
+UI-04-14,Thu
+UI-04-15,Fri
+UI-04-16,Sat
+UI-04-17,Sun
+UI-05-01,End this week?
+UI-05-02,Next schedule: same as last week
+UI-05-03,Next schedule: changed
+UI-05-04,Confirm
+UI-05-05,Not yet
+UI-05-06,This is the last week. The ending follows.
+UI-06-01,Continue
+UI-07-01,Week {week} summary
+UI-07-02,How {girl} changed:
+UI-07-03,Stamina +{value} (weekly recovery)
+UI-07-04,{girl} didn't change much this week.
+UI-07-05,{name}: {old} → {new}
+UI-07-06,{name} {delta}
+UI-08-01,Town (placeholder)
+UI-08-02,Back
+UI-09-01,Chat · {rounds} rounds left
+UI-09-02,Say something to {girl}...
+UI-09-03,Send
+UI-09-04,{girl} is thinking...
+UI-09-05,Leave
+UI-09-06,{girl}: {text}
+UI-09-07,You: {text}
+UI-12-clear,clear the ruins
+UI-12-plant,plant something
+UI-12-generator,fix the generator
+UI-12-purifier,build a water purifier
+UI-12-greenhouse,repair the greenhouse
+UI-12-explore,explore somewhere new
+UI-12-relay,build a comms relay
+UI-12-continue,keep to the original plan
+UI-12-switch,try another plan
+UI-12-rest,take a break
+UI-12-investigate,investigate something strange
+UI-12-withdraw,pull back for now
+UI-12-ask_help,ask you for help
+CR-NAME-01,Mechanics
+CR-NAME-02,Ecology
+CR-NAME-03,Comms
+CR-NAME-04,Fitness training
+CR-NAME-05,Free experiment
+CR-NAME-06,Archive reading
+CR-NAME-07,Ark exploration
+CR-NAME-08,Plant care
+CR-NAME-09,ARK-01 maintenance
+CR-NAME-10,Time together
+CR-NAME-11,Rest
+CR-DESC-01,"Learn to take things apart, fix them and put them together"
+CR-DESC-02,"Learn about soil, water and plants"
+CR-DESC-03,"Learn about signals, wiring and how to connect things"
+CR-DESC-04,Run and jump in the ark's training pod
+CR-DESC-05,Try building something without instructions
+CR-DESC-06,Read records from old Earth
+CR-DESC-07,Wander somewhere on the ark she's never been
+CR-DESC-08,Look after the plants in the ark's growth pods
+CR-DESC-09,Check and oil ARK-01
+CR-DESC-10,Do something together with you
+CR-DESC-11,Do nothing at all
+CR-RES-01,(Temporary) {girl} took apart a little motor and put it back together.
+CR-RES-02,(Temporary) {girl} carefully wrote down the colour of the soil.
+CR-RES-03,(Temporary) {girl} tuned a signal clear for the first time.
+CR-RES-04,(Temporary) {girl} ran in the training pod until she was soaked with sweat.
+CR-RES-05,(Temporary) {girl} tried a small experiment on her own.
+CR-RES-06,(Temporary) {girl} spent the afternoon reading about old Earth.
+CR-RES-07,(Temporary) {girl} found a corridor on the ark she had never walked.
+CR-RES-08,(Temporary) {girl} watered the seedlings in the growth pods.
+CR-RES-09,(Temporary) {girl} gave ARK-01 a careful oiling.
+CR-RES-10,(Temporary) You spent a happy day together.
+CR-RES-11,(Temporary) {girl} had a good sleep.
+CR-STATUS-SICK,(Temporary) {girl} collapsed from exhaustion and had to stay in bed today.
+CR-STATUS-REFUSED,(Temporary) {girl} said she didn't want class today and hid under the blanket.
+CR-STATUS-TIRED,"(Temporary) {girl} was too tired, kept drifting off, and learned only a little."
+CR-EVENT-01,"(Temporary event) A little accident happened in class, and {girl} stuck her tongue out at you."
+CR-LINE,{day} · {course}: {result}
+FB-01-01,Hmm... I spaced out a bit. What did you just say?
+FB-02-01,"It's okay, take your time."
+FB-02-02,Let's talk about something else.
+FB-02-03,Let's stop here for today.
+FB-03-01,Let's talk tomorrow.
+WK-01-01,"Good morning, {player}!"
+WK-01-02,(Morning of week {week}. The classes you planned begin.)
+WK-02-01,(Temporary) Good work this week. Let's keep going next week too.
+WK-05-01,"[{girl} is getting tired. End the topic naturally this round, for example by saying she's sleepy or wants to go look at the town.]"
+WK-06-01,{girl}'s state: {stats}.
+WK-06-02,{name} {value}
+WK-06-03,{name}: {text}
+WK-06-04,Classes this week: {courses}.
+TJ-01-01,"Over the years, you brought water back to it."
+TJ-01-02,"The town grew bigger every year, and the robots went farther and farther."
+TJ-01-03,"{girl} started drawing her own blueprints, and sometimes argued with you about what to fix first."
+TJ-01-04,Seven years later
+TJ-02-01,These years
+TJ-02-02,{girl}: age {old_age} → {new_age}
+TJ-02-03,{name} {old} → {new}
+TJ-02-04,{name}: {old} → {new}
+ED-01-01,"(Temporary ending, to be replaced by the real story)"
+ED-01-02,"The filter fades, and the screen shows the real Earth."
+ED-01-03,"{girl}: You knew this wasn't a game, didn't you?"
+ED-01-04,A line appears on the terminal: Caretaker persona · Ark AI · Year 15 of operation
+ED-01-05,{girl}: It's okay. As long as it's you.
+ED-02-confidence,"{girl}: Next time, I want to go meet them myself."
+ED-02-curiosity,{girl}: How many people... are still on Earth?
+ED-02-empathy,"{girl}: They've been there all along, waiting for a hundred years."
+ED-03-01,Start over

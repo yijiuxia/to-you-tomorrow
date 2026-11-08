@@ -12,9 +12,9 @@ const START_DISTANCE := 58.0
 
 var active := true
 var focus := Vector3.ZERO
-var yaw := 0.0
+var yaw := 180.0  # 朝北看：A 区在下面，往上是 B、C 区
 var distance := START_DISTANCE
-var limit := 60.0
+var limit := Vector2(60.0, 60.0)  # 镜头能移动的范围（米）
 var _dragging := false
 var dragged := false  # 这次按右键有没有转动镜头；没转动算"右键单击"（取消放置）
 
@@ -34,7 +34,7 @@ func _process(delta: float) -> void:
 	if input != Vector2.ZERO:
 		var move := Vector3(input.x, 0.0, input.y).rotated(Vector3.UP, deg_to_rad(yaw)).normalized()
 		focus += move * MOVE_SPEED * delta
-		focus = focus.clamp(Vector3.ZERO, Vector3(limit, 0.0, limit))
+		focus = focus.clamp(Vector3.ZERO, Vector3(limit.x, 0.0, limit.y))
 	_apply()
 
 

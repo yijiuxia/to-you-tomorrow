@@ -4,7 +4,7 @@ extends Node
 ## 表格第一列是 id；以 # 开头的行会被跳过，可以当注释用。
 
 const DATA_DIR := "res://data/"
-const TABLES := ["courses", "girl_stats", "buildings", "attitude_effects", "balance", "chat_keywords", "trait_texts", "earth_ruins_a", "earth_zones_a", "memory_patterns", "memory_flags", "chat_actions", "chat_moods", "chat_stages", "chat_idle"]
+const TABLES := ["courses", "girl_stats", "buildings", "attitude_effects", "balance", "chat_keywords", "trait_texts", "earth_ruins", "earth_zones", "earth_regions", "earth_props", "earth_specials", "earth_clues", "plants", "girl_proposals", "girl_goals", "earth_events", "memory_patterns", "memory_flags", "chat_actions", "chat_moods", "chat_stages", "chat_idle"]
 
 var _tables := {}  # 表名 -> { id -> { 列名: 值 } }
 

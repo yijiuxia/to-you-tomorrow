@@ -24,6 +24,7 @@ var girl_intent := "none"               # 她最近一次说的建造意向
 var earth: EarthWorld = null             # 地球的全部状态
 var last_earth_report := {}             # 本周地球结算结果，周结算页用
 var girl_emotion := "calm"              # 她最近一次的情绪，用来切表情
+var weekly := {}                        # 只属于本周的计数（方案次数、事件次数、本周目标），每周清空
 var initial_stats := {}                 # 开局属性，时间跳跃按"前两周变化"计算
 var summary_stats := {}                 # 上次周结算时的属性，周结算显示和它的差
 
@@ -52,6 +53,7 @@ func reset() -> void:
 	chat_week_changes.clear()
 	girl_intent = "none"
 	girl_emotion = "calm"
+	weekly = {}
 	earth = EarthWorld.new()
 	last_earth_report = {}
 	memory = MemoryStore.new()  # 人物 AI 线程加：新游戏清空她的记忆
