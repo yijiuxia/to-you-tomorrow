@@ -56,9 +56,9 @@ ark_cut_seconds,1.0,按住 E 切割小废料要多久（秒）
 ark_interact_range,3.0,ARK-01 交互距离（米）
 debug_skill_boost,100,测试按键一次给技能加多少；打包版没有这个按键
 debug_material_boost,50,测试按键一次给多少材料
-memory_recall_count,3,每次聊天最多带几条相关的事件记忆（要实测 3 / 5 / 8 再定）
+memory_recall_count,5,每次聊天最多带几条相关的事件记忆（2026-11-08 实测 3 / 5 / 8 条后定 5，见 docs/人物AI测试结果.md）
 memory_topic_weight,3,相关度：和这句话每有一个共同话题加多少分
-memory_word_weight,1,相关度：每有一个共同的词加多少分
+memory_word_weight,2,相关度：每有一个共同的词加多少分
 memory_word_cap,3,相关度：共同的词最多算几个
 memory_min_relevance,2,相关度低于这个分的记忆不带，宁可不提也不乱提
 memory_importance_weight,1,重要程度（1～3）每级加多少分

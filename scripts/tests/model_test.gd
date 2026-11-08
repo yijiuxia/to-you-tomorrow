@@ -9,6 +9,9 @@ extends Control
 const TEST_AGE := 15
 const TEST_WEEK := 3
 const LINES_PATH := "res://tests/model_test/lines.csv"
+const MEMORY_SEED_PATH := "res://tests/model_test/memory_seed.csv"
+const MEMORY_LINES_PATH := "res://tests/model_test/memory_lines.csv"
+const MEMORY_TEST_WEEK := 6
 const SCHEMA_PATH := "res://data/model_output_schema.json"
 const POLL_SEC := 0.05
 const STALL_LIMIT_MS := 60000
@@ -61,7 +64,10 @@ func _ready() -> void:
 			"template_variables": {"enable_thinking": false},
 		})
 
-	if args.has("auto"):
+	if args.has("memory"):
+		await _run_memory(args, int(args["memory"]))
+		get_tree().quit()
+	elif args.has("auto"):
 		await _run_auto(args, load_ms, config["use_gpu"])
 		get_tree().quit()
 	else:
@@ -113,6 +119,65 @@ func _run_auto(args: Dictionary, load_ms: int, use_gpu: bool) -> void:
 		var file := FileAccess.open(out_path, FileAccess.WRITE)
 		file.store_string(JSON.stringify({"load_ms": load_ms, "use_gpu": use_gpu, "results": results}, "  "))
 		file.close()
+
+
+## 记忆实测（比赛版 4.5"取几条"要实测）：--memory=条数。先放进 15 条事件记忆和 2 条核心记忆，
+## 再问 12 个要靠记忆才能答对的问题，看回复里有没有说出关键词，并记录速度。
+func _run_memory(args: Dictionary, count: int) -> void:
+	GameState.week = MEMORY_TEST_WEEK
+	GameState.age = TEST_AGE
+	GameState.memory = MemoryStore.new()
+	for row in _load_csv(MEMORY_SEED_PATH):
+		GameState.memory.remember_event(row["text"], MemoryStore.KIND_EVENT, int(row["importance"]), int(row["week"]), int(row["age"]))
+	GameState.memory.remember_core("like_颜色", "我最喜欢的颜色是天蓝色。", 3)
+	GameState.memory.remember_core("promise_5", "新星答应过我：“下次一起看日出”", 5)
+	DataDB.table("balance")["memory_recall_count"]["value"] = count  # 只在这次测试里改
+	_chat.set_system_prompt(ChatPrompt.build())
+	var results: Array[Dictionary] = []
+	var hits := 0
+	for row in _load_csv(MEMORY_LINES_PATH):
+		_chat.reset_history()
+		var message := ChatPrompt.turn_message(row["line"], "", false)
+		if _judge != null:
+			_judge.reset_history()
+			var judged := ModelService.parse_judge((await _ask(row["line"], _judge, false))["raw"])
+			if not judged.is_empty():
+				message += "
+" + ModelService.judged_hint(judged)
+		var r := await _ask(message)
+		var reply := str(r.get("reply", ""))
+		var hit := false
+		for word in str(row["keywords"]).split("|"):
+			if reply.contains(word):
+				hit = true
+		hits += 1 if hit else 0
+		r["id"] = row["id"]
+		r["line"] = row["line"]
+		r["hit"] = hit
+		r["recalled"] = GameState.memory.recall(row["line"], count, GameState.week, GameState.age).size()
+		results.append(r)
+		_say("%s 记得=%s 带了 %d 条 %d ms：%s" % [row["id"], str(hit), r["recalled"], r["total_ms"], reply])
+	_say("取 %d 条：答对 %d / %d" % [count, hits, results.size()])
+	var out_path: String = args.get("out", "")
+	if not out_path.is_empty():
+		var file := FileAccess.open(out_path, FileAccess.WRITE)
+		file.store_string(JSON.stringify({"count": count, "hits": hits, "results": results}, "  "))
+		file.close()
+
+
+func _load_csv(path: String) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	var file := FileAccess.open(path, FileAccess.READ)
+	var header := file.get_csv_line()
+	while not file.eof_reached():
+		var cells := file.get_csv_line()
+		if cells.size() < header.size():
+			continue
+		var row := {}
+		for i in header.size():
+			row[header[i]] = cells[i]
+		rows.append(row)
+	return rows
 
 
 ## 发一句话，记录首字和总耗时，并检查回复是否符合格式

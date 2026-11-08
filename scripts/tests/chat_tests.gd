@@ -27,6 +27,8 @@ func _ready() -> void:
 	test_schema_matches_tables()
 	test_reply_action()
 	await test_lines_fallback()
+	test_presence_fits_age()
+	test_judge_parsing()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -304,6 +306,29 @@ func test_lines_fallback() -> void:
 	_eq(comment["reply"], Text.t("FB-04-02"), "没模型时课表评论用固定句")
 	_eq(ModelService.parse_line("{\"reply\":\"早！\",\"action\":\"wave\"}")["action"], "wave", "说一句的回复能解析")
 	_ok(ModelService.parse_line("{\"reply\":\"\",\"action\":\"wave\"}").is_empty(), "空的一句不要")
+
+
+func test_presence_fits_age() -> void:
+	_fresh()
+	for age in [8, 15]:
+		GameState.age = age
+		var seen := {}
+		for i in 30:
+			var presence := ChatPresence.new()
+			add_child(presence)
+			var row := DataDB.row("chat_idle", presence.activity)
+			_ok(not presence.activity.is_empty() and age >= int(row["min_age"]) and age <= int(row["max_age"]), "主界面做的事适合 %d 岁" % age)
+			seen[presence.activity] = true
+			presence.free()
+		_ok(seen.size() > 1, "%d 岁做的事不止一种" % age)
+
+
+func test_judge_parsing() -> void:
+	_eq(ModelService.parse_judge("{\"player_attitude\":\"comfort\",\"intent\":\"rest\"}"), {"player_attitude": "comfort", "intent": "rest"}, "判断结果能解析")
+	_eq(ModelService.parse_judge("{\"player_attitude\":\"angry\",\"intent\":\"rest\"}"), {}, "不认识的态度不要")
+	var hint := ModelService.judged_hint({"player_attitude": "restrict", "intent": "withdraw"})
+	_ok(hint.contains(Text.t("WK-13-restrict")) and hint.contains(Text.t("UI-12-withdraw")), "判断结果写成提示告诉她")
+	_ok(ModelService.judge_prompt().contains(GameState.player_name), "判断提示填上名字")
 
 
 # ---------- 工具 ----------
