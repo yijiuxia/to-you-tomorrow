@@ -19,6 +19,9 @@ func _ready() -> void:
 	get_tree().create_timer(WATCHDOG_SEC).timeout.connect(func() -> void:
 		print("失败：测试超时")
 		get_tree().quit(2))
+	# 界面测试用不到模型。模型还在加载时退出，NobodyWho 的后台线程会让程序崩溃（退出码 -1073741819），
+	# 所以先标记成"没有模型"，main 就不会去加载
+	ModelService.status = ModelService.Status.FAILED
 	SaveSystem.save_path = "user://test_ui.sav"
 	SaveSettings.settings_path = "user://test_ui_settings.cfg"
 	SaveSystem.delete_save()
@@ -39,6 +42,8 @@ func _ready() -> void:
 	SaveSystem.delete_save()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SaveSettings.settings_path))
 	print("界面测试 %d 项，失败 %d 项" % [_count, _failures])
+	get_tree().paused = false
+	await _frames(3)  # 等测试里建的画面真正释放完再退出
 	get_tree().quit(1 if _failures > 0 else 0)
 
 

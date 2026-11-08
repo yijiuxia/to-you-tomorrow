@@ -31,7 +31,7 @@ func _ready() -> void:
 		note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_menu_button(box, Text.t("UI-50-04"), open_settings)
 	_menu_button(box, Text.t("UI-50-05"), func() -> void: credits_pressed.emit())
-	_menu_button(box, Text.t("UI-50-06"), func() -> void: get_tree().quit())
+	_menu_button(box, Text.t("UI-50-06"), _quit)
 
 	_overwrite = ConfirmationDialog.new()
 	_overwrite.dialog_text = Text.t("UI-50-08")
@@ -59,3 +59,12 @@ func _menu_button(parent: Control, text: String, on_pressed: Callable) -> Button
 	var node := UiKit.button(parent, text, on_pressed)
 	node.custom_minimum_size.x = BUTTON_WIDTH
 	return node
+
+
+## 模型还在后台加载时直接退出会崩溃，等它加载完再退
+func _quit() -> void:
+	for node in find_children("*", "Button", true, false):
+		(node as Button).disabled = true
+	while ModelService.status == ModelService.Status.LOADING:
+		await get_tree().process_frame
+	get_tree().quit()
