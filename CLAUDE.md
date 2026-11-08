@@ -59,7 +59,7 @@
 | 线程 | 负责的模块 | 只改这些文件 | 分支 |
 | --- | --- | --- | --- |
 | A 地球（总集成） | 4 地球建造、5 ARK-01、6 她影响建造；合并各线程 | `scripts/earth/`、`scripts/systems/earth_*.gd`、`data/earth_*.csv`、`data/buildings.csv`、`scenes/tests/earth_*`、`scripts/tests/earth_*` | `main` |
-| B 人物 AI | 3 聊天、记忆、鲜活感 | `scripts/autoload/model_service.gd`、`scripts/systems/chat_*.gd`、`scripts/systems/memory_*.gd`、`scripts/ui/chat_screen.gd`、`text/prompts/`、`data/model_*`、`data/chat_*`、`data/memory_*`、`tests/model_test/`、`scripts/tests/model_test.gd` | `thread/ai` |
+| B 人物 AI | 3 聊天、记忆、鲜活感 | `scripts/autoload/model_service.gd`、`scripts/systems/chat_*.gd`、`scripts/systems/memory_*.gd`、`scripts/ui/chat_screen.gd`、`scripts/ui/chat_presence.gd`、`scripts/ui/chat_comment.gd`、`scripts/ui/chat_event_panel.gd`、`text/prompts/`、`data/model_*`、`data/chat_*`、`data/memory_*`、`tests/model_test/`、`scripts/tests/model_test.gd` | `thread/ai` |
 | C 界面与流程 | 8 界面、存档、设置、英文切换；7 剧情播放器的框架（文案到了再填） | `scripts/ui/`（聊天画面除外）、`scripts/systems/save_*.gd`、`scripts/systems/story_*.gd`、`story/`、`addons/dialogue_manager/` | `thread/ui` |
 | 策划线程 | 文案、训练数据（不写代码） | Obsidian 和项目文件夹里的策划文档 | — |
 
@@ -89,7 +89,7 @@
 
 - 已有：文件夹结构、5 张数据表、DataDB、GameState、模型测试画面（`scenes/tests/model_test.tscn`）。
 - 第 0 步已测：Qwen 3B + NobodyWho 13 可用，结果和遗留问题见 `docs/第0步技术验证结果.md`。聊天和决策用同一个模型（yi 已定）。
-- 第 1 步：方块版流程能从第 1 周点到结局。流程规则在 `scripts/systems/`，画面在 `scripts/ui/`。改规则后跑 `scenes/tests/` 里的 unit_tests、earth_tests、playthrough_test，退出码 0 才算过。
+- 第 1 步：方块版流程能从第 1 周点到结局。流程规则在 `scripts/systems/`，画面在 `scripts/ui/`。改规则后跑 `scenes/tests/` 里的 unit_tests、earth_tests、ui_tests、chat_tests、playthrough_test（都加 `--headless`），退出码 0 才算过。
 - yi 试玩后定：属性（含性格、信任）都显示数字；属性的文字说明只在鼠标悬停时显示；课程直接写名字和属性变化，课程说明在悬停时显示。聊天里不显示情绪标签。demo 只有默认微笑和眨眼两个表情，其他表情以后开发；模型的 emotion 字段先保留不用。
 - 第 2 步：A 区地球玩法能玩（全是方块，建模还没做好）：俯视放蓝图和清理、水电网络、恢复度、周结算、机器人寻路、第三人称 ARK-01、游戏滤镜。测试版按 F9 加满技能和材料，打包版没有这个键。
 - yi 定：游戏共 7 周。第 1 周只有课程教学（小镇锁着），第 2 周早上才第一次结算课并开启建造教学，第 3 周后时间跳跃，第 7 周后结局。第 1 周不恢复体力，让课程数值核算保持不变。
