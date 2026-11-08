@@ -1,0 +1,8 @@
+id,speaker,regex,key,text_key,note
+# 从对话里认出要记进核心记忆的话（比赛版 4.5：她说的喜好记下来，之后保持一致）。
+# speaker：girl 看她说的话，player 看玩家说的话。regex 里 (?<topic>) 和 (?<value>) 会填进 text_key 的 {topic} {value}；{line} 是整句话。
+# key 里的 {topic} 会被替换，key 相同的记忆会被新的替换（她改口时记新的）。
+fav_zh,girl,"我最喜欢的?(?<topic>颜色|植物|花|动物|食物|歌|星星|课|东西)(?:是|就是)?(?<value>[^，。！？,.!?\s]{1,8})",like_{topic},WK-08-11,她说出最喜欢的东西
+fav_en,girl,"(?i)my favou?rite (?<topic>colou?r|plant|flower|animal|food|song|star|class|thing) is (?<value>[a-z' -]{1,20})",like_{topic},WK-08-11,She names a favourite thing
+promise_zh,player,"我答应你|一言为定|说好了|约好了|我保证",promise_{week},WK-08-12,玩家答应她的事
+promise_en,player,"(?i)\bi promise\b|\bit's a deal\b|\bdeal\b|\bwe agreed\b",promise_{week},WK-08-12,Player makes a promise

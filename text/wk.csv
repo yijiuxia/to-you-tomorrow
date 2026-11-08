@@ -7,3 +7,18 @@ WK-06-01,{girl}的状态：{stats}。,
 WK-06-02,{name}{value},
 WK-06-03,{name}：{text},
 WK-06-04,这周上过：{courses}。,
+WK-08-01,第 {week} 周，我们在小镇里完成了：{names}。,"Week {week}: we finished {names} in the town."
+WK-08-02,第 {week} 周，我上得最多的是{course}。,"Week {week}: I spent the most days on {course}."
+WK-08-03,第 {week} 周，我累倒了，生病躺了一天。,"Week {week}: I wore myself out and was sick in bed for a day."
+WK-08-04,第 {week} 周，我心情不好，有一天没去上课。,"Week {week}: I felt down and skipped a class."
+WK-08-05,第 {week} 周，{event},"Week {week}: {event}"
+WK-08-11,我最喜欢的{topic}是{value}。,My favourite {topic} is {value}.
+WK-08-12,{player}答应过我：“{line}”,"{player} promised me: ""{line}"""
+WK-08-21,我在小镇的温室里第一次见到了一个真正的人。,I saw a real person for the first time in the town's greenhouse.
+WK-08-22,我和{player}一起种下了第一株小芽。,{player} and I planted our very first sprout.
+WK-08-23,我给 ARK-01 起了名字。,I gave ARK-01 a name.
+WK-08-24,我第一次自己修好了机器人。,I fixed a robot all by myself for the first time.
+WK-08-25,我跟{player}说过，我害怕一个人。,"I told {player} I'm afraid of being alone."
+WK-08-26,我在小镇里发现了不是机器人留下的脚印。,I found footprints in the town that no robot made.
+WK-08-27,工业区的大门打开了。,The gate to the industrial zone opened.
+WK-08-06,、,", "

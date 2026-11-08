@@ -54,6 +54,7 @@ func reset() -> void:
 	girl_emotion = "calm"
 	earth = EarthWorld.new()
 	last_earth_report = {}
+	memory = MemoryStore.new()  # 人物 AI 线程加：新游戏清空她的记忆
 
 
 func get_stat(id: String) -> int:
@@ -103,3 +104,7 @@ func _limit(id: String, column: String, source: Dictionary) -> int:
 	if value is String:  # 例如体力的上限写的是 stamina_max，就去取那个属性的当前值
 		return int(source.get(value, 0))
 	return int(value)
+
+
+# ---------- 人物 AI 线程追加 ----------
+var memory := MemoryStore.new()          # 她的记忆：喜好、约定、每周的事、最近的话（存档要存它的 to_dict()）

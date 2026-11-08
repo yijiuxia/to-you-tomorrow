@@ -1,0 +1,10 @@
+id,text_key,importance,note
+# 剧情标记变成真时，周结算把对应的一句话记进事件记忆。标记由剧情和地球线程设置，这里只负责"记住"。
+# importance 1～3，越大越不容易被忘、越容易被想起。
+met_survivor,WK-08-21,3,第 6 周第一次见到人
+first_plant,WK-08-22,3,种下第一株植物
+ark_named,WK-08-23,2,给 ARK-01 起了名字
+first_robot_fix,WK-08-24,3,第一次独立修好机器人（完整世界观第 9 节的长期关键记忆）
+fear_lonely,WK-08-25,3,她说过害怕孤独（长期关键记忆）
+footprint_found,WK-08-26,3,发现未知的脚印（长期关键记忆）
+gate_open,WK-08-27,2,工业区大门打开
