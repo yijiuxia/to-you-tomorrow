@@ -25,6 +25,7 @@ var third_person := false
 var placing_type := ""
 var selected_ruin := ""
 var selected_building := 0
+var selected_prop := ""
 
 var _robots: Array[RobotAgent] = []
 var _ghost: MeshInstance3D
@@ -137,6 +138,7 @@ func cancel_placing() -> void:
 func select_cell(cell: Vector2i) -> void:
 	selected_ruin = world.ruin_at(cell)
 	selected_building = world.building_at(cell)
+	selected_prop = "" if not selected_ruin.is_empty() or selected_building != 0 else world.prop_at(cell)
 	_refresh_selection()
 
 
@@ -241,8 +243,8 @@ func _build_world() -> void:
 	add_child(view)
 	view.setup(world)
 	top_camera = TopCamera.new()
-	top_camera.limit = view.region_size()
-	top_camera.focus = Vector3(view.region_size() / 2.0, 0.0, view.region_size() / 2.0)
+	top_camera.limit = view.map_size()
+	top_camera.focus = view.cell_center(ARK_START)
 	view.add_child(top_camera)
 	ark = ArkController.new()
 	view.add_child(ark)
@@ -409,6 +411,8 @@ func _refresh_info() -> void:
 		_ruin_info(world.ruins[selected_ruin])
 	elif selected_building != 0:
 		_building_info(world.buildings[selected_building])
+	elif not selected_prop.is_empty():
+		_prop_info(selected_prop)
 	_right_panel.visible = not third_person and _info_box.get_child_count() > 0
 
 
@@ -437,11 +441,24 @@ func _building_info(building: Dictionary) -> void:
 	var problems := world.problems(uid)
 	if problems.is_empty():
 		UiKit.label(_info_box, Text.t("UI-16-04"))
-	var keys := {EarthWorld.POWER_PROBLEM: "UI-16-01", EarthWorld.WATER_PROBLEM: "UI-16-02", EarthWorld.SOIL_PROBLEM: "UI-16-03"}
+	var keys := {EarthWorld.POWER_PROBLEM: "UI-16-01", EarthWorld.WATER_PROBLEM: "UI-16-02", EarthWorld.SOIL_PROBLEM: "UI-16-03", EarthWorld.BROKEN_PROBLEM: "UI-16-13"}
 	for problem in problems:
 		UiKit.label(_info_box, Text.t(keys[problem]))
 	var demolish := UiKit.button(_info_box, Text.t("UI-16-07"), world.demolish.bind(uid))
 	demolish.tooltip_text = Text.t("UI-17-14")
+
+
+## 剧情物件：名字，以及需要她去现场做的特殊施工
+func _prop_info(id: String) -> void:
+	UiKit.label(_info_box, Text.t(str(DataDB.row("earth_props", id)["name_key"])))
+	for special: String in DataDB.table("earth_specials"):
+		var row := DataDB.row("earth_specials", special)
+		if str(row["prop"]) != id or world.is_special_done(special):
+			continue
+		UiKit.label(_info_box, Text.f("UI-18-32", {"name": Text.t(row["name_key"])}))
+		var reason := world.special_reason(special)
+		if not reason.is_empty():
+			UiKit.label(_info_box, Text.f(reason["key"], reason["values"]))
 
 
 func _building_job(uid: int) -> Dictionary:

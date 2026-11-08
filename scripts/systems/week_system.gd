@@ -37,6 +37,9 @@ static func is_earth_open() -> bool:
 ## 第 1 周还没上过课也没开小镇，两样都跳过：这样第一次上课时体力仍是初始值，课程数值核算不变。
 static func end_week() -> int:
 	GameState.last_earth_report = GameState.earth.end_week() if is_earth_open() else {}
+	var traits: Dictionary = GameState.last_earth_report.get("traits", {})
+	for id: String in traits:
+		GameState.change_stat(id, int(traits[id]))
 	if GameState.week < int(DataDB.balance("first_class_week")):
 		return 0
 	var before := GameState.get_stat("stamina")

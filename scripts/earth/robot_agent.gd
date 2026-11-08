@@ -106,7 +106,7 @@ func _nearest_free_beside(rect: Rect2i) -> Vector2i:
 
 
 func _nearest_free(from: Vector2i) -> Vector2i:
-	for radius in range(1, view.world.grid_size):
+	for radius in range(1, maxi(view.world.grid_width, view.world.grid_height)):
 		for x in range(from.x - radius, from.x + radius + 1):
 			for z in range(from.y - radius, from.y + radius + 1):
 				var cell := Vector2i(x, z)

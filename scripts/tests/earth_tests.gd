@@ -23,6 +23,15 @@ func _ready() -> void:
 	test_repair_station_bonus()
 	test_cancel_and_demolish()
 	test_recovery_values()
+	test_regions_locked_until_gate()
+	test_gate_opens_with_old_power()
+	test_bridge_and_river()
+	test_comm_coverage()
+	test_special_fails_when_tired()
+	test_clues_and_traits()
+	test_hand_plant_and_dig()
+	test_broken_building()
+	test_plants_grow_up()
 	print("地球测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -263,6 +272,128 @@ func test_recovery_values() -> void:
 	_eq(w.recovery()["power"], 50, "一半通电 50%")
 
 
+func test_regions_locked_until_gate() -> void:
+	var w := _rich_world()
+	_eq(w.region_of(Vector2i(0, 0)), "a", "南边是 A 区")
+	_eq(w.region_of(Vector2i(0, 40)), "b", "中间是 B 区")
+	_eq(w.region_of(Vector2i(0, 62)), "river", "干河道")
+	_eq(w.region_of(Vector2i(0, 80)), "c", "北边是 C 区")
+	_eq(w.open_regions(), ["a"], "开局只有 A 区")
+	_eq(w.can_place("recycler", 5, 40).get("key"), "UI-13-08", "B 区没开放不能建")
+	_true(not w.is_walkable(Vector2i(5, 40)), "B 区没开放不能走")
+	_true(w.is_blocked(Vector2i(12, 29)), "大门关着挡路")
+	# 发电设备放在大门旁边，通电后大门打开
+	_built(w, "generator", 13, 26)
+	_true(GameState.flags.get("gate_open", false), "大门通电后打开")
+	_eq(w.props["gate"], "open", "大门状态变成打开")
+	_true(not w.is_blocked(Vector2i(12, 29)), "大门打开后不挡路")
+	_eq(w.open_regions(), ["a", "b"], "B 区开放")
+	_eq(w.can_place("recycler", 5, 41).get("key"), "UI-13-10", "B 区要通信中继才能建")
+
+
+func test_gate_opens_with_old_power() -> void:
+	var w := _world()
+	GameState.change_stat("mechanics", 29)
+	_eq(w.try_special("old_power", RandomNumberGenerator.new()).get("key"), "UI-13-04", "机械不够修不了")
+	GameState.change_stat("mechanics", 1)
+	_true(w.try_special("old_power", RandomNumberGenerator.new())["ok"], "机械 30 修好旧备用电源")
+	_true(GameState.flags.get("gate_open", false), "修好旧电源大门打开")
+	_eq(w.props["old_power"], "fixed", "旧电源变成修好")
+	_true(not w.try_special("old_power", RandomNumberGenerator.new())["ok"], "不能修两次")
+
+
+func test_bridge_and_river() -> void:
+	var w := _rich_world()
+	GameState.flags["gate_open"] = true
+	w._recompute_networks()
+	_eq(w.can_place("power_node", 2, 62).get("key"), "UI-13-09", "干河道不能建")
+	_true(not w.is_walkable(Vector2i(14, 62)), "桥断着过不去")
+	_true(not w.is_region_open("c"), "C 区没开")
+	GameState.flags["bridge_temp"] = true
+	w._recompute_networks()
+	_eq(w.props["bridge"], "temp", "剧情搭了临时便桥")
+	_true(w.is_walkable(Vector2i(14, 62)), "桥上能走")
+	_true(not w.is_walkable(Vector2i(2, 62)), "桥外的干河道还是不能走")
+	_true(w.is_region_open("c"), "C 区开放")
+
+
+func test_comm_coverage() -> void:
+	var w := _rich_world()
+	GameState.flags["gate_open"] = true
+	w._recompute_networks()
+	_eq(w.can_place("recycler", 5, 41).get("key"), "UI-13-10", "没有中继")
+	_built(w, "relay", 10, 40)
+	_true(w.can_place("recycler", 5, 41).is_empty(), "中继范围内能建")
+	_eq(w.can_place("recycler", 5, 57).get("key"), "UI-13-10", "中继范围外不能建")
+
+
+func test_special_fails_when_tired() -> void:
+	var w := _world()
+	GameState.change_stat("mechanics", 30)
+	GameState.change_stat("stamina", -60)
+	var rng := RandomNumberGenerator.new()
+	var fails := 0
+	for i in 200:
+		rng.seed = i
+		var copy := EarthWorld.new()
+		if not copy.try_special("old_power", rng)["ok"]:
+			fails += 1
+		GameState.flags.erase("old_power_fixed")
+		GameState.flags.erase("gate_open")
+	_true(fails > 70 and fails < 130, "体力低时约一半失败（实际 %d/200）" % fails)
+
+
+func test_clues_and_traits() -> void:
+	var w := _rich_world()
+	_eq(w.active_clues(), [], "剧情没开始看不到脚印")
+	GameState.flags["anomaly_started"] = true
+	_eq(w.active_clues(), ["dug_hole"], "A 区的坑出现；B 区还没开")
+	w.discover_clue("dug_hole")
+	_true(GameState.flags.get("clue_dug_hole", false), "发现线索记成剧情标记")
+	_built(w, "power_node", 0, 0)
+	_built(w, "power_node", 0, 1)
+	for i in 5:
+		_built(w, "water_pipe", 2, i)
+	var report := w.end_week()
+	_eq(report["traits"].get("curiosity"), 1, "发现线索好奇 +1")
+	_eq(report["traits"].get("confidence"), 3, "建成 7 项，自信封顶 +3")
+	_eq(w.end_week()["traits"], {}, "下一周重新计数")
+
+
+func test_hand_plant_and_dig() -> void:
+	var w := _world()
+	_true(not w.hand_plant(Vector2i(0, 0)), "重度污染种不了")
+	_true(w.hand_plant(Vector2i(4, 8)), "轻度污染能种")
+	_true(not w.hand_plant(Vector2i(4, 8)), "同一格不能种两次")
+	_eq(w.plants[Vector2i(4, 8)]["type"], "flower", "喷洒头种的是花")
+	var cells: Array[Vector2i] = [Vector2i(4, 8)]
+	w.dig_up(cells)
+	_true(not w.plants.has(Vector2i(4, 8)), "被挖走")
+	_true(w.holes.has(Vector2i(4, 8)), "留下坑")
+	_true(w.hand_plant(Vector2i(4, 8)), "坑里能补种")
+	_true(not w.holes.has(Vector2i(4, 8)), "补种后坑没了")
+
+
+func test_broken_building() -> void:
+	var w := _rich_world()
+	_built(w, "generator", 0, 25)
+	var user := _built(w, "soil_improver", 3, 25)
+	_true(w.buildings[user]["powered"], "先是通电的")
+	w.break_building(user)
+	_true(w.problems(user).has(EarthWorld.BROKEN_PROBLEM), "坏了")
+	_true(not w.buildings[user]["powered"], "坏了不工作")
+	_true(w.repair_building(user), "焊接头修好")
+	_true(w.buildings[user]["powered"], "修好后恢复")
+
+
+func test_plants_grow_up() -> void:
+	var w := _world()
+	w.hand_plant(Vector2i(4, 8))
+	_true(not w.plant_grown(Vector2i(4, 8)), "刚种下是苗")
+	w.plants[Vector2i(4, 8)]["age"] = 2
+	_true(w.plant_grown(Vector2i(4, 8)), "花长两周后长大")
+
+
 ## 直接建好一座建筑，省掉等工作单位的步骤
 func _built(w: EarthWorld, type: String, x: int, z: int) -> int:
 	var uid := w.place(type, x, z)
@@ -280,6 +411,7 @@ func _built(w: EarthWorld, type: String, x: int, z: int) -> int:
 
 func _world() -> EarthWorld:
 	GameState.reset()
+	GameState.flags.clear()
 	return EarthWorld.new()
 
 

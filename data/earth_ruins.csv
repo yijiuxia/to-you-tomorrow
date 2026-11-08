@@ -1,0 +1,28 @@
+id,region,kind,x,z,w,h,work_units,metal,electronics,note
+plaza,a,big,9,4,8,6,2,4,1,维修站前广场；数值来自 demo 文案
+yard,a,big,3,10,5,4,2,3,1,车间旁的堆场
+road_w,a,big,1,17,6,3,1,2,0,西边的破路
+road_e,a,big,22,17,7,3,1,2,0,东边的破路
+shed,a,big,20,4,6,5,3,5,2,塌掉的棚屋
+wall,a,big,11,22,9,3,2,3,1,北边的断墙
+tank,a,big,23,22,5,4,3,4,3,旧储罐
+scrap1,a,small,8,12,1,1,0,1,0,可以用切割头拆的小废料
+scrap2,a,small,10,13,1,1,0,1,0,
+scrap3,a,small,13,12,1,1,0,1,1,第 3 块多给电子元件（demo 文案）
+scrap4,a,small,16,14,1,1,0,1,0,
+scrap5,a,small,6,15,1,1,0,1,0,
+scrap6,a,small,18,12,1,1,0,1,1,
+b_factory1,b,big,2,33,8,6,3,6,3,厂房
+b_factory2,b,big,18,33,9,7,4,7,4,厂房
+b_tanks,b,big,20,44,6,6,3,5,2,储罐
+b_conveyor,b,big,4,48,12,3,2,4,2,断掉的传送带
+b_pipes,b,big,16,53,10,3,2,3,2,断裂的管道
+b_scrap1,b,small,12,40,1,1,0,1,1,
+b_scrap2,b,small,15,42,1,1,0,2,0,
+b_scrap3,b,small,9,45,1,1,0,1,1,
+c_house1,c,big,2,84,6,5,3,4,2,塌了一半的旧房子
+c_house2,c,big,20,86,7,6,3,5,2,
+c_house3,c,big,12,92,7,4,2,3,1,
+c_glass,c,big,20,72,6,4,2,3,2,温室旁的碎玻璃堆
+c_scrap1,c,small,8,76,1,1,0,1,0,
+c_scrap2,c,small,18,80,1,1,0,1,1,

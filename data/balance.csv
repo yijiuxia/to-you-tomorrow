@@ -41,7 +41,8 @@ model_repeat_window,64,重复惩罚往回看多少个词
 model_context_tokens,4096,模型上下文长度
 earth_open_week,2,从第几周起开放小镇；第 1 周只有课程教学
 first_class_week,2,第 1 周排的课到这一周早上才结算，所以这之前不扣体力也不恢复
-earth_grid_size,30,A 区一边多少格
+earth_grid_width,30,地图东西方向多少格
+earth_grid_height,98,地图南北方向多少格：A 30 + B 30 + 干河道 8 + C 30
 earth_cell_size,2.0,一格多少米
 earth_start_robots,2,开局几台施工机器人
 earth_plant_max_pollution,1,污染不超过这一级才能种（2 重度 1 轻度 0 无）
@@ -56,3 +57,8 @@ ark_cut_seconds,1.0,按住 E 切割小废料要多久（秒）
 ark_interact_range,3.0,ARK-01 交互距离（米）
 debug_skill_boost,100,测试按键一次给技能加多少；打包版没有这个按键
 debug_material_boost,50,测试按键一次给多少材料
+earth_trait_from_build,1,每建成一项（含特殊施工）自信加多少；每周封顶见 earth_trait_weekly_cap
+earth_trait_from_plant,1,每种下植物共情加多少
+earth_trait_from_clue,1,每发现线索好奇加多少
+ark_tired_fail_chance,0.5,体力低时特殊施工失败的概率
+ark_special_seconds,2.0,按住 E 做特殊施工要多久（秒）
