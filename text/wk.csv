@@ -91,3 +91,5 @@ WK-13-11,想让你：{intent},wants you to: {intent}
 WK-14-01,【突发情况】你正在小镇里遥控 ARK-01，突然：{event}。你已经对{player}说了：“{said}”。你在等{player}告诉你怎么办，{rounds} 轮之内要说完、做出决定。,"[Something just happened] You're steering ARK-01 in the town and suddenly: {event}. You already told {player}: ""{said}"". You're waiting for {player} to tell you what to do; settle it within {rounds} turns."
 WK-14-02,（只剩这一轮了，按{player}说的做决定，说你要怎么做。）,(This is the last turn: decide based on what {player} said and say what you'll do.)
 WK-14-03,第 {week} 周，小镇里出了状况：{event}我和{player}商量后决定：{result}。,"Week {week}: trouble in the town: {event} After talking it over with {player}, I decided: {result}."
+WK-10-18,你已经长大了，这些年{player}一直陪着你。你常常想起小时候的事：{text},"You've grown up, and {player} has been with you all these years. You often think back to when you were little: {text}"
+WK-10-19,【口头禅】,[Catchphrases]

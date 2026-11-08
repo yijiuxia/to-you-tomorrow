@@ -64,7 +64,10 @@ func _ready() -> void:
 			"template_variables": {"enable_thinking": false},
 		})
 
-	if args.has("memory"):
+	if args.has("lines"):
+		await _run_lines()
+		get_tree().quit()
+	elif args.has("memory"):
 		await _run_memory(args, int(args["memory"]))
 		get_tree().quit()
 	elif args.has("auto"):
@@ -163,6 +166,34 @@ func _run_memory(args: Dictionary, count: int) -> void:
 		var file := FileAccess.open(out_path, FileAccess.WRITE)
 		file.store_string(JSON.stringify({"count": count, "hits": hits, "results": results}, "  "))
 		file.close()
+
+
+## --lines：用真模型把各处"说一句"都跑一遍，看她说得像不像她（8 岁第 2 周、15 岁第 5 周各一遍）
+func _run_lines() -> void:
+	ModelService.ensure_loaded()
+	for setting in [[8, 2], [TEST_AGE, 5]]:
+		GameState.reset()
+		GameState.age = setting[0]
+		GameState.week = setting[1]
+		for row in _load_csv(MEMORY_SEED_PATH):
+			if int(row["age"]) <= GameState.age and int(row["week"]) < GameState.week:
+				GameState.memory.remember_event(row["text"], MemoryStore.KIND_EVENT, int(row["importance"]), int(row["week"]), int(row["age"]))
+		var rng := RandomNumberGenerator.new()
+		_say("== %d 岁 第 %d 周" % setting)
+		_say("早安：" + str((await ChatLines.morning())["reply"]))
+		_say("周总结：" + str((await ChatLines.week_summary(PackedStringArray(["第 %d 周，我们在小镇里完成了：净水站。" % GameState.week])))["reply"]))
+		var plan: Array[String] = ["mechanics", "mechanics", "mechanics", "fitness", "mechanics", "mechanics", "rest"]
+		_say("课表评论：" + str((await ChatLines.schedule_comment(plan, 4, PackedStringArray(["周一", "周二", "周三", "周四", "周五", "周六", "周日"])))["reply"]))
+		_say("上课小事件：" + str((await ChatLines.course_event("ecology", "周三"))["reply"]))
+		for activity in ["window", "daydream"]:
+			_say("主动开口（%s）：%s" % [activity, (await ChatLines.idle(activity, rng))["reply"]])
+		_say("小镇评论：" + str((await ChatLines.earth_comment(Text.t("UI-21-02")))["reply"]))
+		var talk: Array[Dictionary] = [
+			{"speaker": MemoryStore.SPEAKER_PLAYER, "text": "今天累不累？"},
+			{"speaker": MemoryStore.SPEAKER_GIRL, "text": "有一点，不过我把净水站修好了！"},
+			{"speaker": MemoryStore.SPEAKER_PLAYER, "text": "真棒，明天休息一下吧。"},
+		]
+		_say("聊天摘要：" + await ChatLines.summarize(talk))
 
 
 func _load_csv(path: String) -> Array[Dictionary]:

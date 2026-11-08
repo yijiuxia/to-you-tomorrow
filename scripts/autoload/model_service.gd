@@ -13,6 +13,8 @@ const POLL_SEC := 0.05
 const LEADING_PUNCTUATION := ",，.。、;；:：!！?？/ "
 ## 模型有时把 JSON 碎片或转义符写进文字里，这种选项不能给玩家看
 const JUNK_PATTERN := "[{}\\[\\]<>`\\\\]|/n|reply|json"
+## "说一句"没有选项可以替换，带英文引号或字段名的整句都不要
+const LINE_JUNK_PATTERN := "\"|action|options"
 
 enum Status { NOT_LOADED, LOADING, READY, FAILED }
 
@@ -24,6 +26,7 @@ var _line_busy := false
 var _judge_chat: NobodyWhoChat = null  # 判断：只判断态度和 intent，不带人设
 var _judge_prompt_used := ""
 var _junk := RegEx.create_from_string(JUNK_PATTERN)
+var _line_junk := RegEx.create_from_string(LINE_JUNK_PATTERN)
 var _stuck := false  # 超时后叫它停也停不下来
 var _said: Array[String] = []  # 这段对话里双方说过的话
 var last_action := NO_ACTION    # 她最近一句话的动作标签，有模型后（模块 9）播放对应动画
@@ -205,7 +208,7 @@ func parse_line(raw: String) -> Dictionary:
 	if not parsed is Dictionary:
 		return {}
 	var reply := str((parsed as Dictionary).get("reply", "")).strip_edges()
-	if reply.is_empty() or _junk.search(reply) != null:
+	if reply.is_empty() or _junk.search(reply) != null or _line_junk.search(reply) != null:
 		return {}
 	var action := str((parsed as Dictionary).get("action", NO_ACTION))
 	if not DataDB.table("chat_actions").has(action):

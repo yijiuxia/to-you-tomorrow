@@ -115,3 +115,4 @@ chat_event_rounds_max,4,突发事件对话最多几轮（信任高）
 chat_event_panel_width,720,突发事件对话框宽度（像素）
 chat_event_panel_height,420,突发事件对话框高度（像素）
 memory_event_chat_importance,2,突发事件对话记成记忆的重要程度
+chat_copy_min_chars,6,"说一句"里整条抄进一条至少这么长的记忆，就当作抄，换成固定句

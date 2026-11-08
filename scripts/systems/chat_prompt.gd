@@ -86,6 +86,10 @@ static func memory_block(store: MemoryStore) -> String:
 		for item in store.core:
 			items.append(str(item["text"]))
 		lines.append(Text.f("WK-10-07", {"items": _join_items(items)}))
+	# 时间跳跃后第一周：15 岁的她心里还记着小时候最重要的一件事，会主动提起（比赛版 4.5）
+	var childhood := childhood_memory(store)
+	if not childhood.is_empty():
+		lines.append(Text.f("WK-10-18", {"text": childhood}))
 	var thought := store.latest_reflection()
 	if not thought.is_empty():
 		lines.append(Text.f("WK-10-08", {"text": thought}))
@@ -96,6 +100,17 @@ static func memory_block(store: MemoryStore) -> String:
 			said += "\n" + Text.f("WK-10-10", {"name": who, "text": line["text"]})
 		lines.append(Text.f("WK-10-09", {"lines": said}))
 	return "\n".join(lines)
+
+
+## 刚长大的那一周，挑小时候最重要的一件事；其他时候返回空
+static func childhood_memory(store: MemoryStore) -> String:
+	if GameState.week != int(DataDB.balance("timejump_after_week")) + 1:
+		return ""
+	var best: Dictionary = {}
+	for memory in store.events:
+		if int(memory["age"]) < GameState.age and (best.is_empty() or int(memory["importance"]) > int(best["importance"])):
+			best = memory
+	return "" if best.is_empty() else str(best["text"])
 
 
 ## 8 岁和 15 岁用两张角色卡（时间跳跃后年龄变成 teen_age）

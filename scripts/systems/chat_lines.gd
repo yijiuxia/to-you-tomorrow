@@ -101,7 +101,7 @@ static func system_prompt() -> String:
 	var store: MemoryStore = GameState.memory
 	var mood := ChatMood.state(store)
 	var names := {"girl": GameState.girl_name, "player": GameState.player_name}
-	var card := FileAccess.get_file_as_string(ChatPrompt.TEMPLATE_DIR + "card_%s_%d.txt" % [Text.language, ChatPrompt.card_age()]).format(names)
+	var card := without_catchphrases(FileAccess.get_file_as_string(ChatPrompt.TEMPLATE_DIR + "card_%s_%d.txt" % [Text.language, ChatPrompt.card_age()]).format(names))
 	var limit := int(DataDB.balance("chat_line_max_en" if Text.language == "en" else "chat_line_max_zh"))
 	var rules := FileAccess.get_file_as_string(ChatPrompt.TEMPLATE_DIR + "line_rules_%s.txt" % Text.language).format(names).replace("{max_chars}", str(limit))
 	var parts := PackedStringArray([card, ChatPrompt.state_card()])
@@ -113,8 +113,33 @@ static func system_prompt() -> String:
 	return "\n\n".join(parts)
 
 
+## "说一句"每次都是单独问的，模型不知道刚说过口头禅，会句句都带（实测"……算了"几乎每句都有），所以这里去掉口头禅那一行
+static func without_catchphrases(card: String) -> String:
+	var kept := PackedStringArray()
+	for line in card.split("
+"):
+		if not line.begins_with(Text.t("WK-10-19")):
+			kept.append(line)
+	return "
+".join(kept)
+
+
 static func _say(request: String, fallback_text: String) -> Dictionary:
-	return await ModelService.say_line(system_prompt(), request, fallback_text)
+	var line := await ModelService.say_line(system_prompt(), request, fallback_text)
+	# 小模型爱把记忆原样念出来（实测周总结记成感想后，后面几句都在重复它），这种就用固定句
+	if not line["fallback"] and is_copied(str(line["reply"])):
+		return _fixed(fallback_text)
+	return line
+
+
+## 和她的某条记忆一字不差，或者整条记忆都被抄进来了
+static func is_copied(reply: String) -> bool:
+	var store: MemoryStore = GameState.memory
+	for memory in store.events:
+		var text := str(memory["text"])
+		if reply == text or (text.length() >= int(DataDB.balance("chat_copy_min_chars")) and reply.contains(text)):
+			return true
+	return false
 
 
 static func _fixed(text: String) -> Dictionary:

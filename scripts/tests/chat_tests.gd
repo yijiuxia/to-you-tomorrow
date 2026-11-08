@@ -30,6 +30,8 @@ func _ready() -> void:
 	test_presence_fits_age()
 	test_judge_parsing()
 	test_event_rules()
+	test_childhood_after_jump()
+	test_copied_memory()
 	await test_event_chat_flow()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -303,6 +305,8 @@ func test_lines_fallback() -> void:
 	var prompt := ChatLines.system_prompt()
 	_ok(prompt.contains("最多 %d 个字" % int(DataDB.balance("chat_line_max_zh"))), "说一句的人设限制长度")
 	_ok(not prompt.contains("options"), "说一句不要求给选项")
+	_ok(not prompt.contains("你看你看！\" \"嘿嘿"), "说一句不带口头禅那一行")
+	_ok(ChatPrompt.build().contains("【口头禅】"), "聊天还带口头禅")
 	var plan: Array[String] = ["mechanics", "mechanics"]
 	var comment := await ChatLines.schedule_comment(plan, 1, PackedStringArray(["周一", "周二"]))
 	_eq(comment["reply"], Text.t("FB-04-02"), "没模型时课表评论用固定句")
@@ -380,6 +384,25 @@ func _event_texts() -> PackedStringArray:
 	for memory: Dictionary in GameState.memory.events:
 		texts.append(str(memory["text"]))
 	return texts
+
+
+func test_childhood_after_jump() -> void:
+	_fresh()
+	GameState.memory.remember_event("第 2 周，我们种下了第一株小芽。", MemoryStore.KIND_EVENT, 3, 2, 8)
+	GameState.memory.remember_event("第 3 周，我上得最多的是机械课。", MemoryStore.KIND_EVENT, 1, 3, 8)
+	GameState.age = int(DataDB.balance("teen_age"))
+	GameState.week = int(DataDB.balance("timejump_after_week")) + 1
+	_ok(ChatPrompt.build().contains("第一株小芽"), "刚长大那周，她心里记着小时候最重要的事")
+	GameState.week += 1
+	_ok(not ChatPrompt.build().contains("第一株小芽"), "之后不再每次都带")
+
+
+func test_copied_memory() -> void:
+	_fresh()
+	GameState.memory.remember_event("哇！净水站建好了呀，嘿嘿。", MemoryStore.KIND_REFLECTION, 2, 2, 8)
+	_ok(ChatLines.is_copied("哇！净水站建好了呀，嘿嘿。"), "原样念记忆算抄")
+	_ok(ChatLines.is_copied("嗯，哇！净水站建好了呀，嘿嘿。你看！"), "整条记忆抄进来也算")
+	_ok(not ChatLines.is_copied("净水站终于好了！"), "用自己的话说不算抄")
 
 
 # ---------- 工具 ----------
