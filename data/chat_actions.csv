@@ -1,15 +1,6 @@
 id,text_key,note
-# 她说话时的小动作（比赛版 4.5，借鉴 Mantella）。模型只能从这里选；改这张表要同步改 model_output_schema.json 和 model_line_schema.json 的 action，测试会检查两边一致。
-# 有模型后（模块 9）按 id 播放对应动画；text_key 是没有动画时可以显示的文字。
-nod,UI-40-01,点头
-shake_head,UI-40-02,摇头
-wave,UI-40-03,挥手
-look_down,UI-40-04,低头
-chin_rest,UI-40-05,托腮
-tilt_head,UI-40-06,歪头
-pout,UI-40-07,噘嘴
-cheer,UI-40-08,欢呼
-point,UI-40-09,指着屏幕
-look_away,UI-40-10,看别处
-fidget,UI-40-11,摆弄手指
-none,UI-40-12,不动
+# 她说话时的动作（比赛版 4.5，借鉴 Mantella）。模型只能从这里选；改这张表要同步改 model_output_schema.json 和 model_line_schema.json 的 action，测试会检查两边一致。
+# yi 定（2026-11-08）：人物模型只有坐在椅子上、抬手点平板两个动作，头可以左右转，所以只有这三种。
+tap_tablet,UI-40-13,抬手点平板
+turn_head,UI-40-14,转头（看窗外或看你）
+none,UI-40-15,坐着不动

@@ -72,16 +72,14 @@ WK-11-08,"刚才你们的对话：{lines}
 In the first person, write one sentence noting what you talked about and how you felt, under 25 words."
 WK-11-09,你在小镇里，刚刚：{event}。对{player}说一句。,You're in the town and just now: {event}. Say one thing to {player}.
 WK-11-10,没有特别的事。,Nothing special.
-WK-12-01,看书,reading a book
-WK-12-02,托着腮发呆,daydreaming with your chin in your hand
-WK-12-03,趴在窗边看地球,gazing at Earth through the window
-WK-12-04,摆弄桌上的小盆栽,fussing over the little potted plant on the desk
-WK-12-05,画画,drawing
-WK-12-06,摆弄机器人模型,playing with a robot model
-WK-12-07,数窗外的星星,counting the stars outside
-WK-12-08,写小镇规划笔记,writing town-planning notes
-WK-12-09,修一个旧零件,fixing an old part
-WK-12-10,翻旧地球档案,browsing the old Earth archive
+WK-12-01,用平板看小镇,checking the town on your tablet
+WK-12-02,坐在椅子上发呆,"sitting in your chair, daydreaming"
+WK-12-03,转头看着窗外的地球,gazing at Earth through the window
+WK-12-04,转过头看着{player},turning your head to look at {player}
+WK-12-05,在平板上画画,drawing on your tablet
+WK-12-06,在平板上玩小游戏,playing a little game on your tablet
+WK-12-08,在平板上写小镇规划笔记,writing town-planning notes on your tablet
+WK-12-10,在平板上翻旧地球档案,browsing the old Earth archive on your tablet
 WK-13-01,（你听出来了：{player}这句话{attitude}，{wants}。你的回复要接得上。）,"(You can tell: {player} {attitude}, and {wants}. Reply accordingly.)"
 WK-13-encourage,在鼓励你、夸你,is encouraging you
 WK-13-restrict,在管着你、不让你随便做,is restricting you

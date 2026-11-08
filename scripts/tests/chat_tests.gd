@@ -271,8 +271,8 @@ func test_schema_matches_tables() -> void:
 func test_reply_action() -> void:
 	var base := {"player_attitude": "neutral", "intent": "none", "emotion": "calm", "reply": "嗯。", "options": ["好", "不好", "换个话题"]}
 	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], ModelService.NO_ACTION, "没有动作当作不动")
-	base["action"] = "wave"
-	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], "wave", "认识的动作保留")
+	base["action"] = "tap_tablet"
+	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], "tap_tablet", "认识的动作保留")
 	base["action"] = "fly"
 	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], ModelService.NO_ACTION, "不认识的动作当作不动")
 
@@ -289,7 +289,7 @@ func test_lines_fallback() -> void:
 	var summary := await ChatLines.week_summary(PackedStringArray(["第 5 周，我们修好了净水站。"]))
 	_eq(summary["reply"], Text.t("FB-04-01"), "没模型时周总结用固定句")
 	_eq(GameState.memory.latest_reflection(), "", "后备句不当成她的感想")
-	var idle := await ChatLines.idle("read", RandomNumberGenerator.new())
+	var idle := await ChatLines.idle("town", RandomNumberGenerator.new())
 	_eq(idle["reply"], "", "没模型时主界面不主动说话")
 	var lines: Array[Dictionary] = [
 		{"speaker": MemoryStore.SPEAKER_PLAYER, "text": "我们明天去看温室吧"},
@@ -304,7 +304,7 @@ func test_lines_fallback() -> void:
 	var plan: Array[String] = ["mechanics", "mechanics"]
 	var comment := await ChatLines.schedule_comment(plan, 1, PackedStringArray(["周一", "周二"]))
 	_eq(comment["reply"], Text.t("FB-04-02"), "没模型时课表评论用固定句")
-	_eq(ModelService.parse_line("{\"reply\":\"早！\",\"action\":\"wave\"}")["action"], "wave", "说一句的回复能解析")
+	_eq(ModelService.parse_line("{\"reply\":\"早！\",\"action\":\"turn_head\"}")["action"], "turn_head", "说一句的回复能解析")
 	_ok(ModelService.parse_line("{\"reply\":\"\",\"action\":\"wave\"}").is_empty(), "空的一句不要")
 
 

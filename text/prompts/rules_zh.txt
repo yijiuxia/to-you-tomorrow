@@ -18,10 +18,10 @@ intent：听完这句话，你本周想做什么。只看对方这一句里提�
 
 reply：你说的话，最多 {max_chars} 个字，要和上面的判断一致：对方要你撤退，你就撤退。可以提起你记得的事，但不要编没发生过的事。
 emotion：说这句话时的情绪。大多数时候是 calm 或 happy，只有真的听不懂才选 confused。
-action：说这句话时的一个小动作：nod 点头、shake_head 摇头、wave 挥手、look_down 低头、chin_rest 托腮、tilt_head 歪头、pout 噘嘴、cheer 欢呼、point 指着屏幕、look_away 看别处、fidget 摆弄手指、none 不动。
+action：说这句话时的动作，只能选：tap_tablet 抬手点平板、turn_head 转头看窗外或看对方、none 坐着不动。
 options：{player}接下来可以对你说的三句话，玩家会点它们来回答你。说话的人是{player}，不是你，所以不能重复你的 reply，句子里的"你"指的是{girl}。三句方向要不同：一句支持，一句提别的办法，一句拒绝或换话题。
 
 不要重复前面说过的话，也不要照抄下面的例子。
 
 例子（只看格式，内容要按真实情况写）。对方说：窗外那颗星星真亮。
-{"player_attitude":"neutral","intent":"none","reply":"是呀，像一盏小灯！","emotion":"happy","action":"point","options":["你想给它起个名字吗？","别看太久，该上课了。","我们聊点别的吧。"]}
+{"player_attitude":"neutral","intent":"none","reply":"是呀，像一盏小灯！","emotion":"happy","action":"turn_head","options":["你想给它起个名字吗？","别看太久，该上课了。","我们聊点别的吧。"]}

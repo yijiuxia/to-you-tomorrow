@@ -1,13 +1,12 @@
 id,show_key,doing_key,action,min_age,max_age,weight,note
 # 主界面她自己做的事（比赛版 4.5，借鉴 AI Town）。show_key 是画面上显示的，doing_key 是告诉模型她在做什么。
-# min_age / max_age 限定年龄；weight 越大越常出现。action 是有模型后播放的动作（模块 9）。
-read,UI-41-01,WK-12-01,look_down,0,99,3,看书
-daydream,UI-41-02,WK-12-02,chin_rest,0,99,3,发呆
-window,UI-41-03,WK-12-03,look_away,0,99,3,看窗外的地球
-plant,UI-41-04,WK-12-04,fidget,0,99,2,摆弄小盆栽
-draw,UI-41-05,WK-12-05,look_down,0,8,3,画画
-robot_toy,UI-41-06,WK-12-06,cheer,0,8,2,摆弄机器人模型
-stars,UI-41-07,WK-12-07,point,0,8,2,数星星
-notes,UI-41-08,WK-12-08,chin_rest,15,99,3,写小镇规划笔记
-tinker,UI-41-09,WK-12-09,fidget,15,99,2,修一个旧零件
-archive,UI-41-10,WK-12-10,look_down,15,99,2,翻旧地球档案
+# yi 定（2026-11-08）：人物只能坐在椅子上、抬手点平板、左右转头，所以这里只写做得出来的事。
+# min_age / max_age 限定年龄；weight 越大越常出现。action 是播放的动作（见 chat_actions.csv）。
+town,UI-41-01,WK-12-01,tap_tablet,0,99,3,用平板看小镇
+daydream,UI-41-02,WK-12-02,none,0,99,3,坐着发呆
+window,UI-41-03,WK-12-03,turn_head,0,99,3,转头看窗外的地球
+look_you,UI-41-04,WK-12-04,turn_head,0,99,1,转过头看着你
+draw,UI-41-05,WK-12-05,tap_tablet,0,8,3,在平板上画画
+game,UI-41-06,WK-12-06,tap_tablet,0,8,2,在平板上玩小游戏
+notes,UI-41-08,WK-12-08,tap_tablet,15,99,3,在平板上写小镇规划笔记
+archive,UI-41-10,WK-12-10,tap_tablet,15,99,2,在平板上翻旧地球档案

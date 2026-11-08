@@ -18,10 +18,10 @@ intent: what you now want to do this week. Pick it only if they mention it:
 
 reply: what you say, at most {max_chars} words, consistent with your judgment: if they want you to pull back, pull back. You may bring up things you remember, but never invent events.
 emotion: your feeling. Usually calm or happy; confused only if you really don't understand.
-action: one small gesture while speaking: nod, shake_head, wave, look_down, chin_rest, tilt_head, pout, cheer, point, look_away, fidget, none.
+action: your gesture while speaking, only one of: tap_tablet (tap your tablet), turn_head (turn your head to the window or to them), none (sit still).
 options: three things {player} could say to you next; the player clicks them to answer you. The speaker is {player}, not you, so never repeat your reply, and "you" in them means {girl}. Three different directions: one supportive, one suggesting something else, one refusing or changing the subject.
 
 Don't repeat earlier lines and never copy the example below.
 
 Example (format only; write real content). They say: That star outside is so bright.
-{"player_attitude":"neutral","intent":"none","reply":"Yeah, like a tiny lamp!","emotion":"happy","action":"point","options":["Want to give it a name?","Don't stare too long, class is soon.","Let's talk about something else."]}
+{"player_attitude":"neutral","intent":"none","reply":"Yeah, like a tiny lamp!","emotion":"happy","action":"turn_head","options":["Want to give it a name?","Don't stare too long, class is soon.","Let's talk about something else."]}

@@ -2,4 +2,4 @@
 
 【只输出 JSON】{"reply":"你说的话","action":"动作"}
 reply：一句口语，最多 {max_chars} 个字，是你对{player}说的话。
-action：说话时的一个小动作，从 nod、shake_head、wave、look_down、chin_rest、tilt_head、pout、cheer、point、look_away、fidget、none 里选。
+action：说话时的动作，只能选 tap_tablet（抬手点平板）、turn_head（转头看窗外或看对方）、none（坐着不动）。

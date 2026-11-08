@@ -281,31 +281,20 @@ UI-56-07,字体：思源黑体 Noto Sans SC（SIL OFL 1.1）,Font: Noto Sans SC 
 UI-56-08,感谢游玩,Thank you for playing
 UI-56-09,返回标题,Back to Title
 UI-56-10,（临时名单，正式版再改）,"(Temporary list, to be finalized)"
-UI-40-01,点头,nods
-UI-40-02,摇头,shakes her head
-UI-40-03,挥手,waves
-UI-40-04,低头,looks down
-UI-40-05,托腮,rests her chin in her hand
-UI-40-06,歪头,tilts her head
-UI-40-07,噘嘴,pouts
-UI-40-08,欢呼,cheers
-UI-40-09,指着屏幕,points at the screen
-UI-40-10,看向别处,looks away
-UI-40-11,摆弄手指,fidgets with her fingers
-UI-40-12,,
 UI-12-repair_robot,修机器人,Repair a robot
 UI-12-protect,保护它们,Protect them
 UI-12-old_power,修旧电源,Fix the old power supply
 UI-12-bridge,修桥,Repair the bridge
 UI-12-transceiver,修收发器,Repair the transceiver
-UI-41-01,（{girl}在看书）,({girl} is reading)
-UI-41-02,（{girl}托着腮发呆）,"({girl} is daydreaming, chin in hand)"
-UI-41-03,（{girl}趴在窗边看地球）,({girl} is gazing at Earth through the window)
-UI-41-04,（{girl}在摆弄桌上的小盆栽）,({girl} is fussing over the little potted plant)
-UI-41-05,（{girl}在画画）,({girl} is drawing)
-UI-41-06,（{girl}在摆弄机器人模型）,({girl} is playing with a robot model)
-UI-41-07,（{girl}在数窗外的星星）,({girl} is counting the stars outside)
-UI-41-08,（{girl}在写小镇规划笔记）,({girl} is writing town-planning notes)
-UI-41-09,（{girl}在修一个旧零件）,({girl} is fixing an old part)
-UI-41-10,（{girl}在翻旧地球档案）,({girl} is browsing the old Earth archive)
+UI-41-01,（{girl}在用平板看小镇）,({girl} is checking the town on her tablet)
+UI-41-02,（{girl}坐在椅子上发呆）,"({girl} is sitting in her chair, daydreaming)"
+UI-41-03,（{girl}转头看着窗外的地球）,({girl} turns to gaze at Earth through the window)
+UI-41-04,（{girl}转过头看着你）,({girl} turns her head to look at you)
+UI-41-05,（{girl}在平板上画画）,({girl} is drawing on her tablet)
+UI-41-06,（{girl}在平板上玩小游戏）,({girl} is playing a little game on her tablet)
+UI-41-08,（{girl}在平板上写小镇规划笔记）,({girl} is writing town-planning notes on her tablet)
+UI-41-10,（{girl}在平板上翻旧地球档案）,({girl} is browsing the old Earth archive on her tablet)
 UI-41-11,{girl}：{text},{girl}: {text}
+UI-40-13,抬手点平板,taps her tablet
+UI-40-14,转头,turns her head
+UI-40-15,,
