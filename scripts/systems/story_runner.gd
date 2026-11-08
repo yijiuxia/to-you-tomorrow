@@ -52,6 +52,8 @@ func next(next_id: String) -> DialogueLine:
 static func text_of(line_or_response: RefCounted) -> String:
 	var key: String = line_or_response.get("static_id")
 	var raw: String = line_or_response.get("text")
+	if model_text.has(key):  # 人物 AI 线程加：这句【模型】句已经由她自己说好了
+		return str(model_text[key])
 	if key != raw and Text.has_language(key, Text.DEFAULT_LANGUAGE):
 		return Text.t(key).format({"ark": ark_name()})
 	return raw.format(names())
@@ -94,6 +96,29 @@ func stat_at_least(stat_id: String, balance_id: String) -> bool:
 ## 给 ARK-01 起名。现在用文字表里的默认名；人物 AI 接上后可以换成模型起的名字再调用 set_ark_name
 func name_ark(default_key: String) -> void:
 	set_ark_name(Text.t(default_key))
+
+
+## 人物 AI 线程加：剧情里的【模型】句。台词文件在那句前面写 $> model_line("编号")，
+## 这里先让她按性格说好，显示那句时换上；失败就显示文字表里的后备句（data/chat_story_lines.csv 写着每句问什么）
+static var model_text := {}
+
+
+func model_line(key: String) -> void:
+	model_text.erase(key)
+	var line := await ChatLines.story_line(key)
+	if not line["fallback"]:
+		model_text[key] = line["reply"]
+
+
+## 人物 AI 线程加：她自己给 ARK-01 起名并说为什么。line_key 是她说这句的台词编号；失败用默认名和后备句
+func model_name_ark(default_key: String, line_key: String) -> void:
+	model_text.erase(line_key)
+	var named := await ChatLines.name_ark()
+	if named.is_empty():
+		name_ark(default_key)
+		return
+	set_ark_name(str(named["name"]))
+	model_text[line_key] = named["line"]
 
 
 func set_ark_name(value: String) -> void:

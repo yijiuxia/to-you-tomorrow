@@ -70,6 +70,38 @@ static func idle(activity: String, rng: RandomNumberGenerator) -> Dictionary:
 	return await _say(Text.f("WK-11-06", {"activity": doing, "memory": memory}), "")
 
 
+## 剧情里的【模型】句：按 chat_story_lines.csv 写好的情况问她，后备句是台词表里那句
+static func story_line(key: String) -> Dictionary:
+	var row := DataDB.row("chat_story_lines", key)
+	if row.is_empty():
+		return _fixed(Text.t(key))
+	return await _say(Text.t(str(row["request_key"])), Text.t(key))
+
+
+## 给 ARK-01 起名（demo 文案 2-3）：她说"就叫你'X'吧，因为……"，程序从引号里取出名字。
+## 名字取不出来、太长、带怪字符就返回空字典，剧情用默认名
+static func name_ark() -> Dictionary:
+	var line := await _say(Text.t("WK-17-02"), "")
+	if line["fallback"]:
+		return {}
+	var name := pick_quoted_name(str(line["reply"]))
+	if name.is_empty():
+		return {}
+	return {"name": name, "line": line["reply"]}
+
+
+## 从"就叫你'小芽'吧"里取出引号中的名字；长度和字符不合格返回空字符串
+static func pick_quoted_name(reply: String) -> String:
+	var found := RegEx.create_from_string(str(DataDB.balance("chat_ark_name_pattern"))).search(reply)
+	if found == null:
+		return ""
+	var name := found.get_string("name").strip_edges()
+	var limit := int(DataDB.balance("chat_ark_name_max_en" if Text.language == "en" else "chat_ark_name_max_zh"))
+	if name.is_empty() or name.length() > limit or name.to_lower().contains("ark-01"):
+		return ""
+	return name
+
+
 ## 小镇里看到什么说一句（实时评论，和模块 6 共用）。fixed 是地球线程原来的固定句，失败时就用它
 static func earth_comment(fixed: String) -> Dictionary:
 	var plain := ChatEvent.strip_name(fixed)

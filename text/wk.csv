@@ -106,3 +106,5 @@ WK-16-01,"【剧情】刚才：{story}
 {player} didn't pick a ready answer and said something of their own. Reply once, staying on what's happening; don't change the subject."
 WK-07-23,好几次瞎说骗你,kept making things up to fool you
 WK-15-14,（{player}已经不是第一次乱说了，你有点生气，语气冷一点，说你不想听瞎话。）,({player} has made things up more than once now. You're annoyed; sound cooler and say you don't want to hear made-up stuff.)
+WK-17-01,你在小镇的碎石缝里，第一次看见一株很小的绿色植物，叶子边有点卷。按你现在的性格，说一句你看到它的反应：好奇就问它怎么长出来的，心软就心疼它，自信就说自己早就知道。,"In a crack in the town's rubble you see a tiny green plant for the first time, its leaf edges a little curled. Say one line reacting to it, true to your personality now: curious - wonder how it grew; soft-hearted - feel for it; confident - say you knew it all along."
+WK-17-02,ARK-01 帮你找到了小镇里第一株植物。你要给它起个名字：两三个字、你这个年纪会起的、可以和这次发现有关。说一句：就叫你“名字”吧！再说为什么。名字一定要放在中文引号“”里。,"ARK-01 just helped you find the first plant in the town. Give it a name: short, the kind of name a kid your age would pick, maybe tied to this discovery. Say: I'll call you ""NAME""! and why. Put the name inside quotes."

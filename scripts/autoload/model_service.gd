@@ -38,6 +38,35 @@ var _said: Array[String] = []  # 这段对话里双方说过的话
 var last_action := NO_ACTION    # 她最近一句话的动作标签，有模型后（模块 9）播放对应动画
 
 
+var _quitting := false
+
+
+## 玩家点窗口右上角的 X 时，模型还在后台加载或正在说话就直接退出，插件的线程会崩。
+## 所以关窗请求由这里接管：先等加载完、让生成停下，再退出（最多等 model_quit_wait_sec 秒）。
+func _ready() -> void:
+	get_tree().auto_accept_quit = false
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		quit_safely()
+
+
+func quit_safely() -> void:
+	if _quitting:
+		return
+	_quitting = true
+	var start := Time.get_ticks_msec()
+	var limit := float(DataDB.balance("model_quit_wait_sec"))
+	while status == Status.LOADING and _seconds_since(start) < limit:
+		await get_tree().create_timer(POLL_SEC, true).timeout
+	for chat: NobodyWhoChat in [_chat, _line_chat, _judge_chat]:
+		if chat != null:
+			chat.stop_generation()
+	await get_tree().create_timer(POLL_SEC, true).timeout
+	get_tree().quit()
+
+
 ## 启动时在后台加载。可以多次调用，只会加载一次。
 func ensure_loaded() -> void:
 	if status != Status.NOT_LOADED:

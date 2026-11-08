@@ -35,6 +35,8 @@ func _ready() -> void:
 	test_claims()
 	await test_story_free_talk()
 	test_repeated_lies()
+	test_ark_naming()
+	await test_story_model_lines()
 	await test_event_chat_flow()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -476,6 +478,29 @@ func test_repeated_lies() -> void:
 	_ok(ChatMood.hint(ChatMood.SULKY, store).contains(Text.t("WK-07-23")), "生气的理由是被骗")
 	var copy := MemoryStore.from_dict(JSON.parse_string(JSON.stringify(store.to_dict())))
 	_eq(copy.lies_count, store.lies_count, "读档后乱说次数还在")
+
+
+func test_ark_naming() -> void:
+	_fresh()
+	_eq(ChatLines.pick_quoted_name("就叫你“小芽”吧！因为你找到了小芽。"), "小芽", "从中文引号里取出名字")
+	_eq(ChatLines.pick_quoted_name("叫你'嘀嘀'好不好？"), "嘀嘀", "单引号也行")
+	_eq(ChatLines.pick_quoted_name("就叫你小芽吧！"), "", "没有引号就取不出来")
+	_eq(ChatLines.pick_quoted_name("就叫你“超级无敌大英雄”吧！"), "", "名字太长不要")
+	Text.language = "en"
+	_eq(ChatLines.pick_quoted_name("I'll call you \"Sprout\"! You found it."), "Sprout", "英文也能取")
+	Text.language = Text.DEFAULT_LANGUAGE
+
+
+## 没有模型时剧情里的【模型】句和起名都用后备
+func test_story_model_lines() -> void:
+	_fresh()
+	var runner := StoryRunner.new()
+	await runner.model_line("W3-03-05")
+	_ok(not StoryRunner.model_text.has("W3-03-05"), "没模型时用台词表里的后备句")
+	await runner.model_name_ark("UI-54-06", "W3-05-04")
+	_eq(StoryRunner.ark_name(), Text.t("UI-54-06"), "没模型时用默认名")
+	_ok(not StoryRunner.model_text.has("W3-05-04"), "没模型时起名那句也用后备句")
+	_eq((await ChatLines.story_line("W3-03-05"))["reply"], Text.t("W3-03-05"), "后备句就是台词表那句")
 
 
 # ---------- 工具 ----------

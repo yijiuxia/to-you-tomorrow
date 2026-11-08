@@ -121,3 +121,7 @@ earth_germination_base,0.4,种子发芽的基础比例；加上生态技能 ÷ 1
 chat_lie_free_times,1,每周前几次说错往事不追究（可能是玩家记错或判断错了）
 chat_lie_trust,-2,之后每次乱说，信任变化多少（也受每周封顶限制）
 story_w3_repair_mechanics,10,第 3 周修机器人要的机械，她据此说会不会修（文案 W3-02）；和地球的修复门槛保持一致
+model_quit_wait_sec,15,关游戏时最多等模型加载完多少秒（直接退出插件会崩）
+chat_ark_name_max_zh,4,她给 ARK-01 起的名字，中文最多几个字
+chat_ark_name_max_en,12,她给 ARK-01 起的名字，英文最多几个字母
+chat_ark_name_pattern,"[“""「'‘](?<name>[^”""」'’，。！？,.!?\s]+)[”""」'’]",从她的话里取名字：引号里的字
