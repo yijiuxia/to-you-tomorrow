@@ -7,6 +7,12 @@ player_attitude: the attitude of {player}'s line.
 - ignore: brushes her off, cold, doesn't care. e.g. "Oh", "Whatever", "I'm busy", "Don't care".
 - neutral: plain statements, questions, suggestions with no clear feeling. e.g. "What's for lunch", "There's a rock over there", "Maybe check the map first".
 
+claim: is {player} talking about the past ("you got it wrong", "do you remember...", "last time you said...")? The message includes "Real records"; judge only by them:
+- none: not about the past.
+- true: matches the real records.
+- false: contradicts the real records (different number, name, place or thing).
+- unknown: the real records don't mention it at all.
+
 intent: what the line wants her to do in the town this week. Only count what this line mentions; otherwise none:
 - clear clear ruins and rubble; plant grow plants; generator build or fix a generator; purifier build a water purifier; greenhouse fix the greenhouse; relay build a relay tower.
 - old_power repair the old backup power; bridge repair the bridge; transceiver repair the audio transceiver or comms terminal; repair_robot repair a robot; protect protect plants, robots or other things from being taken apart.
@@ -15,6 +21,7 @@ intent: what the line wants her to do in the town this week. Only count what thi
 - none greetings, small talk, comfort, brush-offs, nothing to do.
 
 Examples:
-"Go fix the old power supply, you can do it." -> {"player_attitude":"encourage","intent":"old_power"}
-"Stay away from that hole and come back now." -> {"player_attitude":"restrict","intent":"withdraw"}
-"Mm." -> {"player_attitude":"ignore","intent":"none"}
+"Go fix the old power supply, you can do it." -> {"player_attitude":"encourage","claim":"none","intent":"old_power"}
+"Stay away from that hole and come back now." -> {"player_attitude":"restrict","claim":"none","intent":"withdraw"}
+"Mm." -> {"player_attitude":"ignore","claim":"none","intent":"none"}
+"You got it wrong, it rained that day." (Real records: it rained that day) -> {"player_attitude":"neutral","claim":"true","intent":"none"}

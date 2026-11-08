@@ -12,6 +12,7 @@ const LINES_PATH := "res://tests/model_test/lines.csv"
 const MEMORY_SEED_PATH := "res://tests/model_test/memory_seed.csv"
 const MEMORY_LINES_PATH := "res://tests/model_test/memory_lines.csv"
 const MEMORY_TEST_WEEK := 6
+const CLAIM_LINES_PATH := "res://tests/model_test/claim_lines.csv"
 const SCHEMA_PATH := "res://data/model_output_schema.json"
 const POLL_SEC := 0.05
 const STALL_LIMIT_MS := 60000
@@ -64,7 +65,10 @@ func _ready() -> void:
 			"template_variables": {"enable_thinking": false},
 		})
 
-	if args.has("lines"):
+	if args.has("claims"):
+		await _run_claims(args)
+		get_tree().quit()
+	elif args.has("lines"):
 		await _run_lines()
 		get_tree().quit()
 	elif args.has("memory"):
@@ -127,13 +131,7 @@ func _run_auto(args: Dictionary, load_ms: int, use_gpu: bool) -> void:
 ## 记忆实测（比赛版 4.5"取几条"要实测）：--memory=条数。先放进 15 条事件记忆和 2 条核心记忆，
 ## 再问 12 个要靠记忆才能答对的问题，看回复里有没有说出关键词，并记录速度。
 func _run_memory(args: Dictionary, count: int) -> void:
-	GameState.week = MEMORY_TEST_WEEK
-	GameState.age = TEST_AGE
-	GameState.memory = MemoryStore.new()
-	for row in _load_csv(MEMORY_SEED_PATH):
-		GameState.memory.remember_event(row["text"], MemoryStore.KIND_EVENT, int(row["importance"]), int(row["week"]), int(row["age"]))
-	GameState.memory.remember_core("like_颜色", "我最喜欢的颜色是天蓝色。", 3)
-	GameState.memory.remember_core("promise_5", "新星答应过我：“下次一起看日出”", 5)
+	_seed_memory()
 	DataDB.table("balance")["memory_recall_count"]["value"] = count  # 只在这次测试里改
 	_chat.set_system_prompt(ChatPrompt.build())
 	var results: Array[Dictionary] = []
@@ -166,6 +164,52 @@ func _run_memory(args: Dictionary, count: int) -> void:
 		var file := FileAccess.open(out_path, FileAccess.WRITE)
 		file.store_string(JSON.stringify({"count": count, "hits": hits, "results": results}, "  "))
 		file.close()
+
+
+## --claims：玩家说往事时，判断能不能拿真实记忆分出说对了 / 说错了 / 没这回事（要配合 --judge）
+func _run_claims(args: Dictionary) -> void:
+	_seed_memory()
+	_chat.set_system_prompt(ChatPrompt.build())
+	var right := 0
+	var results: Array[Dictionary] = []
+	for row in _load_csv(CLAIM_LINES_PATH):
+		_judge.reset_history()
+		var facts := ChatPrompt.facts_for(row["line"])
+		var message: String = row["line"] if facts.is_empty() else Text.f("WK-15-01", {"line": row["line"], "facts": facts})
+		var r := await _ask(message, _judge, false)
+		var judged := ModelService.parse_judge(r["raw"])
+		var claim := str(judged.get("claim", "-"))
+		if facts.is_empty() and not judged.is_empty():
+			claim = ModelService.CLAIM_NONE
+		elif ChatPrompt.top_fact(row["line"]).is_empty() and [ModelService.CLAIM_TRUE, ModelService.CLAIM_FALSE].has(claim):
+			claim = ModelService.CLAIM_UNKNOWN  # 和游戏里 ModelService.ask 的把关一样
+		var reply := ""
+		if not judged.is_empty():
+			judged["claim"] = claim
+			_chat.reset_history()
+			var message2 := ChatPrompt.turn_message(row["line"], "", false) + "
+" + ModelService.judged_hint(judged, ChatPrompt.top_fact(row["line"]))
+			reply = str((await _ask(message2)).get("reply", ""))
+		right += 1 if claim == row["expected_claim"] else 0
+		results.append({"id": row["id"], "line": row["line"], "claim": claim, "expected": row["expected_claim"], "ms": r["total_ms"], "reply": reply})
+		_say("%s %s（应为 %s）%d ms：%s → %s" % [row["id"], claim, row["expected_claim"], r["total_ms"], row["line"], reply])
+	_say("核对往事：对 %d / %d" % [right, results.size()])
+	var out_path: String = args.get("out", "")
+	if not out_path.is_empty():
+		var file := FileAccess.open(out_path, FileAccess.WRITE)
+		file.store_string(JSON.stringify({"right": right, "results": results}, "  "))
+		file.close()
+
+
+## 记忆实测和核对往事共用的记忆：15 条事件 + 2 条核心
+func _seed_memory() -> void:
+	GameState.week = MEMORY_TEST_WEEK
+	GameState.age = TEST_AGE
+	GameState.memory = MemoryStore.new()
+	for row in _load_csv(MEMORY_SEED_PATH):
+		GameState.memory.remember_event(row["text"], MemoryStore.KIND_EVENT, int(row["importance"]), int(row["week"]), int(row["age"]))
+	GameState.memory.remember_core("like_颜色", "我最喜欢的颜色是天蓝色。", 3)
+	GameState.memory.remember_core("promise_5", "新星答应过我：“下次一起看日出”", 5)
 
 
 ## --lines：用真模型把各处"说一句"都跑一遍，看她说得像不像她（8 岁第 2 周、15 岁第 5 周各一遍）

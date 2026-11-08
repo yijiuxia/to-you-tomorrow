@@ -81,6 +81,12 @@ static func record_turn(store: MemoryStore, player_text: String, girl_reply: Str
 		store.remember_core(key, line, GameState.week)
 
 
+## 玩家提醒她记混了、而且说得对：把这次提醒记成一条重要的记忆，下次想起这件事时会带上
+static func record_correction(store: MemoryStore, player_text: String) -> void:
+	var text := Text.f("WK-15-21", {"week": GameState.week, "line": player_text.strip_edges()})
+	store.remember_event(text, MemoryStore.KIND_EVENT, int(DataDB.balance("memory_correction_importance")), GameState.week, GameState.age)
+
+
 static func patterns() -> Array[Dictionary]:
 	if _patterns.is_empty():
 		for id: String in DataDB.table("memory_patterns"):

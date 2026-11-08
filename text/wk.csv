@@ -93,3 +93,11 @@ WK-14-02,（只剩这一轮了，按{player}说的做决定，说你要怎么做
 WK-14-03,第 {week} 周，小镇里出了状况：{event}我和{player}商量后决定：{result}。,"Week {week}: trouble in the town: {event} After talking it over with {player}, I decided: {result}."
 WK-10-18,你已经长大了，这些年{player}一直陪着你。你常常想起小时候的事：{text},"You've grown up, and {player} has been with you all these years. You often think back to when you were little: {text}"
 WK-10-19,【口头禅】,[Catchphrases]
+WK-15-01,"{player}说：{line}
+真实记录：{facts}","{player} says: {line}
+Real records: {facts}"
+WK-15-02,（没有）,(none)
+WK-15-11,（{player}说得对，是你刚才记混了。不好意思地承认，用对的说法。）,({player} is right; you mixed it up. Admit it a little sheepishly and use the right version.)
+WK-15-12,（{player}说的好像和你记得的不一样，你记得的是：{fact}。说出你记得的，再问问{player}是不是你记错了，不要直接附和。）,(That doesn't sound like what you remember. You remember: {fact}. Say what you remember and ask {player} whether you've got it wrong; don't just agree.)
+WK-15-13,（你不记得有这件事。不要顺着说，老实说你不记得了，可以问问是什么时候。）,"(You don't remember this at all. Don't play along; honestly say you don't remember, and maybe ask when it was.)"
+WK-15-21,第 {week} 周，{player}提醒我：“{line}”,"Week {week}: {player} reminded me: ""{line}"""

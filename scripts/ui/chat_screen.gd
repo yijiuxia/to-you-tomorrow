@@ -87,7 +87,7 @@ func _on_submitted(raw_text: String) -> void:
 
 	# 记忆、设定、收尾提示都跟着这句话发，不中途改人设：改人设会让模型把整段对话重算一遍，最后一轮曾因此卡住
 	var message := ChatPrompt.turn_message(text, _last_attitude, _is_closing_round())
-	var reply := await ModelService.ask(message, text)
+	var reply := await ModelService.ask(message, text, {}, ChatPrompt.facts_for(text), ChatPrompt.top_fact(text))
 	if not is_inside_tree():
 		return  # 等回复时玩家已经离开了这个画面
 	_thinking.text = ""
@@ -113,6 +113,8 @@ func _apply_reply(reply: Dictionary, player_text: String) -> void:
 			GameState.change_stat(id, changes[id])
 		# 记下原话、认出喜好和约定；记下态度，下次开聊时她还记着你凶没凶她
 		MemoryWriter.record_turn(GameState.memory, player_text, reply["reply"])
+		if reply.get("claim", "") == ModelService.CLAIM_TRUE:
+			MemoryWriter.record_correction(GameState.memory, player_text)
 		_last_attitude = reply["player_attitude"]
 		_attitudes.append(_last_attitude)
 		ChatMood.remember_tone(GameState.memory, _attitudes)

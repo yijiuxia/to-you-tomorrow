@@ -32,6 +32,7 @@ func _ready() -> void:
 	test_event_rules()
 	test_childhood_after_jump()
 	test_copied_memory()
+	test_claims()
 	await test_event_chat_flow()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -330,7 +331,7 @@ func test_presence_fits_age() -> void:
 
 
 func test_judge_parsing() -> void:
-	_eq(ModelService.parse_judge("{\"player_attitude\":\"comfort\",\"intent\":\"rest\"}"), {"player_attitude": "comfort", "intent": "rest"}, "判断结果能解析")
+	_eq(ModelService.parse_judge("{\"player_attitude\":\"comfort\",\"intent\":\"rest\"}"), {"player_attitude": "comfort", "intent": "rest", "claim": "none"}, "判断结果能解析")
 	_eq(ModelService.parse_judge("{\"player_attitude\":\"angry\",\"intent\":\"rest\"}"), {}, "不认识的态度不要")
 	var hint := ModelService.judged_hint({"player_attitude": "restrict", "intent": "withdraw"})
 	_ok(hint.contains(Text.t("WK-13-restrict")) and hint.contains(Text.t("UI-12-withdraw")), "判断结果写成提示告诉她")
@@ -403,6 +404,29 @@ func test_copied_memory() -> void:
 	_ok(ChatLines.is_copied("哇！净水站建好了呀，嘿嘿。"), "原样念记忆算抄")
 	_ok(ChatLines.is_copied("嗯，哇！净水站建好了呀，嘿嘿。你看！"), "整条记忆抄进来也算")
 	_ok(not ChatLines.is_copied("净水站终于好了！"), "用自己的话说不算抄")
+
+
+func test_claims() -> void:
+	_fresh()
+	_eq(ModelService.parse_judge("{\"player_attitude\":\"neutral\",\"claim\":\"false\",\"intent\":\"none\"}")["claim"], "false", "能读出玩家说的往事对不对")
+	_eq(ModelService.parse_judge("{\"player_attitude\":\"neutral\",\"intent\":\"none\"}")["claim"], "none", "没写就当不是在说往事")
+	var judged := {"player_attitude": "neutral", "intent": "none", "claim": "false"}
+	_ok(ModelService.judged_hint(judged, "材料少了三箱。").contains("材料少了三箱"), "玩家说错时告诉她真实的是什么")
+	judged["claim"] = "true"
+	_ok(ModelService.judged_hint(judged).contains(Text.t("WK-15-11")), "玩家说对时让她承认记混了")
+	judged["claim"] = "unknown"
+	_ok(ModelService.judged_hint(judged).contains(Text.t("WK-15-13")), "没这回事时让她说不记得")
+	GameState.memory.remember_core("like_颜色", "我最喜欢的颜色是天蓝色。", 2)
+	GameState.memory.remember_event("第 5 周，堆好的材料少了三箱。", MemoryStore.KIND_EVENT, 2, 5, 15)
+	_eq(ChatPrompt.facts_for("这周先把发电机修好吧。"), "", "不是在说往事就不核对")
+	var facts := ChatPrompt.facts_for("材料少了五箱，你记错了吧？")
+	_ok(facts.contains("三箱") and facts.contains("天蓝色"), "真实记录 = 核心记忆 + 相关记忆")
+	_eq(ChatPrompt.top_fact("材料少了五箱吧？"), "第 5 周，堆好的材料少了三箱。", "最相关的一条真实记忆")
+	_eq(ChatPrompt.facts_for("你好").find("三箱"), -1, "不相关的事件不当证据")
+	_eq(ChatPrompt.top_fact("你说过你最喜欢红色"), "我最喜欢的颜色是天蓝色。", "说起喜好时用核心记忆核对")
+	_eq(ChatPrompt.top_fact("上次你说你会弹钢琴"), "", "没有相关记忆就没有证据")
+	MemoryWriter.record_correction(GameState.memory, "被挖走的是净水站旁边的苗")
+	_eq(GameState.memory.recall("苗被挖走", 1, GameState.week, GameState.age).size(), 1, "提醒记下来，之后想得起")
 
 
 # ---------- 工具 ----------
