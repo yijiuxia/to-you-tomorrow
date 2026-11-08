@@ -13,7 +13,8 @@ const SKILL_STATS: Array[String] = ["mechanics", "ecology", "comms"]
 const COGNITION_KEYS: Array[String] = ["WK-10-01", "WK-10-02", "WK-10-03"]  # 顺序同 GameState.Cognition
 
 
-static func build() -> String:
+## situation：这次对话的特别情况（例如突发事件），放在状态卡和记忆后面
+static func build(situation := "") -> String:
 	var store: MemoryStore = GameState.memory
 	var mood := ChatMood.state(store)
 	var names := {"girl": GameState.girl_name, "player": GameState.player_name}
@@ -23,6 +24,8 @@ static func build() -> String:
 	var remembered := memory_block(store)
 	if not remembered.is_empty():
 		parts.append(remembered)
+	if not situation.is_empty():
+		parts.append(situation)
 	parts.append(Text.f("WK-10-11", {"hint": ChatMood.hint(mood, store)}))
 	parts.append(rules)
 	return "\n\n".join(parts)

@@ -102,15 +102,18 @@ func start_conversation(system_prompt: String) -> void:
 ## 发一句话，总会返回一份合格的回复。失败时 fallback 为 true。
 ## 连续超时说明模型卡死了，之后不再等它，这一局聊天都用后备句，不让玩家反复干等。
 ## text 是发给模型的整段话（玩家原话 + 附带的记忆和提示）；player_text 是玩家原话，用来判断态度。
-func ask(text: String, player_text := "") -> Dictionary:
+## known：已经知道的判断结果（玩家点了突发事件的固定选项），有就不用再判断。
+func ask(text: String, player_text := "", known := {}) -> Dictionary:
 	await _wait_until_loaded()
 	if status != Status.READY:
 		return fallback_reply()
 	var said := player_text if not player_text.is_empty() else text
 	# 先单独判断态度和 intent：人设写得越生动，小模型边演边判断越不准（实测从 36/50 掉到 22/50），
 	# 分开判断能保住准确度。判断结果告诉她，让回复和判断一致。微调后可以在 balance 里关掉
-	var judged := {}
-	if int(DataDB.balance("model_separate_judge")) == 1:
+	var judged: Dictionary = known.duplicate()
+	if not judged.is_empty():
+		text += "\n" + judged_hint(judged)
+	elif int(DataDB.balance("model_separate_judge")) == 1:
 		judged = await judge(said)
 		if not judged.is_empty():
 			text += "\n" + judged_hint(judged)

@@ -70,7 +70,7 @@ WK-11-07,你突然想起：{text},You suddenly remember: {text}
 WK-11-08,"刚才你们的对话：{lines}
 用第一人称写一句话，记下这次聊了什么和你的感受，不超过 30 字。","Your conversation just now:{lines}
 In the first person, write one sentence noting what you talked about and how you felt, under 25 words."
-WK-11-09,你在小镇里，刚刚：{event}。对{player}说一句。,You're in the town and just now: {event}. Say one thing to {player}.
+WK-11-09,你在小镇里，本来想说：“{event}”。用你自己的话对{player}说这件事，一句。,"You're in the town and were about to say: ""{event}"". Tell {player} about it in your own words, one sentence."
 WK-11-10,没有特别的事。,Nothing special.
 WK-12-01,用平板看小镇,checking the town on your tablet
 WK-12-02,坐在椅子上发呆,"sitting in your chair, daydreaming"
@@ -88,3 +88,6 @@ WK-13-ignore,在敷衍你,is brushing you off
 WK-13-neutral,只是普通地说话,is just talking normally
 WK-13-10,没让你做什么事,isn't asking you to do anything
 WK-13-11,想让你：{intent},wants you to: {intent}
+WK-14-01,【突发情况】你正在小镇里遥控 ARK-01，突然：{event}。你已经对{player}说了：“{said}”。你在等{player}告诉你怎么办，{rounds} 轮之内要说完、做出决定。,"[Something just happened] You're steering ARK-01 in the town and suddenly: {event}. You already told {player}: ""{said}"". You're waiting for {player} to tell you what to do; settle it within {rounds} turns."
+WK-14-02,（只剩这一轮了，按{player}说的做决定，说你要怎么做。）,(This is the last turn: decide based on what {player} said and say what you'll do.)
+WK-14-03,第 {week} 周，小镇里出了状况：{event}我和{player}商量后决定：{result}。,"Week {week}: trouble in the town: {event} After talking it over with {player}, I decided: {result}."

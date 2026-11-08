@@ -29,6 +29,8 @@ func _ready() -> void:
 	await test_lines_fallback()
 	test_presence_fits_age()
 	test_judge_parsing()
+	test_event_rules()
+	await test_event_chat_flow()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -329,6 +331,55 @@ func test_judge_parsing() -> void:
 	var hint := ModelService.judged_hint({"player_attitude": "restrict", "intent": "withdraw"})
 	_ok(hint.contains(Text.t("WK-13-restrict")) and hint.contains(Text.t("UI-12-withdraw")), "判断结果写成提示告诉她")
 	_ok(ModelService.judge_prompt().contains(GameState.player_name), "判断提示填上名字")
+
+
+func test_event_rules() -> void:
+	_fresh()
+	var event := DataDB.row("earth_events", "ark_failure")
+	GameState.stats["trust"] = 20
+	_eq(ChatEvent.rounds_for(), 2, "信任低时突发事件聊 2 轮")
+	GameState.stats["trust"] = 50
+	_eq(ChatEvent.rounds_for(), 3, "信任普通时聊 3 轮")
+	GameState.stats["trust"] = 80
+	_eq(ChatEvent.rounds_for(), 4, "信任高时聊 4 轮")
+	var intents: Array[String] = ["continue", "none"]
+	_eq(ChatEvent.final_intent(event, intents), "continue", "最后一轮没说清楚，就看前一轮")
+	intents = ["none", "plant"]
+	_eq(ChatEvent.final_intent(event, intents), "withdraw", "一直没说清楚就按最稳妥的第三个选项")
+	intents = ["ask_help", "withdraw"]
+	_eq(ChatEvent.final_intent(event, intents), "withdraw", "按最后一轮的 intent")
+	_ok(not ChatEvent.opening_text(event).begins_with(GameState.girl_name), "她开口的话去掉名字前缀")
+	_ok(ChatPrompt.build(ChatEvent.situation(event, "怎么办", 3)).contains("怎么办"), "人设里写上发生了什么")
+
+
+## 没有模型时也能把突发事件聊完：点固定选项，按最后一次点的结果执行，游戏暂停后恢复
+func test_event_chat_flow() -> void:
+	_fresh()
+	GameState.stats["trust"] = 20
+	var event := DataDB.row("earth_events", "danger_zone")
+	var panel := ChatEventPanel.new(event)
+	var result := {"intent": ""}
+	panel.finished.connect(func(intent: String) -> void: result["intent"] = intent)
+	add_child(panel)
+	_ok(get_tree().paused, "突发事件对话时游戏暂停")
+	for i in 10:
+		await get_tree().process_frame
+	panel._on_option(0)
+	for i in 10:
+		await get_tree().process_frame
+	panel._on_option(1)
+	for i in 10:
+		await get_tree().process_frame
+	_eq(result["intent"], "investigate", "两轮后按最后点的选项执行")
+	_ok(not get_tree().paused, "聊完游戏恢复")
+	_ok(_any_contains(_event_texts(), Text.t("UI-12-investigate")), "这件事记进她的记忆")
+
+
+func _event_texts() -> PackedStringArray:
+	var texts := PackedStringArray()
+	for memory: Dictionary in GameState.memory.events:
+		texts.append(str(memory["text"]))
+	return texts
 
 
 # ---------- 工具 ----------

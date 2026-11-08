@@ -71,8 +71,9 @@ static func idle(activity: String, rng: RandomNumberGenerator) -> Dictionary:
 
 
 ## 小镇里看到什么说一句（实时评论，和模块 6 共用）。fixed 是地球线程原来的固定句，失败时就用它
-static func earth_comment(event_text: String, fixed: String) -> Dictionary:
-	return await _say(Text.f("WK-11-09", {"event": event_text}), fixed)
+static func earth_comment(fixed: String) -> Dictionary:
+	var plain := ChatEvent.strip_name(fixed)
+	return await _say(Text.f("WK-11-09", {"event": plain}), plain)
 
 
 ## 聊完后把这次对话缩成一句记下来（比赛版 4.5：早期对话压缩成摘要），下次不用整段塞给模型。

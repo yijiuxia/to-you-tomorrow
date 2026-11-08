@@ -110,3 +110,8 @@ memory_summary_importance,1,聊天摘要的重要程度
 memory_reflection_importance,2,每周感想的重要程度
 chat_comment_wait_sec,1.5,改完课表停手多少秒后她才评论（只评论最后的课表）
 model_separate_judge,1,1 = 先单独判断玩家的态度和 intent 再让她说话（准，但每句多约 0.5 秒）；微调后判断够准可改成 0
+chat_event_rounds_min,2,突发事件对话最少几轮（信任低）
+chat_event_rounds_max,4,突发事件对话最多几轮（信任高）
+chat_event_panel_width,720,突发事件对话框宽度（像素）
+chat_event_panel_height,420,突发事件对话框高度（像素）
+memory_event_chat_importance,2,突发事件对话记成记忆的重要程度

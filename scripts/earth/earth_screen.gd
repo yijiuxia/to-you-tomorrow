@@ -54,6 +54,7 @@ var _last_region := ""
 var _rng := RandomNumberGenerator.new()
 var proposal: Dictionary = {}      # 当前等你回答的方案（测试也读它）
 var event: Dictionary = {}         # 当前的突发事件
+var _event_chat: ChatEventPanel = null  # 人物 AI 线程加：突发事件对话
 
 
 func _ready() -> void:
@@ -83,10 +84,10 @@ func _start_girl_moments() -> void:
 	event = GirlEarth.pick_event(world, _rng)
 	if not event.is_empty():
 		GirlEarth.start_event(world, event)
-		var options: Array = []
-		for i in range(1, 4):
-			options.append([Text.t(str(event["option%d_key" % i])), str(event["option%d_intent" % i])])
-		_show_card(Text.t(str(event["say_key"])), options, answer_event)
+		# 人物 AI 线程改：突发事件是 2～4 轮聊天，她先开口，最后一轮的 intent 决定结果（比赛版 4.3）
+		_event_chat = ChatEventPanel.new(event)
+		_event_chat.finished.connect(answer_event)
+		add_child(_event_chat)
 
 
 func answer_proposal(choice: String) -> void:
@@ -98,6 +99,8 @@ func answer_proposal(choice: String) -> void:
 func answer_event(intent: String) -> void:
 	var result := GirlEarth.resolve_event(world, event, intent)
 	event = {}
+	if is_instance_valid(_event_chat):  # 人物 AI 线程加：结果定了就关掉事件对话
+		_event_chat.close()
 	_close_card()
 	if not result.is_empty():
 		_show_message(Text.t(result))
@@ -110,6 +113,14 @@ func girl_says(text: String) -> void:
 		return
 	_comment_ready_at = now + float(DataDB.balance("girl_comment_cooldown_sec"))
 	_girl_line.text = text
+	_girl_says_in_own_words(text)
+
+
+## 人物 AI 线程加：先显示固定句，模型用她自己的话改写好了再换上（失败就留着固定句）
+func _girl_says_in_own_words(fixed: String) -> void:
+	var line := await ChatLines.earth_comment(fixed)
+	if is_inside_tree() and _girl_line.text == fixed and not line["fallback"]:
+		_girl_line.text = Text.f("UI-09-06", {"girl": GameState.girl_name, "text": line["reply"]})
 
 
 func _show_card(text: String, options: Array, on_choice: Callable) -> void:
