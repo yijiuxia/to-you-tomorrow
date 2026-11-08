@@ -523,6 +523,8 @@ func discover_clue(id: String) -> void:
 		return
 	found_clues[id] = true
 	GameState.flags["clue_" + id] = true
+	# 第 5 周追踪异常：玩家自己找到线索，剧情就不放保底警报（界面线程的剧情触发表用它）
+	GameState.flags["w5_trace_found"] = true
 	week_counts["clues"] += 1
 	changed.emit()
 
