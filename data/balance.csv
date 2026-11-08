@@ -72,3 +72,12 @@ event_per_week,1,普通突发事件每周最多几次（比赛版 4.3）
 event_chance,0.35,每次进小镇触发突发事件的概率
 event_self_handle_chance,0.5,自信高时她自己处理、不找你的概率
 event_self_repair_mechanics,30,设备停运时她自己修需要的机械
+ui_volume_default,80,主音量默认值（0～100）
+ui_fullscreen_default,0,默认全屏吗（1 是 0 否）
+ui_text_speed_default,40,剧情文字默认每秒出现几个字
+ui_text_speed_min,10,设置里文字速度最慢
+ui_text_speed_max,120,设置里文字速度最快
+ui_name_max_length,8,起名最多几个字
+story_fast_forward_sec,0.15,剧情快进时每句停多少秒
+story_skip_max_lines,500,跳过剧情时最多连跳多少句；防止台词写成死循环时卡住
+story_op_greet_trust,1,开场回应她时信任加多少（临时）

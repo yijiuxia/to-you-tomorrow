@@ -234,3 +234,50 @@ UI-21-32,先扫描一下再说,Scan it first
 UI-21-33,不行，太危险了,"No, it's too dangerous"
 UI-21-40,{girl}自己把设备修好了。,{girl} fixed the machine herself.
 UI-21-41,设备还坏着，用焊接头修吧。,The machine is still broken. Fix it with the welder.
+UI-50-01,致明日的你,"To You, Tomorrow"
+UI-50-02,开始游戏,New Game
+UI-50-03,继续,Continue
+UI-50-04,设置,Settings
+UI-50-05,制作人员,Credits
+UI-50-06,退出,Quit
+UI-50-07,自动存档：第 {week} 周 · {girl} {age} 岁,"Autosave: Week {week} · {girl}, age {age}"
+UI-50-08,开始新游戏会覆盖现在的自动存档，确定吗？,Starting a new game will overwrite your autosave. Are you sure?
+UI-50-09,开始,Start
+UI-50-10,取消,Cancel
+UI-50-11,存档读不出来，可能已经损坏。,The autosave couldn't be loaded. It may be damaged.
+UI-50-12,、,", "
+UI-51-01,给你们起个名字,Choose your names
+UI-51-02,她的名字,Her name
+UI-51-03,你的名字（她会这样叫你）,Your name (what she'll call you)
+UI-51-04,确定,OK
+UI-51-05,朝禾,Zhaohe
+UI-51-06,新星,Xinxing
+UI-51-07,名字最多 {count} 个字，空着就用默认名字。,Up to {count} characters. Leave it blank to use the default name.
+UI-52-01,暂停,Paused
+UI-52-02,继续游戏,Resume
+UI-52-03,回到标题,Back to Title
+UI-52-04,回到标题后，下次从本周开始时的自动存档继续。,"After returning to the title, you'll continue from the autosave made at the start of this week."
+UI-53-01,设置,Settings
+UI-53-02,音量,Volume
+UI-53-03,全屏,Fullscreen
+UI-53-04,文字速度,Text speed
+UI-53-05,语言,Language
+UI-53-06,中文,中文
+UI-53-07,English,English
+UI-53-08,关闭,Close
+UI-53-09,有些画面要重新打开才会换成新语言。,Some screens change language after you reopen them.
+UI-54-01,快进,Fast forward
+UI-54-02,跳过,Skip
+UI-54-03,ARK-01,ARK-01
+UI-54-04,点击或按空格继续,Click or press Space to continue
+UI-54-05,幸存者,Survivor
+UI-56-01,制作人员,Credits
+UI-56-02,策划与制作：yi,Design & production: yi
+UI-56-03,引擎：Godot Engine,Engine: Godot Engine
+UI-56-04,剧情插件：Dialogue Manager（Nathan Hoad）,Dialogue: Dialogue Manager by Nathan Hoad
+UI-56-05,本地模型：Qwen（通义千问）,Local model: Qwen
+UI-56-06,模型运行：NobodyWho,Model runtime: NobodyWho
+UI-56-07,字体：思源黑体 Noto Sans SC（SIL OFL 1.1）,Font: Noto Sans SC (SIL OFL 1.1)
+UI-56-08,感谢游玩,Thank you for playing
+UI-56-09,返回标题,Back to Title
+UI-56-10,（临时名单，正式版再改）,"(Temporary list, to be finalized)"

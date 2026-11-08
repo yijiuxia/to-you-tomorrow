@@ -56,7 +56,7 @@ static func _earth_lines() -> PackedStringArray:
 		return result
 	var finished: Array = report["finished"]
 	if not finished.is_empty():
-		result.append(Text.f("UI-07-07", {"names": "、".join(PackedStringArray(finished))}))
+		result.append(Text.f("UI-07-07", {"names": Text.t("UI-50-12").join(PackedStringArray(finished))}))
 	if int(report["metal"]) != 0 or int(report["electronics"]) != 0:
 		result.append(Text.f("UI-07-08", {"metal": report["metal"], "electronics": report["electronics"]}))
 	if report.get("goal_done", false):

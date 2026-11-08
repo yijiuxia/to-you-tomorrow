@@ -1,0 +1,7 @@
+id,moment,week,file,cue,condition,note
+# 剧情节点表：每行一段剧情。moment 是时刻（见 story_triggers.gd 开头），week 空着表示哪周都行。
+# condition 是条件，可以用 week() age() stat("trust") flag("x") seen("节点id") met_survivor() cognition()，用 and / or / not 连接。
+# 下面都是临时节点，文案到了按 文案/00_目录.md 的编号替换。
+op,new_game,,op.dialogue,start,,开场（临时）
+w1_start,week_start,1,w1.dialogue,start,,第 1 周开始（临时）
+w5_alarm,week_end,5,w5.dialogue,alarm,"not flag(""w5_trace_found"")",保底示例：第 5 周没发现线索时，传感器报警把线索推给玩家（临时）

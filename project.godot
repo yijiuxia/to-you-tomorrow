@@ -20,9 +20,22 @@ DataDB="*res://scripts/autoload/data_db.gd"
 Text="*res://scripts/autoload/text.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 ModelService="*res://scripts/autoload/model_service.gd"
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
+
+[gui]
+
+theme/custom_font="res://assets/fonts/NotoSansSC-Regular.otf"
+
+[internationalization]
+
+locale/translations_pot_files=PackedStringArray("res://story/op.dialogue", "res://story/w1.dialogue", "res://story/w5.dialogue")
