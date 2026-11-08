@@ -120,3 +120,4 @@ memory_correction_importance,3,玩家提醒她记混了（说得对）时，这�
 earth_germination_base,0.4,种子发芽的基础比例；加上生态技能 ÷ 100，最多 1（文案 W3-04：发芽和生态技能有关）
 chat_lie_free_times,1,每周前几次说错往事不追究（可能是玩家记错或判断错了）
 chat_lie_trust,-2,之后每次乱说，信任变化多少（也受每周封顶限制）
+story_w3_repair_mechanics,10,第 3 周修机器人要的机械，她据此说会不会修（文案 W3-02）；和地球的修复门槛保持一致

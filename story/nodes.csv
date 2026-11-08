@@ -5,3 +5,7 @@ id,moment,week,file,cue,condition,note
 op,new_game,,op.dialogue,start,,开场（临时）
 w1_start,week_start,1,w1.dialogue,start,,第 1 周开始（临时）
 w5_alarm,week_end,5,w5.dialogue,alarm,"not flag(""w5_trace_found"")",保底示例：第 5 周没发现线索时，传感器报警把线索推给玩家（临时）
+w3_enter,earth_enter,3,w3.dialogue,enter,,第 3 周第一次进小镇（文案 W3-02）。地球画面进小镇时调用 StoryScreen.play_over(画面, "earth_enter")
+w3_plant,earth_plant_found,3,w3.dialogue,plant,"not flag(""plant_event_done"")",植物事件 + 起名（W3-03、W3-05）：ARK-01 走近广场边缘时，地球画面调用 play_over(画面, "earth_plant_found")
+w3_plant_fallback,week_end,3,w3.dialogue,plant,"not flag(""plant_event_done"")",保底：一直没走过去，点结束本周时强制播植物事件（文案"没完成目标"）
+seed_jar,earth_seed_jar_found,,w3.dialogue,seed_jar,,扫到种子罐（W3-04）：植物事件前后两种说法；第 2 周也能找到。地球设 seed_jar_found 后调用 play_over(画面, "earth_seed_jar_found")

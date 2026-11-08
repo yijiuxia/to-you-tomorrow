@@ -303,6 +303,7 @@ func _build_power_and_water() -> void:
 	await _frames()
 	_confirm_end_week()
 	await _frames()
+	await _finish_stories()  # 第 3 周没走到植物旁边：结束本周时先播保底的植物事件
 	await _shot("summary_earth")
 	var farm := world.building_at(Vector2i(6, 7))
 	_check(world.problems(farm).has(EarthWorld.WATER_PROBLEM), "种植区应该缺水")

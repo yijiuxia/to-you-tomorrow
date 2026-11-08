@@ -13,7 +13,8 @@ signal view_requested(mode: String)    ## 剧情要求切俯视 / 第三人称�
 
 const STORY_DIR := "res://story/"
 const NARRATOR := ""
-const CHARACTER_KEYS := {"ark": "UI-54-03", "survivor": "UI-54-05"}
+const CHARACTER_KEYS := {"survivor": "UI-54-05"}
+const ARK_NAME_FLAG := "ark_name"  # 第 3 周她给 ARK-01 起的名字，存在 GameState.flags 里，跟着存档走
 
 var resource: DialogueResource
 
@@ -52,8 +53,8 @@ static func text_of(line_or_response: RefCounted) -> String:
 	var key: String = line_or_response.get("static_id")
 	var raw: String = line_or_response.get("text")
 	if key != raw and Text.has_language(key, Text.DEFAULT_LANGUAGE):
-		return Text.t(key)
-	return raw.format({"girl": GameState.girl_name, "player": GameState.player_name})
+		return Text.t(key).format({"ark": ark_name()})
+	return raw.format(names())
 
 
 ## 说话人显示的名字。台词文件里写 girl / player / ark / survivor，旁白不写名字。
@@ -65,12 +66,38 @@ static func speaker_of(line: DialogueLine) -> String:
 			return GameState.girl_name
 		"player":
 			return GameState.player_name
+		"ark":
+			return ark_name()
 	if CHARACTER_KEYS.has(line.character):
 		return Text.t(CHARACTER_KEYS[line.character])
 	return line.character
 
 
+## 台词里能用的名字占位符：{girl} {player} {ark}
+static func names() -> Dictionary:
+	return {"girl": GameState.girl_name, "player": GameState.player_name, "ark": ark_name()}
+
+
+## ARK-01 的名字：起名之前叫型号
+static func ark_name() -> String:
+	var value: Variant = GameState.flags.get(ARK_NAME_FLAG, "")
+	return str(value) if not str(value).is_empty() else Text.t("UI-54-03")
+
+
 # ---- 下面是台词文件里可以调用的方法 ----
+
+## 属性够不够某个门槛（门槛写在 balance.csv）
+func stat_at_least(stat_id: String, balance_id: String) -> bool:
+	return GameState.get_stat(stat_id) >= int(DataDB.balance(balance_id, 0))
+
+
+## 给 ARK-01 起名。现在用文字表里的默认名；人物 AI 接上后可以换成模型起的名字再调用 set_ark_name
+func name_ark(default_key: String) -> void:
+	set_ark_name(Text.t(default_key))
+
+
+func set_ark_name(value: String) -> void:
+	GameState.flags[ARK_NAME_FLAG] = value
 
 ## 改属性。数值写在 balance.csv（story_ 开头），台词文件里只写编号，遵守"数值只放表格"。
 func add_stat(stat_id: String, balance_id: String) -> void:

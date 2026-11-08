@@ -30,6 +30,9 @@ static func time_jump(before: Dictionary, old_age: int) -> PackedStringArray:
 	for id: String in DataDB.table("girl_stats"):
 		if str(DataDB.row("girl_stats", id)["category"]) != JUMP_HIDDEN_CATEGORY:
 			result.append(Text.f("TJ-02-03", {"name": UiKit.stat_name(id), "old": before[id], "new": GameState.get_stat(id)}))
+	# 第 3 周没找到种子罐：那株植物结了种子，种植区由此解锁（文案 W3-04 方案 B）
+	if GameState.flags.get("seeds_from_plant", false) and not GameState.flags.get("seed_jar_found", false):
+		result.append(Text.t("UI-54-07"))
 	GameState.summary_stats = GameState.stats.duplicate()
 	return result
 

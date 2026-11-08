@@ -10,6 +10,7 @@ signal finished
 const BOX_HEIGHT := 240.0
 const BACKDROP := Color(0, 0, 0, 0.75)
 const NAME_SIZE := 22
+const OVERLAY_LAYER := 40  # 比暂停菜单（50）低，暂停时能盖住剧情
 
 var node: Dictionary = {}  ## 剧情节点表里的一行（StoryTriggers.pick 返回的）
 
@@ -28,6 +29,34 @@ var _shown_chars := 0.0
 var _typed := true          # 这一句已经全部显示出来了
 var _auto_wait := 0.0
 var free_talk: ChatStoryInput = null  # 人物 AI 线程加：剧情选项下的自由聊天（自动测试也用它）
+
+
+## 在别的画面上面播剧情（比如地球画面里 ARK-01 走到植物旁边时）。不换画面，播完自己消失。
+## 返回 null 表示这个时刻没有要播的；否则返回播放用的节点，可以 await 它的 all_finished 等播完。
+## 用法：StoryScreen.play_over(self, "earth_plant_found")
+static func play_over(parent: Node, moment: String) -> Node:
+	var nodes := StoryTriggers.pick(moment)
+	if nodes.is_empty():
+		return null
+	var holder := CanvasLayer.new()  # 盖在 3D 画面和小镇界面上面
+	holder.layer = OVERLAY_LAYER
+	holder.add_user_signal("all_finished")
+	parent.add_child(holder)
+	_play_in(holder, nodes, 0)
+	return holder
+
+
+static func _play_in(holder: CanvasLayer, nodes: Array[Dictionary], index: int) -> void:
+	if index >= nodes.size():
+		holder.emit_signal("all_finished")
+		holder.queue_free()
+		return
+	var screen: Control = load("res://scripts/ui/story_screen.gd").new()
+	screen.set("node", nodes[index])
+	screen.connect("finished", func() -> void:
+		screen.queue_free()
+		_play_in(holder, nodes, index + 1))
+	holder.add_child(screen)
 
 
 func _ready() -> void:

@@ -37,6 +37,9 @@ func _ready() -> void:
 	test_story_triggers_and_fallback()
 	await test_story_runner_choice_changes_state()
 	await test_story_screen_skip()
+	await test_week3_plant_and_seed_jar()
+	await test_play_over()
+	test_time_jump_seed_line()
 	await test_title_to_first_week_and_pause()
 
 	SaveSystem.delete_save()
@@ -209,6 +212,77 @@ func test_story_screen_skip() -> void:
 	_ok(StoryTriggers.is_seen("w5_alarm"), "播完记为已播")
 	screen.queue_free()
 	GameState.reset()
+
+
+## 第 3 周：植物事件设标记、给 ARK-01 起名；种子罐先找到 / 后找到说法不同（文案 05_第3周）
+func test_week3_plant_and_seed_jar() -> void:
+	GameState.reset()
+	GameState.week = 3
+	_ok("w3_plant_fallback" in _ids(StoryTriggers.pick("week_end")), "第 3 周没看过植物：结束本周时保底播")
+	# 第 2 周先找到种子罐
+	GameState.flags["seed_jar_found"] = true
+	var said := await _play_all("w3.dialogue", "seed_jar")
+	_ok("W3-04-08" in said and not "W3-04-05" in said, "植物事件前找到：先收好")
+	said = await _play_all("w3.dialogue", "plant")
+	_ok(GameState.flags.get("plant_event_done", false), "植物事件播完设 plant_event_done")
+	_eq(StoryRunner.ark_name(), Text.t("UI-54-06"), "ARK-01 有了名字")
+	_ok("W3-03-19" in said and not "W3-04-01" in said, "已有种子罐：起名后说我们有种子")
+	_ok(said.find("W3-05-05") < said.find("W3-03-19"), "W3-03-19 在起名之后")
+	_ok(not "w3_plant_fallback" in _ids(StoryTriggers.pick("week_end")), "看过植物事件后不再保底")
+	# 植物事件后才找到
+	GameState.reset()
+	GameState.week = 3
+	said = await _play_all("w3.dialogue", "plant")
+	_ok("W3-04-01" in said and not "W3-03-19" in said, "还没种子罐：引导去维修站")
+	GameState.flags["seed_jar_found"] = true
+	said = await _play_all("w3.dialogue", "seed_jar")
+	_ok("W3-04-05" in said and not "W3-04-08" in said, "植物事件后找到：可以自己种了")
+	Text.language = "en"
+	_ok(StoryRunner.text_of(await StoryRunner.new().start("w3.dialogue", "seed_jar")).begins_with("Scanner"), "第 3 周台词有英文")
+	Text.language = "zh"
+	GameState.reset()
+
+
+func test_play_over() -> void:
+	GameState.reset()
+	GameState.week = 3
+	var parent := Node.new()
+	add_child(parent)
+	_ok(StoryScreen.play_over(parent, "没有这个时刻") == null, "没有剧情时返回 null")
+	var holder := StoryScreen.play_over(parent, "earth_plant_found")
+	_ok(holder != null, "地球画面上能播植物事件")
+	await _frames(3)
+	var screen: StoryScreen = holder.get_child(0)
+	await screen.skip()
+	await _frames(3)
+	_ok(GameState.flags.get("plant_event_done", false), "盖在上面播也会设标记")
+	_ok(not is_instance_valid(holder) or holder.is_queued_for_deletion(), "播完自己消失")
+	parent.queue_free()
+	GameState.reset()
+
+
+func test_time_jump_seed_line() -> void:
+	GameState.reset()
+	var before := GameState.stats.duplicate()
+	GameState.flags["seeds_from_plant"] = true
+	_ok(Text.t("UI-54-07") in PageText.time_jump(before, 8), "没找到种子罐：这些年页写植物结了种子")
+	GameState.flags["seed_jar_found"] = true
+	_ok(not Text.t("UI-54-07") in PageText.time_jump(before, 8), "找到过种子罐：不写这一行")
+	GameState.reset()
+
+
+## 从某个标记一路走到结尾（选项都选第一个），返回经过的台词编号
+func _play_all(file_name: String, cue: String) -> PackedStringArray:
+	var said: PackedStringArray = []
+	var runner := StoryRunner.new()
+	var line := await runner.start(file_name, cue)
+	var guard := 0
+	while line != null and guard < 100:
+		said.append(line.static_id)
+		var next_id := line.next_id if line.responses.is_empty() else (line.responses[0] as DialogueResponse).next_id
+		line = await runner.next(next_id)
+		guard += 1
+	return said
 
 
 func test_title_to_first_week_and_pause() -> void:

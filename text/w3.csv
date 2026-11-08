@@ -1,0 +1,32 @@
+keys,zh,en
+W3-02-01,快快快，去看看广场！,"Quick, quick, let's go see the square!"
+W3-02-02,说好了，这周要把它修好！,We promised. We're fixing it this week!
+W3-02-05,我上过机械课啦，我会修！,I've had mechanics class. I can fix it!
+W3-02-07,唔……我还不会修这个。那我多上几节机械课！,Hmm... I can't fix this yet. I'll take more mechanics classes!
+W3-03-02,扫描仪：检测到生物信号,Scanner: biological signal detected
+W3-03-03,……绿色的？,...Is that green?
+W3-03-04,{player}！小镇里长叶子了！,{player}! There are leaves growing in the town!
+W3-03-06,哇……是叶子！,Wow... it's a leaf!
+W3-03-07,{player}你说对了，真的有！,"{player}, you were right. There really is!"
+W3-03-08,还没种呢，它自己就长出来啦！,"We haven't even planted anything, and it grew by itself!"
+W3-03-09,我看见它啦！你好呀！,I can see it! Hello there!
+W3-03-10,我们把这里设成保护区吧！不然机器人打扫的时候，会把它也扫掉的。,Let's make this a protected area! Otherwise the robots will sweep it away when they clean up.
+W3-03-14,叶子卷起来了……是不是渴了？,The leaves are curling up... Is it thirsty?
+W3-03-16,它喝水了！,It's drinking!
+W3-03-17,可是土好干，我们不能天天来浇呀。,But the soil is so dry. We can't come water it every day.
+W3-03-18,新目标：找到稳定的水源,New goal: find a steady water source
+W3-03-19,小叶子能长出来，说明这里的土能种东西！{ark}，我们有种子！,"If a little leaf can grow here, this soil can grow things! {ark}, we have seeds!"
+W3-03-20,种植区已解锁。,Farm plots unlocked.
+W3-04-01,维修站里面我们还没进去过呢！{ark}，去看看嘛！,"We've never been inside the repair station! {ark}, let's go look!"
+W3-04-02,可选目标：进维修站里面看看,Optional goal: look inside the repair station
+W3-04-03,扫描仪：检测到密封容器,Scanner: sealed container detected
+W3-04-04,旧时代应急种子罐（密封）：内有多种种子，部分可能仍能发芽,Old-era emergency seed jar (sealed): holds many kinds of seeds; some may still sprout
+W3-04-05,种子！我们可以自己种了！,Seeds! Now we can plant things ourselves!
+W3-04-06,种植区已解锁。播种需要生态技能，种子会不会发芽，和生态技能、水、土有关。,"Farm plots unlocked. Sowing needs ecology skill; whether seeds sprout depends on ecology, water and soil."
+W3-04-08,种子！可以种树吗？,Seeds! Can we plant trees?
+W3-04-09,……可是外面全是石头，土是灰的，种下去能长出来吗？先收好！,...But it's all rocks out there and the soil is grey. Would anything grow? Let's keep them safe for now!
+W3-04-10,已获得：旧种子罐（种植区暂未开放）,Obtained: old seed jar (farm plots not open yet)
+W3-05-01,叶子是 ARK-01 找到的！你立大功了！,ARK-01 found the leaf! You did great!
+W3-05-02,一直叫你 ARK-01 好奇怪哦……我要给你起个名字！,Calling you ARK-01 all the time is weird... I'm going to give you a name!
+W3-05-04,"就叫你""阿克""吧！ARK，阿克！","I'll call you ""Arky""! ARK, Arky!"
+W3-05-05,ARK-01 现在叫：{ark},ARK-01 is now called: {ark}
