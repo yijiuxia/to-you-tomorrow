@@ -4,6 +4,9 @@ extends RefCounted
 
 const SUPPORTIVE: Array[String] = ["encourage", "comfort"]
 const EFFECT_STATS: Array[String] = ["confidence", "trust", "mood"]
+const LIE_CLAIMS: Array[String] = ["false", "unknown"]
+const TRUST := "trust"
+const LIE := "lie"  # 记在聊天态度里，情绪惯性把它当成"被骗"
 
 
 ## 本周能聊几轮 = 基础 + 信任 ÷ 除数 + 心情加成 − 体力减成，再截断到范围内
@@ -42,6 +45,32 @@ static func round_changes(attitude: String, words: String, used: Dictionary) -> 
 			result[id] = allowed
 			used[id] = so_far + allowed
 	return result
+
+
+## 玩家说的往事不对或没这回事，算"乱说"。每周前几次不追究（可能是玩家记错、或判断错了），
+## 之后每次扣信任（yi 定 2026-11-08：反复乱说才扣分）。也受每周封顶限制。返回要改的属性。
+static func lie_changes(claim: String, store: MemoryStore, used: Dictionary) -> Dictionary:
+	if not LIE_CLAIMS.has(claim):
+		return {}
+	if store.lies_week != GameState.week:
+		store.lies_week = GameState.week
+		store.lies_count = 0
+	store.lies_count += 1
+	if store.lies_count <= int(DataDB.balance("chat_lie_free_times")):
+		return {}
+	var cap := int(DataDB.balance("chat_change_cap"))
+	var so_far := int(used.get(TRUST, 0))
+	var allowed := clampi(so_far + int(DataDB.balance("chat_lie_trust")), -cap, cap) - so_far
+	if allowed == 0:
+		return {}
+	used[TRUST] = so_far + allowed
+	return {TRUST: allowed}
+
+
+## 这次再乱说就要追究了吗（让她在回复里表现出生气）
+static func lie_would_count(store: MemoryStore) -> bool:
+	var count := store.lies_count if store.lies_week == GameState.week else 0
+	return count + 1 > int(DataDB.balance("chat_lie_free_times"))
 
 
 static func _contains_any(text: String, words: PackedStringArray) -> bool:

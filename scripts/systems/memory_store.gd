@@ -24,6 +24,8 @@ var recent: Array[Dictionary] = []  # { speaker, text }
 var tone: Array[String] = []        # 上一次聊天里玩家每轮的态度，情绪惯性用（ChatMood）
 var tone_week := 0                  # tone 是第几周记下的
 var noted_flags: Array[String] = [] # 已经记成记忆的剧情标记，不重复记
+var lies_week := 0                  # 玩家乱说的次数是第几周数的
+var lies_count := 0                 # 这周玩家说了几次不对的往事
 
 
 ## 记一条核心记忆。key 相同的会被替换：她改口说最喜欢别的颜色，就记新的
@@ -153,7 +155,7 @@ static func stopwords() -> PackedStringArray:
 
 
 func to_dict() -> Dictionary:
-	return {"core": core, "events": events, "recent": recent, "tone": tone, "tone_week": tone_week, "noted_flags": noted_flags}
+	return {"core": core, "events": events, "recent": recent, "tone": tone, "tone_week": tone_week, "noted_flags": noted_flags, "lies_week": lies_week, "lies_count": lies_count}
 
 
 static func from_dict(data: Dictionary) -> MemoryStore:
@@ -171,4 +173,6 @@ static func from_dict(data: Dictionary) -> MemoryStore:
 	store.tone_week = int(data.get("tone_week", 0))
 	for flag: String in data.get("noted_flags", []):
 		store.noted_flags.append(flag)
+	store.lies_week = int(data.get("lies_week", 0))
+	store.lies_count = int(data.get("lies_count", 0))
 	return store

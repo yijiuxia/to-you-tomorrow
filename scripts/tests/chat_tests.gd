@@ -34,6 +34,7 @@ func _ready() -> void:
 	test_copied_memory()
 	test_claims()
 	await test_story_free_talk()
+	test_repeated_lies()
 	await test_event_chat_flow()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -449,6 +450,32 @@ func test_story_free_talk() -> void:
 	_eq(WeekSystem.chat_rounds_left(), rounds, "不占每周聊天轮数")
 	_eq(GameState.stats, before, "后备句不改数值")
 	talk.free()
+
+
+func test_repeated_lies() -> void:
+	_fresh()
+	GameState.week = 3
+	var store: MemoryStore = GameState.memory
+	var used := {}
+	_eq(ChatRules.lie_changes("true", store, used), {}, "说对了不扣")
+	_eq(ChatRules.lie_changes("none", store, used), {}, "不是在说往事不扣")
+	_ok(not ChatRules.lie_would_count(store), "第一次乱说还不追究")
+	_eq(ChatRules.lie_changes("false", store, used), {}, "第一次乱说不扣")
+	_ok(ChatRules.lie_would_count(store), "再乱说就要追究")
+	_eq(ChatRules.lie_changes("unknown", store, used), {"trust": -2}, "第二次乱说扣信任")
+	_eq(ChatRules.lie_changes("false", store, used), {"trust": -2}, "第三次也扣")
+	_eq(ChatRules.lie_changes("false", store, used), {"trust": -1}, "扣到每周封顶为止")
+	_eq(ChatRules.lie_changes("false", store, used), {}, "封顶后不再扣")
+	GameState.week = 4
+	_eq(ChatRules.lie_changes("false", store, {}), {}, "新的一周重新数")
+	var hint := ModelService.judged_hint({"player_attitude": "neutral", "intent": "none", "claim": "false"}, "x")
+	_ok(hint.contains(Text.t("WK-15-14")), "要追究时她会生气")
+	var tone: Array[String] = ["neutral", "lie", "lie"]
+	ChatMood.remember_tone(store, tone)
+	_eq(ChatMood.state(store), ChatMood.SULKY, "被骗两次，下次开聊还在生气")
+	_ok(ChatMood.hint(ChatMood.SULKY, store).contains(Text.t("WK-07-23")), "生气的理由是被骗")
+	var copy := MemoryStore.from_dict(JSON.parse_string(JSON.stringify(store.to_dict())))
+	_eq(copy.lies_count, store.lies_count, "读档后乱说次数还在")
 
 
 # ---------- 工具 ----------

@@ -3,7 +3,7 @@ extends RefCounted
 ## 情绪惯性（比赛版 4.5）：上次聊天你凶了她、敷衍她，这次她还记着；累了、心情差话就少。
 ## 只决定"提示模型用什么语气、说多长"，不改任何数值。
 
-const NEGATIVE: Array[String] = ["ignore", "restrict"]
+const NEGATIVE: Array[String] = ["ignore", "restrict", "lie"]
 const POSITIVE: Array[String] = ["encourage", "comfort"]
 const SULKY := "sulky"
 const SLEEPY := "sleepy"
@@ -48,6 +48,8 @@ static func hint(mood: String, store: MemoryStore) -> String:
 	if mood == SULKY:
 		# 主要是被敷衍还是被管着，生气的理由不一样
 		reason = Text.t("WK-07-21") if store.tone.count("ignore") >= store.tone.count("restrict") else Text.t("WK-07-22")
+		if store.tone.count(ChatRules.LIE) > maxi(store.tone.count("ignore"), store.tone.count("restrict")):
+			reason = Text.t("WK-07-23")
 	return Text.f(str(row["hint_key"]), {"reason": reason})
 
 

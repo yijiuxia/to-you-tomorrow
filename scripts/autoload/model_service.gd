@@ -205,6 +205,8 @@ static func judged_hint(judged: Dictionary, fact := "") -> String:
 			hint += "\n" + Text.f("WK-15-12", {"fact": fact})
 		CLAIM_UNKNOWN:
 			hint += "\n" + Text.t("WK-15-13")
+	if ChatRules.LIE_CLAIMS.has(str(judged.get("claim", ""))) and ChatRules.lie_would_count(GameState.memory):
+		hint += "\n" + Text.t("WK-15-14")
 	return hint
 
 

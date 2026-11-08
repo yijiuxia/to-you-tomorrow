@@ -117,6 +117,7 @@ func _apply_reply(reply: Dictionary, player_text: String) -> void:
 			MemoryWriter.record_correction(GameState.memory, player_text)
 		_last_attitude = reply["player_attitude"]
 		_attitudes.append(_last_attitude)
+		_apply_lie(reply)
 		ChatMood.remember_tone(GameState.memory, _attitudes)
 		_lines.append({"speaker": MemoryStore.SPEAKER_PLAYER, "text": player_text})
 		_lines.append({"speaker": MemoryStore.SPEAKER_GIRL, "text": reply["reply"]})
@@ -124,6 +125,15 @@ func _apply_reply(reply: Dictionary, player_text: String) -> void:
 	for i in OPTION_BUTTON_COUNT:
 		_option_buttons[i].text = reply["options"][i]
 		_option_buttons[i].visible = has_more
+
+
+## 反复乱说：扣信任，并记成一次"被骗"，下次开聊她会为这个生气
+func _apply_lie(reply: Dictionary) -> void:
+	var lie := ChatRules.lie_changes(str(reply.get("claim", "")), GameState.memory, GameState.chat_week_changes)
+	for id: String in lie:
+		GameState.change_stat(id, lie[id])
+	if not lie.is_empty():
+		_attitudes.append(ChatRules.LIE)
 
 
 func _refresh_rounds() -> void:
