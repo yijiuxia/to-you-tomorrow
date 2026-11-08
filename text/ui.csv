@@ -251,7 +251,7 @@ UI-51-02,她的名字,Her name
 UI-51-03,你的名字（她会这样叫你）,Your name (what she'll call you)
 UI-51-04,确定,OK
 UI-51-05,朝禾,Zhaohe
-UI-51-06,新星,Xinxing
+UI-51-06,新星,Nova
 UI-51-07,名字最多 {count} 个字，空着就用默认名字。,Up to {count} characters. Leave it blank to use the default name.
 UI-52-01,暂停,Paused
 UI-52-02,继续游戏,Resume
