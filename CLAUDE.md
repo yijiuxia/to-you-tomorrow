@@ -52,6 +52,38 @@
 - 不提交 `.godot/`（Godot 自动生成的缓存）。
 - 模型文件（.gguf，几个 G）不要放进仓库。放在 `models/`，文件名写在 `data/balance.csv` 的 `model_file`；打包后放在游戏程序旁边的 `models/`。
 
+## 多线程分工（yi 定，必须遵守）
+
+几个线程同时写这个项目。每个线程开工前先读本节，只做自己的模块。模块编号见 `制作清单（草稿）.md`。
+
+| 线程 | 负责的模块 | 只改这些文件 | 分支 |
+| --- | --- | --- | --- |
+| A 地球（总集成） | 4 地球建造、5 ARK-01、6 她影响建造；合并各线程 | `scripts/earth/`、`scripts/systems/earth_*.gd`、`data/earth_*.csv`、`data/buildings.csv`、`scenes/tests/earth_*`、`scripts/tests/earth_*` | `main` |
+| B 人物 AI | 3 聊天、记忆、鲜活感 | `scripts/autoload/model_service.gd`、`scripts/systems/chat_*.gd`、`scripts/systems/memory_*.gd`、`scripts/ui/chat_screen.gd`、`text/prompts/`、`data/model_*`、`data/chat_*`、`data/memory_*`、`tests/model_test/`、`scripts/tests/model_test.gd` | `thread/ai` |
+| C 界面与流程 | 8 界面、存档、设置、英文切换；7 剧情播放器的框架（文案到了再填） | `scripts/ui/`（聊天画面除外）、`scripts/systems/save_*.gd`、`scripts/systems/story_*.gd`、`story/`、`addons/dialogue_manager/` | `thread/ui` |
+| 策划线程 | 文案、训练数据（不写代码） | Obsidian 和项目文件夹里的策划文档 | — |
+
+**共用文件**（大家都会碰）：`data/balance.csv`、`text/*.csv`、`scripts/autoload/game_state.gd`、`scripts/autoload/text.gd`、`scripts/main.gd`、`project.godot`、`CLAUDE.md`。规则：
+
+1. 只在末尾**追加**自己的行或变量，不改、不删、不挪别人的。要改别人的，先在线程里说明，由 A 合并时处理。
+2. 新编号用自己的号段，避免撞号：
+   - `text/` 的 UI 编号：A 用 UI-13～UI-39，B 用 UI-40～UI-49，C 用 UI-50～UI-79。WK、FB 归 B；OP、W1～W7、TJ、ED、SV 由 C 的剧情框架接入。
+   - `balance.csv` 的 id 前缀：A 用 `earth_`、`ark_`、`event_`；B 用 `model_`、`chat_`、`memory_`；C 用 `save_`、`ui_`、`story_`。
+3. 中英文都要做：新加的文字两列都填。英文可以先写临时译文，但不能留空。
+
+**分支和合并**：
+
+1. B、C 必须在自己的工作树（Worktree）和分支里改，不直接改 `main`，也不改 E:\GODOT\to-you-tomorrow 这个文件夹里的文件（yi 的 Godot 编辑器开着它）。
+2. 每完成一块能运行的就提交到自己的分支，提交说明用中文。
+3. 合并到 `main` 由线程 A 做：先跑全部自动测试，退出码都是 0 才合并；冲突由 A 解决，拿不准的问 yi。
+4. 工作树里没有大文件（不进仓库），开工时要自己准备：NobodyWho 的 dll 按 `addons/README.md` 放好；模型用 `--model=` 指到 `E:\GODOT\to-you-tomorrow\models\qwen3.5-2b-q4_k_m.gguf`，不要复制一份。
+
+**测试**：
+
+1. 不再每一步停下来等 yi 试玩。模块写完跑 `scenes/tests/` 里的自动测试，全部接起来后 yi 完整试玩一次。
+2. 自己的模块要有自己的测试，加进 `scenes/tests/`。
+3. 带模型的测试很占显卡，几个线程同时跑会变慢。能不带模型测的就不带（加 `--model=` 指向不存在的文件，会走后备句）。
+
 ## 当前进度
 
 - 已有：文件夹结构、5 张数据表、DataDB、GameState、模型测试画面（`scenes/tests/model_test.tscn`）。
@@ -60,5 +92,6 @@
 - yi 试玩后定：属性（含性格、信任）都显示数字；属性的文字说明只在鼠标悬停时显示；课程直接写名字和属性变化，课程说明在悬停时显示。聊天里不显示情绪标签。demo 只有默认微笑和眨眼两个表情，其他表情以后开发；模型的 emotion 字段先保留不用。
 - 第 2 步：A 区地球玩法能玩（全是方块，建模还没做好）：俯视放蓝图和清理、水电网络、恢复度、周结算、机器人寻路、第三人称 ARK-01、游戏滤镜。测试版按 F9 加满技能和材料，打包版没有这个键。
 - yi 定：游戏共 7 周。第 1 周只有课程教学（小镇锁着），第 2 周早上才第一次结算课并开启建造教学，第 3 周后时间跳跃，第 7 周后结局。第 1 周不恢复体力，让课程数值核算保持不变。
-- 下一步：按 `制作清单（草稿）.md`（2026-11-08 改成按系统模块）的顺序做：模块 3 → 4 → 5 → 6 → 8，文案到了做 7，模型到了做 9。yi 定：不再每一步停下来等试玩，每个模块写完跑自动测试，全部接起来后 yi 完整试玩一次。
+- 下一步：按 `制作清单（草稿）.md`（2026-11-08 改成按系统模块）和上面的「多线程分工」并行做；文案到了做 7，模型到了做 9。yi 定：不再每一步停下来等试玩，每个模块写完跑自动测试，全部接起来后 yi 完整试玩一次。
 - 文案正在重新讨论，代码里先用临时文字，编号保持一致。
+- yi 已定：存档只做每周自动存 + 继续；中英文都做；温室不管建没建完都进结局。
