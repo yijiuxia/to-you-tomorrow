@@ -1,5 +1,5 @@
 id,region,kind,x,z,w,h,work_units,metal,electronics,note
-plaza,a,big,9,4,8,6,2,4,1,维修站前广场；数值来自 demo 文案
+plaza,a,big,9,4,8,6,2,8,2,维修站前广场；策划线程 2026-11-08 改成金属 8、电子 2
 yard,a,big,3,10,5,4,2,3,1,车间旁的堆场
 road_w,a,big,1,17,6,3,1,2,0,西边的破路
 road_e,a,big,22,17,7,3,1,2,0,东边的破路
