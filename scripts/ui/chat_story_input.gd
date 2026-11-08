@@ -50,6 +50,9 @@ func submit(raw: String) -> void:
 		for id: String in changes:
 			GameState.change_stat(id, changes[id])
 		MemoryWriter.record_turn(GameState.memory, text, reply["reply"])
+		var lie := ChatRules.lie_changes(str(reply.get("claim", "")), GameState.memory, GameState.chat_week_changes)
+		for id: String in lie:
+			GameState.change_stat(id, lie[id])
 		if reply.get("claim", "") == ModelService.CLAIM_TRUE:
 			MemoryWriter.record_correction(GameState.memory, text)
 	replied.emit(reply["reply"])

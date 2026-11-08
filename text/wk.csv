@@ -104,3 +104,5 @@ WK-15-21,第 {week} 周，{player}提醒我：“{line}”,"Week {week}: {player
 WK-16-01,"【剧情】刚才：{story}
 {player}没有选现成的回答，而是自己对你说了一句。你回一句，接着眼前的事说，不要岔开。","[Story] Just now: {story}
 {player} didn't pick a ready answer and said something of their own. Reply once, staying on what's happening; don't change the subject."
+WK-07-23,好几次瞎说骗你,kept making things up to fool you
+WK-15-14,（{player}已经不是第一次乱说了，你有点生气，语气冷一点，说你不想听瞎话。）,({player} has made things up more than once now. You're annoyed; sound cooler and say you don't want to hear made-up stuff.)
