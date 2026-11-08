@@ -485,6 +485,9 @@ func test_ark_naming() -> void:
 	_eq(ChatLines.pick_quoted_name("就叫你“小芽”吧！因为你找到了小芽。"), "小芽", "从中文引号里取出名字")
 	_eq(ChatLines.pick_quoted_name("叫你'嘀嘀'好不好？"), "嘀嘀", "单引号也行")
 	_eq(ChatLines.pick_quoted_name("就叫你小芽吧！"), "", "没有引号就取不出来")
+	_eq(ChatLines.pick_quoted_name("叫它‘小绿’吧！"), "小绿", "对玩家说“叫它”也算")
+	_eq(ChatLines.pick_quoted_name("你叫它‘阳光小精灵’吧？"), "", "超过 4 个字不要")
+	_eq(ChatLines.pick_quoted_name("我叫你‘名字’吧？"), "", "照抄提示里的“名字”不算")
 	_eq(ChatLines.pick_quoted_name("就叫你“超级无敌大英雄”吧！"), "", "名字太长不要")
 	Text.language = "en"
 	_eq(ChatLines.pick_quoted_name("I'll call you \"Sprout\"! You found it."), "Sprout", "英文也能取")

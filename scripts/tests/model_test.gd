@@ -232,6 +232,9 @@ func _run_lines() -> void:
 		for activity in ["window", "daydream"]:
 			_say("主动开口（%s）：%s" % [activity, (await ChatLines.idle(activity, rng))["reply"]])
 		_say("小镇评论：" + str((await ChatLines.earth_comment(Text.t("UI-21-02")))["reply"]))
+		_say("看到植物（剧情）：" + str((await ChatLines.story_line("W3-03-05"))["reply"]))
+		var named := await ChatLines.name_ark()
+		_say("起名：" + (str(named) if not named.is_empty() else "（取不出名字，用默认名）"))
 		var talk: Array[Dictionary] = [
 			{"speaker": MemoryStore.SPEAKER_PLAYER, "text": "今天累不累？"},
 			{"speaker": MemoryStore.SPEAKER_GIRL, "text": "有一点，不过我把净水站修好了！"},

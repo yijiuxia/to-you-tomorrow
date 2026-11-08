@@ -99,6 +99,8 @@ static func pick_quoted_name(reply: String) -> String:
 	var limit := int(DataDB.balance("chat_ark_name_max_en" if Text.language == "en" else "chat_ark_name_max_zh"))
 	if name.is_empty() or name.length() > limit or name.to_lower().contains("ark-01"):
 		return ""
+	if str(DataDB.balance("chat_ark_name_banned")).to_lower().split("|").has(name.to_lower()):
+		return ""
 	return name
 
 
