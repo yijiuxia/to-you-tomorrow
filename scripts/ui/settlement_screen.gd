@@ -14,7 +14,7 @@ var _next_line := 0
 func _ready() -> void:
 	var box := UiKit.page(self)
 	UiKit.title(box, Text.f("WK-01-02", {"week": GameState.week}))
-	UiKit.label(box, Text.f("WK-01-01", {"player": GameState.player_name}))
+	var morning := UiKit.label(box, "")  # 人物 AI 线程改：早安第 4 周起由模型说，说完再填（ChatLines.morning_line）
 	_lines = VBoxContainer.new()
 	box.add_child(_lines)
 	UiKit.spacer(box)
@@ -22,9 +22,21 @@ func _ready() -> void:
 
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	for result in WeekSystem.settle_schedule(rng):
+	var results := WeekSystem.settle_schedule(rng)
+	for result in results:
 		_pending.append(_line_text(result))
 	_reveal_next()
+	_add_girl_lines(morning, results)
+
+
+## 人物 AI 线程加：早安、上课小事件由她说（模型失败用固定句），同时把上周的课记进她的记忆
+func _add_girl_lines(morning: Label, results: Array[Dictionary]) -> void:
+	morning.text = await ChatLines.morning_line(results)
+	for result in results:
+		if result["event"] and is_inside_tree():
+			var line := await ChatLines.course_event(result["course"], Schedule.day_name(result["day"]))
+			if is_inside_tree():
+				UiKit.label(_lines, Text.f("UI-41-11", {"text": line["reply"]}))
 
 
 func _line_text(result: Dictionary) -> String:

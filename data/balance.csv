@@ -83,3 +83,5 @@ chat_line_max_zh,30,"说一句"中文最多几个字
 chat_line_max_en,22,"说一句"英文最多几个词
 memory_summary_importance,1,聊天摘要的重要程度
 memory_reflection_importance,2,每周感想的重要程度
+chat_comment_wait_sec,1.5,改完课表停手多少秒后她才评论（只评论最后的课表）
+model_separate_judge,1,1 = 先单独判断玩家的态度和 intent 再让她说话（准，但每句多约 0.5 秒）；微调后判断够准可改成 0

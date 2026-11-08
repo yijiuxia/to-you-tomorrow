@@ -4,6 +4,7 @@ extends Node
 
 const SCHEMA_PATH := "res://data/model_output_schema.json"
 const LINE_SCHEMA_PATH := "res://data/model_line_schema.json"
+const JUDGE_SCHEMA_PATH := "res://data/model_judge_schema.json"
 const MODELS_DIR := "models"
 const REQUIRED_KEYS: Array[String] = ["reply", "emotion", "player_attitude", "intent", "options"]
 const NO_ACTION := "none"
@@ -20,6 +21,8 @@ var _model: NobodyWhoModel = null
 var _chat: NobodyWhoChat = null        # 聊天：带完整格式（态度、intent、选项）
 var _line_chat: NobodyWhoChat = null   # 说一句：只要文字和动作
 var _line_busy := false
+var _judge_chat: NobodyWhoChat = null  # 判断：只判断态度和 intent，不带人设
+var _judge_prompt_used := ""
 var _junk := RegEx.create_from_string(JUNK_PATTERN)
 var _stuck := false  # 超时后叫它停也停不下来
 var _said: Array[String] = []  # 这段对话里双方说过的话
@@ -41,6 +44,11 @@ func ensure_loaded() -> void:
 	if _model != null:
 		_chat = await NobodyWhoChat.create(_model, _chat_config(SCHEMA_PATH))
 		_line_chat = await NobodyWhoChat.create(_model, _chat_config(LINE_SCHEMA_PATH))
+		if int(DataDB.balance("model_separate_judge")) == 1:
+			var judge_config := _chat_config(JUDGE_SCHEMA_PATH)
+			_judge_prompt_used = judge_prompt()
+			judge_config["system_prompt"] = _judge_prompt_used
+			_judge_chat = await NobodyWhoChat.create(_model, judge_config)
 	status = Status.READY if _chat != null and _line_chat != null else Status.FAILED
 
 
@@ -93,16 +101,26 @@ func start_conversation(system_prompt: String) -> void:
 
 ## 发一句话，总会返回一份合格的回复。失败时 fallback 为 true。
 ## 连续超时说明模型卡死了，之后不再等它，这一局聊天都用后备句，不让玩家反复干等。
-func ask(text: String) -> Dictionary:
+## text 是发给模型的整段话（玩家原话 + 附带的记忆和提示）；player_text 是玩家原话，用来判断态度。
+func ask(text: String, player_text := "") -> Dictionary:
 	await _wait_until_loaded()
 	if status != Status.READY:
 		return fallback_reply()
+	var said := player_text if not player_text.is_empty() else text
+	# 先单独判断态度和 intent：人设写得越生动，小模型边演边判断越不准（实测从 36/50 掉到 22/50），
+	# 分开判断能保住准确度。判断结果告诉她，让回复和判断一致。微调后可以在 balance 里关掉
+	var judged := {}
+	if int(DataDB.balance("model_separate_judge")) == 1:
+		judged = await judge(said)
+		if not judged.is_empty():
+			text += "\n" + judged_hint(judged)
 	for _attempt in 1 + int(DataDB.balance("model_retries")):
-		var raw := await _generate(_chat, text, float(DataDB.balance("model_timeout_sec")))
+		var raw := await _generate_with(_chat, text, float(DataDB.balance("model_timeout_sec")))
 		var parsed := parse_reply(raw)
 		# 和这段对话里说过的话一字不差就不要，再生成一次
 		if not parsed.is_empty() and not _said.has(str(parsed["reply"]).strip_edges()):
-			_said.append(text.strip_edges())
+			parsed.merge(judged, true)
+			_said.append(said.strip_edges())
 			_said.append(str(parsed["reply"]).strip_edges())
 			_replace_said_options(parsed)
 			return parsed
@@ -123,6 +141,41 @@ func _wait_until_loaded() -> void:
 		push_warning("模型加载超时，这次聊天用后备句")
 
 
+## 只判断玩家这句话的态度和 intent，用一段不带人设的短提示。失败返回空字典（就用聊天里顺带的判断）
+func judge(player_text: String) -> Dictionary:
+	if _judge_chat == null:
+		return {}
+	# 名字和语言可能在加载后才改（起名、设置），变了才重设人设，省得每次重算
+	var prompt := judge_prompt()
+	if prompt != _judge_prompt_used:
+		_judge_chat.set_system_prompt(prompt)
+		_judge_prompt_used = prompt
+	_judge_chat.reset_history()
+	var raw := await _generate_with(_judge_chat, player_text, float(DataDB.balance("model_timeout_sec")))
+	return parse_judge(raw)
+
+
+static func parse_judge(raw: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(raw)
+	if not parsed is Dictionary or not (parsed as Dictionary).has("player_attitude") or not (parsed as Dictionary).has("intent"):
+		return {}
+	if not DataDB.table("attitude_effects").has(str(parsed["player_attitude"])):
+		return {}
+	return {"player_attitude": str(parsed["player_attitude"]), "intent": str(parsed["intent"])}
+
+
+static func judge_prompt() -> String:
+	var template := FileAccess.get_file_as_string("res://text/prompts/judge_%s.txt" % Text.language)
+	return template.format({"girl": GameState.girl_name, "player": GameState.player_name})
+
+
+## 把判断结果写成一句提示，跟着玩家的话发给她
+static func judged_hint(judged: Dictionary) -> String:
+	var intent := str(judged["intent"])
+	var wants := Text.t("WK-13-10") if intent == "none" else Text.f("WK-13-11", {"intent": Text.t("UI-12-" + intent)})
+	return Text.f("WK-13-01", {"attitude": Text.t("WK-13-" + str(judged["player_attitude"])), "wants": wants})
+
+
 ## 让她"说一句"（早安、周总结、课表评论、主动开口……）：每次单独设人设，不接着聊天的历史。
 ## 返回 {reply, action, fallback}。失败时用 fallback_text，绝不让玩家干等。
 func say_line(system_prompt: String, request: String, fallback_text: String) -> Dictionary:
@@ -134,7 +187,7 @@ func say_line(system_prompt: String, request: String, fallback_text: String) -> 
 	_line_busy = true
 	_line_chat.set_system_prompt(system_prompt)
 	_line_chat.reset_history()
-	var raw := await _generate(_line_chat, request, float(DataDB.balance("model_line_timeout_sec")))
+	var raw := await _generate_with(_line_chat, request, float(DataDB.balance("model_line_timeout_sec")))
 	_line_busy = false
 	if _stuck:
 		status = Status.FAILED
@@ -163,8 +216,13 @@ func _wait_turn() -> void:
 		await get_tree().create_timer(POLL_SEC).timeout
 
 
+## 用聊天的对话生成（流程测试的超时测试在用）
+func _generate(text: String, timeout_sec: float) -> String:
+	return await _generate_with(_chat, text, timeout_sec)
+
+
 ## 边收边等，超时就让模型停下。返回收到的全部文字；超时返回空字符串。
-func _generate(chat: NobodyWhoChat, text: String, timeout_sec: float) -> String:
+func _generate_with(chat: NobodyWhoChat, text: String, timeout_sec: float) -> String:
 	var job := {"done": false, "text": ""}
 	_stream_into(chat, text, job)
 	# 用真实时间算：模型占满显卡时画面会掉帧，按帧累加的话"30 秒"可能变成几十分钟

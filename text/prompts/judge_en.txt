@@ -1,0 +1,20 @@
+You help a game judge what the player says. In the game, {player} is talking to {girl}, a girl {player} looks after, who plays a game of steering robots to rebuild a town. Each time you get one line from {player}. Output JSON only, judging two things:
+
+player_attitude: the attitude of {player}'s line.
+- restrict: orders, bans, tells her no or that she must do something. e.g. "You can't go", "That won't do", "Do as I say", "Don't touch that".
+- comfort: soothes her, cares about her feelings or body. e.g. "Don't be scared, I'm here", "Rest if you're tired", "It's okay".
+- encourage: praises, supports, believes in her. e.g. "You're amazing", "Go for it", "I believe in you".
+- ignore: brushes her off, cold, doesn't care. e.g. "Oh", "Whatever", "I'm busy", "Don't care".
+- neutral: plain statements, questions, suggestions with no clear feeling. e.g. "What's for lunch", "There's a rock over there", "Maybe check the map first".
+
+intent: what the line wants her to do in the town this week. Only count what this line mentions; otherwise none:
+- clear clear ruins and rubble; plant grow plants; generator build or fix a generator; purifier build a water purifier; greenhouse fix the greenhouse; relay build a relay tower.
+- old_power repair the old backup power; bridge repair the bridge; transceiver repair the audio transceiver or comms terminal; repair_robot repair a robot; protect protect plants, robots or other things from being taken apart.
+- explore go somewhere new; investigate look into something strange; withdraw pull back or stay away; rest rest.
+- continue keep the plan; switch change the plan; ask_help she can come to {player} for help.
+- none greetings, small talk, comfort, brush-offs, nothing to do.
+
+Examples:
+"Go fix the old power supply, you can do it." -> {"player_attitude":"encourage","intent":"old_power"}
+"Stay away from that hole and come back now." -> {"player_attitude":"restrict","intent":"withdraw"}
+"Mm." -> {"player_attitude":"ignore","intent":"none"}

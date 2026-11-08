@@ -87,7 +87,7 @@ func _on_submitted(raw_text: String) -> void:
 
 	# 记忆、设定、收尾提示都跟着这句话发，不中途改人设：改人设会让模型把整段对话重算一遍，最后一轮曾因此卡住
 	var message := ChatPrompt.turn_message(text, _last_attitude, _is_closing_round())
-	var reply := await ModelService.ask(message)
+	var reply := await ModelService.ask(message, text)
 	if not is_inside_tree():
 		return  # 等回复时玩家已经离开了这个画面
 	_thinking.text = ""

@@ -64,6 +64,7 @@ func show_town() -> void:
 func show_week_summary() -> void:
 	var recovered := WeekSystem.end_week()
 	var lines := PageText.week_summary(recovered)
+	lines.append(await ChatLines.week_end_line())  # 人物 AI 线程加：把本周的事记进她的记忆，她说一句周总结
 	_show_page(Text.f("UI-07-01", {"week": GameState.week}), lines, Text.t("UI-06-01"), _after_summary)
 
 

@@ -50,6 +50,11 @@ func _build_girl_block(parent: Control) -> void:
 	note.set_anchors_preset(Control.PRESET_FULL_RECT)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	note.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	# 人物 AI 线程加：她自己做事、偶尔主动开口（比赛版 4.5）
+	var presence := ChatPresence.new()
+	presence.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	presence.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	block.add_child(presence)
 
 
 func _build_stat_panel(parent: Control) -> void:

@@ -25,6 +25,20 @@ static func week_summary(events: PackedStringArray) -> Dictionary:
 	return line
 
 
+## 周结算页用：先把本周的事记成记忆，再让她说一句周总结。返回显示在结算页上的一行
+static func week_end_line() -> String:
+	var events := MemoryWriter.record_week(GameState.memory)
+	var line := await week_summary(events)
+	return Text.f("UI-41-11", {"text": line["reply"]})
+
+
+## 早上课程结算后：记下上周的课，返回早安那一行（她的名字 + 话）
+static func morning_line(results: Array[Dictionary]) -> String:
+	MemoryWriter.record_courses(GameState.memory, results)
+	var line := await morning()
+	return Text.f("UI-41-11", {"text": line["reply"]})
+
+
 ## 改课表时评论一句；照这个课表会累倒的话，告诉模型哪天，让她说得出来
 static func schedule_comment(plan: Array[String], collapse_day: int, day_names: PackedStringArray) -> Dictionary:
 	var names := PackedStringArray()

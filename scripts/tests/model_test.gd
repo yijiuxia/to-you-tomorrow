@@ -15,6 +15,7 @@ const STALL_LIMIT_MS := 60000
 const REQUIRED_KEYS: Array[String] = ["reply", "emotion", "player_attitude", "intent", "options"]
 
 var _chat: NobodyWhoChat
+var _judge: NobodyWhoChat = null  # --judge：先单独判断态度和 intent，和游戏里的 model_separate_judge 一样
 var _log: RichTextLabel
 var _input: LineEdit
 
@@ -40,7 +41,11 @@ func _ready() -> void:
 	}
 
 	var load_start := Time.get_ticks_msec()
-	_chat = await NobodyWhoChat.create(model_path, config)
+	# --judge 时和游戏一样：模型只加载一次，聊天和判断共用
+	var source: Variant = model_path
+	if args.has("judge"):
+		source = await NobodyWhoModel.create(model_path, {})
+	_chat = await NobodyWhoChat.create(source, config)
 	var load_ms := Time.get_ticks_msec() - load_start
 	if _chat == null:
 		_say("模型加载失败，详情看上面的错误信息")
@@ -48,6 +53,13 @@ func _ready() -> void:
 			get_tree().quit(1)
 		return
 	_say("模型加载完成：%d 毫秒，GPU=%s" % [load_ms, str(config["use_gpu"])])
+	if args.has("judge"):
+		_judge = await NobodyWhoChat.create(source, {
+			"system_prompt": ModelService.judge_prompt(),
+			"sampler": ModelService.make_sampler(ModelService.JUDGE_SCHEMA_PATH),
+			"use_gpu": config["use_gpu"],
+			"template_variables": {"enable_thinking": false},
+		})
 
 	if args.has("auto"):
 		await _run_auto(args, load_ms, config["use_gpu"])
@@ -72,7 +84,21 @@ func _run_auto(args: Dictionary, load_ms: int, use_gpu: bool) -> void:
 	var results: Array[Dictionary] = []
 	for row: Dictionary in lines.slice(0, limit):
 		_chat.reset_history()
-		var r := await _ask(row["line"])
+		var judged := {}
+		var judge_ms := 0
+		var line: String = row["line"]
+		if _judge != null:
+			_judge.reset_history()
+			var j := await _ask(row["line"], _judge, false)
+			judge_ms = j["total_ms"]
+			judged = ModelService.parse_judge(j["raw"])
+			if not judged.is_empty():
+				line += "
+" + ModelService.judged_hint(judged)
+		var r := await _ask(line)
+		r.merge(judged, true)
+		r["judge_ms"] = judge_ms
+		r["total_ms"] = int(r["total_ms"]) + judge_ms
 		r["id"] = row["id"]
 		r["line"] = row["line"]
 		r["expected_intent"] = row["expected_intent"]
@@ -90,18 +116,20 @@ func _run_auto(args: Dictionary, load_ms: int, use_gpu: bool) -> void:
 
 
 ## 发一句话，记录首字和总耗时，并检查回复是否符合格式
-func _ask(text: String) -> Dictionary:
+func _ask(text: String, chat: NobodyWhoChat = null, check_shape := true) -> Dictionary:
+	if chat == null:
+		chat = _chat
 	var start := Time.get_ticks_msec()
 	var first_token_ms := -1
 	var response := ""
-	var stream: NobodyWhoTokenStream = _chat.ask(text)
+	var stream: NobodyWhoTokenStream = chat.ask(text)
 	var job := {"done": false, "text": "", "first": -1}
 	_read_stream(stream, job, start)
 	while not job["done"]:
 		await get_tree().create_timer(POLL_SEC).timeout
 		if Time.get_ticks_msec() - start > STALL_LIMIT_MS:
 			print("卡住：", text, " 已生成 ", str(job["text"]).length(), " 字：", str(job["text"]).right(200))
-			_chat.stop_generation()
+			chat.stop_generation()
 			break
 	first_token_ms = job["first"]
 	response = job["text"]
@@ -112,7 +140,7 @@ func _ask(text: String) -> Dictionary:
 		"valid": false,
 	}
 	var parsed: Variant = JSON.parse_string(response)
-	if parsed is Dictionary and _has_required_shape(parsed):
+	if check_shape and parsed is Dictionary and _has_required_shape(parsed):
 		result["valid"] = true
 		result.merge(parsed)
 	return result

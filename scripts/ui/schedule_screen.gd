@@ -11,6 +11,8 @@ var first_time := false  # 第 1 周开场排课
 var _pickers: Array[OptionButton] = []
 var _course_ids: Array[String] = []
 var _warning: Label
+var _comment: ChatComment  # 人物 AI 线程加：改课表时她评论一句
+var _collapse_day := -1
 
 
 func _ready() -> void:
@@ -22,6 +24,8 @@ func _ready() -> void:
 	for day in int(DataDB.balance("week_days")):
 		_add_day_row(box, day)
 	_warning = UiKit.label(box, "")
+	_comment = ChatComment.new()
+	box.add_child(_comment)
 	UiKit.spacer(box)
 	var buttons := UiKit.row(box)
 	UiKit.button(buttons, Text.t("UI-04-03"), _use_last_week)
@@ -48,6 +52,7 @@ func _add_day_row(parent: Control, day: int) -> void:
 func _on_course_changed(picker: OptionButton) -> void:
 	picker.tooltip_text = course_hover_text(_course_ids[picker.selected])
 	_refresh_warning()
+	_ask_comment()
 
 
 ## yi 定的：课程名和属性变化直接显示，这门课是干什么的放在鼠标悬停里。
@@ -80,6 +85,7 @@ func _refresh_warning() -> void:
 	if GameState.week >= int(DataDB.balance("first_class_week")):
 		start["stamina"] = GameState.clamp_value("stamina", int(start["stamina"]) + int(DataDB.balance("stamina_weekly_recover")), start)
 	var day := CourseSystem.first_collapse_day(_current_plan(), start)
+	_collapse_day = day
 	_warning.text = Text.f("UI-04-06", {"day": day_name(day)}) if day >= 0 else ""
 
 
@@ -99,6 +105,15 @@ func _fill(plan: Array[String]) -> void:
 		_pickers[day].select(_course_ids.find(plan[day]))
 		_pickers[day].tooltip_text = course_hover_text(plan[day])
 	_refresh_warning()
+	_ask_comment()
+
+
+## 人物 AI 线程加：改完课表她评论一句，会累倒的话她也知道是哪天
+func _ask_comment() -> void:
+	var days := PackedStringArray()
+	for day in _pickers.size():
+		days.append(day_name(day))
+	_comment.request(_current_plan(), _collapse_day, days)
 
 
 func _save() -> void:

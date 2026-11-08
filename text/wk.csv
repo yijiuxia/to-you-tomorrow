@@ -82,3 +82,11 @@ WK-12-07,数窗外的星星,counting the stars outside
 WK-12-08,写小镇规划笔记,writing town-planning notes
 WK-12-09,修一个旧零件,fixing an old part
 WK-12-10,翻旧地球档案,browsing the old Earth archive
+WK-13-01,（你听出来了：{player}这句话{attitude}，{wants}。你的回复要接得上。）,"(You can tell: {player} {attitude}, and {wants}. Reply accordingly.)"
+WK-13-encourage,在鼓励你、夸你,is encouraging you
+WK-13-restrict,在管着你、不让你随便做,is restricting you
+WK-13-comfort,在安慰你、关心你,is comforting you
+WK-13-ignore,在敷衍你,is brushing you off
+WK-13-neutral,只是普通地说话,is just talking normally
+WK-13-10,没让你做什么事,isn't asking you to do anything
+WK-13-11,想让你：{intent},wants you to: {intent}
