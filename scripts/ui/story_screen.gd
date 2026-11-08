@@ -27,6 +27,7 @@ var _busy := false          # 正在向 Dialogue Manager 取下一句（它是�
 var _shown_chars := 0.0
 var _typed := true          # 这一句已经全部显示出来了
 var _auto_wait := 0.0
+var free_talk: ChatStoryInput = null  # 人物 AI 线程加：剧情选项下的自由聊天（自动测试也用它）
 
 
 func _ready() -> void:
@@ -164,6 +165,9 @@ func _show_choices() -> void:
 		if not response.is_allowed:
 			continue
 		UiKit.button(_choices, StoryRunner.text_of(response), choose.bind(i))
+	# 人物 AI 线程加：选项下面可以自己对她说一句，每个选项只能用一次，不占聊天轮数（yi 定）
+	free_talk = ChatStoryInput.new(StoryRunner.text_of(line))
+	_choices.add_child(free_talk)
 
 
 func _clear_choices() -> void:
