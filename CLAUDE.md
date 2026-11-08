@@ -59,7 +59,7 @@
 | 线程 | 负责的模块 | 只改这些文件 | 分支 |
 | --- | --- | --- | --- |
 | A 地球（总集成） | 4 地球建造、5 ARK-01、6 她影响建造；合并各线程 | `scripts/earth/`、`scripts/systems/earth_*.gd`、`data/earth_*.csv`、`data/buildings.csv`、`scenes/tests/earth_*`、`scripts/tests/earth_*` | `main` |
-| B 人物 AI | 3 聊天、记忆、鲜活感 | `scripts/autoload/model_service.gd`、`scripts/systems/chat_*.gd`、`scripts/systems/memory_*.gd`、`scripts/ui/chat_screen.gd`、`scripts/ui/chat_presence.gd`、`scripts/ui/chat_comment.gd`、`scripts/ui/chat_event_panel.gd`、`text/prompts/`、`data/model_*`、`data/chat_*`、`data/memory_*`、`tests/model_test/`、`scripts/tests/model_test.gd` | `thread/ai` |
+| B 人物 AI | 3 聊天、记忆、鲜活感 | `scripts/autoload/model_service.gd`、`scripts/systems/chat_*.gd`、`scripts/systems/memory_*.gd`、`scripts/ui/chat_screen.gd`、`scripts/ui/chat_presence.gd`、`scripts/ui/chat_comment.gd`、`scripts/ui/chat_event_panel.gd`、`scripts/ui/chat_story_input.gd`、`text/prompts/`、`data/model_*`、`data/chat_*`、`data/memory_*`、`tests/model_test/`、`scripts/tests/model_test.gd` | `thread/ai` |
 | C 界面与流程 | 8 界面、存档、设置、英文切换；7 剧情播放器的框架（文案到了再填） | `scripts/ui/`（聊天画面除外）、`scripts/systems/save_*.gd`、`scripts/systems/story_*.gd`、`story/`、`addons/dialogue_manager/` | `thread/ui` |
 | 策划线程 | 文案、训练数据（不写代码） | Obsidian 和项目文件夹里的策划文档 | — |
 
