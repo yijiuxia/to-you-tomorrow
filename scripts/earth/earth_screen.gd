@@ -245,6 +245,7 @@ func debug_boost() -> void:
 	var skills := int(DataDB.balance("debug_skill_boost"))
 	for id in ["mechanics", "ecology", "comms"]:
 		GameState.change_stat(id, skills)
+	GameState.flags["seeds_from_plant"] = true  # 测试时直接打开种植区
 	world.metal += int(DataDB.balance("debug_material_boost"))
 	world.electronics += int(DataDB.balance("debug_material_boost"))
 	world.changed.emit()

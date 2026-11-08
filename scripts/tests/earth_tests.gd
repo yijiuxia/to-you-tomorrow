@@ -36,6 +36,8 @@ func _ready() -> void:
 	test_threshold_behaviors()
 	test_week_goal()
 	test_events()
+	test_farm_unlock()
+	test_germination()
 	print("地球测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -70,6 +72,7 @@ func test_place_blocked_reasons() -> void:
 	w.metal = 100
 	_eq(w.can_place("recycler", 29, 0).get("key"), "UI-13-01", "超界")
 	_eq(w.can_place("recycler", 9, 4).get("key"), "UI-13-02", "和废墟重叠")
+	GameState.flags["seeds_from_plant"] = true
 	_eq(w.can_place("farm_plot", 0, 0).get("key"), "UI-13-03", "重度污染不能种")
 	_true(w.can_place("farm_plot", 4, 7).is_empty(), "轻度污染能种")
 	GameState.change_stat("mechanics", 10)
@@ -349,9 +352,9 @@ func test_special_fails_when_tired() -> void:
 
 func test_clues_and_traits() -> void:
 	var w := _rich_world()
-	_eq(w.active_clues(), [], "剧情没开始看不到脚印")
+	_eq(w.active_clues(), ["seed_jar"], "剧情没开始看不到脚印（种子罐一直都在）")
 	GameState.flags["anomaly_started"] = true
-	_eq(w.active_clues(), ["dug_hole"], "A 区的坑出现；B 区还没开")
+	_eq(w.active_clues(), ["dug_hole", "seed_jar"], "A 区的坑出现；B 区还没开")
 	w.discover_clue("dug_hole")
 	_true(GameState.flags.get("clue_dug_hole", false), "发现线索记成剧情标记")
 	_built(w, "power_node", 0, 0)
@@ -486,6 +489,37 @@ func test_events() -> void:
 	_eq(GirlEarth.resolve_event(w, stop, "ask_help"), "UI-21-41", "让你修就还坏着")
 
 
+func test_farm_unlock() -> void:
+	var w := _world()
+	w.metal = 100
+	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "开局种植区没解锁")
+	GameState.flags["plant_event_done"] = true
+	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "只有植物事件不够")
+	_true(w.active_clues().has("seed_jar"), "种子罐能找")
+	w.discover_clue("seed_jar")
+	_true(GameState.flags.get("seed_jar_found", false), "找到种子罐")
+	_true(not GameState.flags.get("w5_trace_found", false), "种子罐不算第 5 周的线索")
+	_true(w.unlock_reason("farm_plot").is_empty(), "种子罐 + 植物事件 = 解锁")
+	GameState.flags.clear()
+	GameState.flags["seed_jar_found"] = true
+	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "只有种子罐、没看到植物事件也不行")
+	GameState.flags.clear()
+	WeekSystem.apply_time_jump()
+	_true(w.unlock_reason("farm_plot").is_empty(), "没找到种子罐：时间跳跃后解锁")
+	GameState.reset()
+
+
+func test_germination() -> void:
+	var w := _rich_world()
+	_built(w, "generator", 0, 3)
+	_built(w, "purifier", 3, 2)
+	_built(w, "farm_plot", 6, 7)
+	_pipes(w, 2, 6)
+	GameState.stats["ecology"] = 0
+	w.end_week()
+	_eq(w.plants.size(), 4 + 2, "生态 0：4 格只发芽 2 格（0.4 × 4 四舍五入）")
+
+
 ## 直接建好一座建筑，省掉等工作单位的步骤
 func _built(w: EarthWorld, type: String, x: int, z: int) -> int:
 	var uid := w.place(type, x, z)
@@ -510,6 +544,7 @@ func _world() -> EarthWorld:
 
 func _rich_world() -> EarthWorld:
 	var w := _world()
+	GameState.flags["seeds_from_plant"] = true
 	w.metal = 1000
 	w.electronics = 1000
 	for id in ["mechanics", "ecology", "comms"]:

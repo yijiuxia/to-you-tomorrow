@@ -121,7 +121,10 @@ static func _goal_done(world: EarthWorld, goal: Dictionary) -> bool:
 static func week_end_discovery(world: EarthWorld) -> String:
 	if not GameState.is_high("curiosity"):
 		return ""
-	var clues := world.active_clues()
+	var clues: Array[String] = []
+	for id in world.active_clues():
+		if str(DataDB.row("earth_clues", id)["kind"]) != "item":  # 种子罐要玩家自己去找（文案 W3-04）
+			clues.append(id)
 	if clues.is_empty():
 		return ""
 	if GameState.is_low("trust"):

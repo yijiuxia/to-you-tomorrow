@@ -243,7 +243,8 @@ func scan() -> void:
 			counts["buildings"] += 1
 	var found := 0
 	for id in world.active_clues():
-		if _flat_distance(view.cell_center(world.clue_cell(id))) <= radius:
+		var clue_radius := float(DataDB.row("earth_clues", id).get("scan_radius", 0))
+		if _flat_distance(view.cell_center(world.clue_cell(id))) <= (clue_radius if clue_radius > 0.0 else radius):
 			world.discover_clue(id)
 			found += 1
 	message.emit(Text.f("UI-18-04", counts) + ("" if found == 0 else " " + Text.f("UI-18-30", {"count": found})))

@@ -91,6 +91,8 @@ static func apply_time_jump() -> Dictionary:
 	for id in JUMP_RESET_STATS:
 		GameState.change_stat(id, reset_value - GameState.get_stat(id))
 	GameState.age = int(DataDB.balance("teen_age"))
+	# 第 3 周没找到种子罐：那株植物开花结了种子，跳跃后种植区解锁（文案 W3-04 方案 B）
+	GameState.flags["seeds_from_plant"] = true
 	return before
 
 

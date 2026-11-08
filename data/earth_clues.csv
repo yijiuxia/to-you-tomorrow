@@ -1,5 +1,6 @@
-id,region,x,z,kind,needs_flag,name_key,note
-footprint1,b,14,46,footprint,anomaly_started,UI-15-40,脚印：第 5 周开始出现
-footprint2,b,15,57,footprint,anomaly_started,UI-15-40,脚印往北通向干河道
-dug_hole,a,7,7,hole,anomaly_started,UI-15-41,种的苗被挖走留下的坑
-signal,c,5,93,signal,,UI-15-42,不明信号（地下入口附近）
+id,region,x,z,kind,needs_flag,scan_radius,sets_flag,name_key,note
+footprint1,b,14,46,footprint,anomaly_started,0,w5_trace_found,UI-15-40,脚印：第 5 周开始出现
+footprint2,b,15,57,footprint,anomaly_started,0,w5_trace_found,UI-15-40,脚印往北通向干河道
+dug_hole,a,7,7,hole,anomaly_started,0,w5_trace_found,UI-15-41,种的苗被挖走留下的坑
+signal,c,5,93,signal,,0,,UI-15-42,不明信号（地下入口附近）
+seed_jar,a,4,4,item,,3,seed_jar_found,UI-15-43,旧种子罐：在维修车间仓库架子上，ARK-01 要走进车间靠近才扫得到（文案 W3-04）

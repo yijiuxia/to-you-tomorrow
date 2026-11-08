@@ -280,10 +280,24 @@ func recovery(region := "") -> Dictionary:
 
 # ---------- 建造 ----------
 
+## 剧情解锁条件：用 & 表示"都要"，| 表示"满足一组就行"，如 a&b|c
+static func flags_met(expression: String) -> bool:
+	if expression.is_empty():
+		return true
+	for group in expression.split("|"):
+		var all_set := true
+		for flag in group.split("&"):
+			if not GameState.flags.get(flag.strip_edges(), false):
+				all_set = false
+		if all_set:
+			return true
+	return false
+
+
 ## 还没解锁的原因（剧情或技能）；已解锁返回空字典。建造菜单用它标出差多少。
 func unlock_reason(type: String) -> Dictionary:
 	var row := _row(type)
-	if not str(row["unlock_story"]).is_empty() and not GameState.flags.get(row["unlock_story"], false):
+	if not flags_met(str(row["unlock_story"])):
 		return {"key": "UI-13-07", "values": {}}
 	for column: String in SKILL_COLUMNS:
 		var need := int(row[column])
@@ -523,8 +537,10 @@ func discover_clue(id: String) -> void:
 		return
 	found_clues[id] = true
 	GameState.flags["clue_" + id] = true
-	# 第 5 周追踪异常：玩家自己找到线索，剧情就不放保底警报（界面线程的剧情触发表用它）
-	GameState.flags["w5_trace_found"] = true
+	# 线索带的剧情标记：脚印等设 w5_trace_found（剧情就不放保底警报），种子罐设 seed_jar_found
+	var flag := str(DataDB.row("earth_clues", id).get("sets_flag", ""))
+	if not flag.is_empty():
+		GameState.flags[flag] = true
 	week_counts["clues"] += 1
 	changed.emit()
 
@@ -748,7 +764,9 @@ func _grow_plants() -> void:
 		# 从近到远扩散，结果固定，方便玩家理解也方便测试
 		candidates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 			return Vector2(a).distance_squared_to(center) < Vector2(b).distance_squared_to(center))
-		for cell in candidates.slice(0, spread):
+		# 发芽多少和生态技能有关（文案 W3-04）
+		var germination := minf(1.0, float(DataDB.balance("earth_germination_base")) + GameState.get_stat("ecology") / 100.0)
+		for cell in candidates.slice(0, roundi(spread * germination)):
 			alive[cell] = {"type": FARM_PLANT, "age": -1}
 	var withered := 0
 	var wither_limit := int(DataDB.balance("earth_plant_wither_per_week"))
