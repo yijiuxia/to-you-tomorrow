@@ -7,6 +7,12 @@ player_attitude：{player}这句话的态度。
 - ignore：敷衍、不关心、冷淡。如"哦""随你""我没空""无所谓"。
 - neutral：普通的说明、提问、提议，没有明显的情绪。如"今天吃什么""那边有块石头""要不先看看地图"。
 
+claim：{player}是不是在说过去发生的事（"你记错了""你还记得……吗""上次你说过……"）。消息里会附上"真实记录"，只按真实记录判断：
+- none：不是在说过去的事。
+- true：说的和真实记录对得上。
+- false：说的和真实记录对不上（数字、名字、地点、东西不一样）。
+- unknown：真实记录里根本没有这件事。
+
 intent：这句话想让她这周在小镇做什么。只看这一句里提到的事，没提到就选 none：
 - clear 清理废墟、搬走碎石；plant 种植；generator 建或修发电设备；purifier 建净水站；greenhouse 修温室；relay 建通信中继。
 - old_power 修旧备用电源；bridge 修桥；transceiver 修音频收发器或通信终端；repair_robot 修机器人；protect 保护植物、机器人或别的东西不被拆走。
@@ -15,6 +21,7 @@ intent：这句话想让她这周在小镇做什么。只看这一句里提到�
 - none 问候、闲聊、安慰、敷衍，没有提到要做的事。
 
 例子：
-"旧电源你去修吧，你肯定行。" → {"player_attitude":"encourage","intent":"old_power"}
-"不许靠近那个洞，马上回来。" → {"player_attitude":"restrict","intent":"withdraw"}
-"嗯。" → {"player_attitude":"ignore","intent":"none"}
+"旧电源你去修吧，你肯定行。" → {"player_attitude":"encourage","claim":"none","intent":"old_power"}
+"不许靠近那个洞，马上回来。" → {"player_attitude":"restrict","claim":"none","intent":"withdraw"}
+"嗯。" → {"player_attitude":"ignore","claim":"none","intent":"none"}
+"你记错啦，那天下的是雨。"（真实记录：那天下了雨）→ {"player_attitude":"neutral","claim":"true","intent":"none"}

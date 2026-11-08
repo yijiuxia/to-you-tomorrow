@@ -62,6 +62,46 @@ static func aside_lines(player_text: String) -> PackedStringArray:
 	return result
 
 
+## 玩家这句话是不是在说往事（有"记得""上次""不对"这类词）。不是就不核对真假
+static func is_about_past(player_text: String) -> bool:
+	var lower := player_text.to_lower()
+	for line in FileAccess.get_file_as_string(TEMPLATE_DIR + "past_words.txt").split("
+", false):
+		var word := line.strip_edges().to_lower()
+		if not word.is_empty() and not word.begins_with("#") and lower.contains(word):
+			return true
+	return false
+
+
+## 核对玩家说的往事用的"真实记录"：核心记忆 + 和这句话相关的事件记忆（程序存的，不是模型编的）
+static func facts_for(player_text: String) -> String:
+	if not is_about_past(player_text):
+		return ""
+	var store: MemoryStore = GameState.memory
+	var items := PackedStringArray()
+	for item in store.core:
+		items.append(str(item["text"]))
+	for memory in store.recall(player_text, int(DataDB.balance("memory_recall_count")), GameState.week, GameState.age):
+		items.append(str(memory["text"]))
+	return Text.t("WK-15-02") if items.is_empty() else Text.t("WK-10-16").join(items)
+
+
+## 最相关的一条真实记忆：玩家说错时告诉她"你记得的是什么"。先找事件记忆，再找有共同词的核心记忆；
+## 都没有说明她根本没有这段记忆（玩家在编），返回空字符串
+static func top_fact(player_text: String) -> String:
+	var store: MemoryStore = GameState.memory
+	var found := store.recall(player_text, 1, GameState.week, GameState.age)
+	if not found.is_empty():
+		return str(found[0]["text"])
+	var words := MemoryStore.words_of(player_text)
+	for item in store.core:
+		var core_words := MemoryStore.words_of(str(item["text"]))
+		for word in words:
+			if core_words.has(word):
+				return str(item["text"])
+	return ""
+
+
 ## 状态卡：第几周、剧情阶段、她以为地球是什么、属性、本周的课、上周小镇的事、她想做的事
 static func state_card() -> String:
 	var lines := PackedStringArray()

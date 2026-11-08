@@ -3,8 +3,9 @@
   "type": "object",
   "properties": {
     "player_attitude": { "enum": ["encourage", "restrict", "comfort", "ignore", "neutral"] },
+    "claim": { "enum": ["none", "true", "false", "unknown"] },
     "intent": { "enum": ["clear", "plant", "generator", "purifier", "greenhouse", "explore", "relay", "continue", "switch", "rest", "investigate", "withdraw", "ask_help", "repair_robot", "protect", "old_power", "bridge", "transceiver", "none"] }
   },
-  "required": ["player_attitude", "intent"],
+  "required": ["player_attitude", "claim", "intent"],
   "additionalProperties": false
 }

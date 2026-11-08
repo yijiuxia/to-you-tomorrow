@@ -1,0 +1,27 @@
+# 玩家这句话里有这些词，才当作"在说往事"去核对真假；没有就不核对（实测不加这一步，模型会把普通的话也当成说错了）。一行一个，英文不分大小写。
+记得
+记错
+记混
+忘了
+上次
+以前
+小时候
+那时
+那天
+说过
+答应过
+不对
+不是
+对吧
+对不对
+是不是
+remember
+forgot
+last time
+used to
+back then
+you said
+told me
+wrong
+isn't it
+didn't you

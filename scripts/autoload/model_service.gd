@@ -5,6 +5,12 @@ extends Node
 const SCHEMA_PATH := "res://data/model_output_schema.json"
 const LINE_SCHEMA_PATH := "res://data/model_line_schema.json"
 const JUDGE_SCHEMA_PATH := "res://data/model_judge_schema.json"
+## 玩家说的往事和她真实的记忆对不对得上：不是在说往事 / 说对了 / 说错了 / 没这回事
+const CLAIM_NONE := "none"
+const CLAIM_TRUE := "true"
+const CLAIM_FALSE := "false"
+const CLAIM_UNKNOWN := "unknown"
+const CLAIMS: Array[String] = [CLAIM_NONE, CLAIM_TRUE, CLAIM_FALSE, CLAIM_UNKNOWN]
 const MODELS_DIR := "models"
 const REQUIRED_KEYS: Array[String] = ["reply", "emotion", "player_attitude", "intent", "options"]
 const NO_ACTION := "none"
@@ -106,7 +112,8 @@ func start_conversation(system_prompt: String) -> void:
 ## 连续超时说明模型卡死了，之后不再等它，这一局聊天都用后备句，不让玩家反复干等。
 ## text 是发给模型的整段话（玩家原话 + 附带的记忆和提示）；player_text 是玩家原话，用来判断态度。
 ## known：已经知道的判断结果（玩家点了突发事件的固定选项），有就不用再判断。
-func ask(text: String, player_text := "", known := {}) -> Dictionary:
+## facts：她真实的记忆（程序给的），用来核对玩家说的往事是真是假；fact 是最相关的那一条。
+func ask(text: String, player_text := "", known := {}, facts := "", fact := "") -> Dictionary:
 	await _wait_until_loaded()
 	if status != Status.READY:
 		return fallback_reply()
@@ -115,11 +122,16 @@ func ask(text: String, player_text := "", known := {}) -> Dictionary:
 	# 分开判断能保住准确度。判断结果告诉她，让回复和判断一致。微调后可以在 balance 里关掉
 	var judged: Dictionary = known.duplicate()
 	if not judged.is_empty():
-		text += "\n" + judged_hint(judged)
+		text += "\n" + judged_hint(judged, fact)
 	elif int(DataDB.balance("model_separate_judge")) == 1:
-		judged = await judge(said)
+		judged = await judge(said, facts)
+		# 程序把关：她根本没有相关记忆时，玩家说的往事只能是"没这回事"，不让模型说成对或错
+		if not judged.is_empty() and facts.is_empty():
+			judged["claim"] = CLAIM_NONE  # 不是在说往事，不核对
+		elif fact.is_empty() and [CLAIM_TRUE, CLAIM_FALSE].has(str(judged.get("claim", ""))):
+			judged["claim"] = CLAIM_UNKNOWN
 		if not judged.is_empty():
-			text += "\n" + judged_hint(judged)
+			text += "\n" + judged_hint(judged, fact)
 	for _attempt in 1 + int(DataDB.balance("model_retries")):
 		var raw := await _generate_with(_chat, text, float(DataDB.balance("model_timeout_sec")))
 		var parsed := parse_reply(raw)
@@ -148,7 +160,8 @@ func _wait_until_loaded() -> void:
 
 
 ## 只判断玩家这句话的态度和 intent，用一段不带人设的短提示。失败返回空字典（就用聊天里顺带的判断）
-func judge(player_text: String) -> Dictionary:
+## facts 不为空时，一起判断玩家说的往事和真实记忆对不对得上（claim）
+func judge(player_text: String, facts := "") -> Dictionary:
 	if _judge_chat == null:
 		return {}
 	# 名字和语言可能在加载后才改（起名、设置），变了才重设人设，省得每次重算
@@ -157,7 +170,8 @@ func judge(player_text: String) -> Dictionary:
 		_judge_chat.set_system_prompt(prompt)
 		_judge_prompt_used = prompt
 	_judge_chat.reset_history()
-	var raw := await _generate_with(_judge_chat, player_text, float(DataDB.balance("model_timeout_sec")))
+	var message := player_text if facts.is_empty() else Text.f("WK-15-01", {"line": player_text, "facts": facts})
+	var raw := await _generate_with(_judge_chat, message, float(DataDB.balance("model_timeout_sec")))
 	return parse_judge(raw)
 
 
@@ -167,7 +181,10 @@ static func parse_judge(raw: String) -> Dictionary:
 		return {}
 	if not DataDB.table("attitude_effects").has(str(parsed["player_attitude"])):
 		return {}
-	return {"player_attitude": str(parsed["player_attitude"]), "intent": str(parsed["intent"])}
+	var claim := str((parsed as Dictionary).get("claim", CLAIM_NONE))
+	if not CLAIMS.has(claim):
+		claim = CLAIM_NONE
+	return {"player_attitude": str(parsed["player_attitude"]), "intent": str(parsed["intent"]), "claim": claim}
 
 
 static func judge_prompt() -> String:
@@ -176,10 +193,19 @@ static func judge_prompt() -> String:
 
 
 ## 把判断结果写成一句提示，跟着玩家的话发给她
-static func judged_hint(judged: Dictionary) -> String:
+static func judged_hint(judged: Dictionary, fact := "") -> String:
 	var intent := str(judged["intent"])
 	var wants := Text.t("WK-13-10") if intent == "none" else Text.f("WK-13-11", {"intent": Text.t("UI-12-" + intent)})
-	return Text.f("WK-13-01", {"attitude": Text.t("WK-13-" + str(judged["player_attitude"])), "wants": wants})
+	var hint := Text.f("WK-13-01", {"attitude": Text.t("WK-13-" + str(judged["player_attitude"])), "wants": wants})
+	# 玩家说起往事时：说对了她承认记混了；说错了她不附和，说出真实的；没这回事她说不记得
+	match str(judged.get("claim", CLAIM_NONE)):
+		CLAIM_TRUE:
+			hint += "\n" + Text.t("WK-15-11")
+		CLAIM_FALSE:
+			hint += "\n" + Text.f("WK-15-12", {"fact": fact})
+		CLAIM_UNKNOWN:
+			hint += "\n" + Text.t("WK-15-13")
+	return hint
 
 
 ## 让她"说一句"（早安、周总结、课表评论、主动开口……）：每次单独设人设，不接着聊天的历史。
