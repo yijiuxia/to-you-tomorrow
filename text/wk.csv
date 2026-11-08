@@ -1,24 +1,84 @@
 keys,zh,en
-WK-01-01,{player}，早上好！,
-WK-01-02,（第 {week} 周的早上。上周排好的课开始了。）,
-WK-02-01,（临时）这周辛苦了，下周也一起加油吧。,
-WK-05-01,【{girl}快说累了，这一轮要自然地结束话题，比如说自己困了或想去看看小镇。】,
-WK-06-01,{girl}的状态：{stats}。,
-WK-06-02,{name}{value},
-WK-06-03,{name}：{text},
-WK-06-04,这周上过：{courses}。,
-WK-08-01,第 {week} 周，我们在小镇里完成了：{names}。,"Week {week}: we finished {names} in the town."
-WK-08-02,第 {week} 周，我上得最多的是{course}。,"Week {week}: I spent the most days on {course}."
-WK-08-03,第 {week} 周，我累倒了，生病躺了一天。,"Week {week}: I wore myself out and was sick in bed for a day."
-WK-08-04,第 {week} 周，我心情不好，有一天没去上课。,"Week {week}: I felt down and skipped a class."
-WK-08-05,第 {week} 周，{event},"Week {week}: {event}"
+WK-01-01,{player}，早上好！,"Good morning, {player}!"
+WK-01-02,（第 {week} 周的早上。上周排好的课开始了。）,"(Week {week}, morning. The classes you planned begin.)"
+WK-02-01,（临时）这周辛苦了，下周也一起加油吧。,(Temp) Thanks for this week. Let's keep going next week too.
+WK-05-01,【{girl}快说累了，这一轮要自然地结束话题，比如说自己困了或想去看看小镇。】,"[{girl} is getting tired; wrap up the topic naturally this turn, e.g. say you're sleepy or want to check the town.]"
+WK-06-01,{girl}的状态：{stats}。,{girl}'s condition: {stats}.
+WK-06-02,{name}{value},{name} {value}
+WK-06-03,{name}：{text},{name}: {text}
+WK-06-04,这周上过：{courses}。,Classes this week: {courses}.
+WK-08-01,第 {week} 周，我们在小镇里完成了：{names}。,Week {week}: we finished {names} in the town.
+WK-08-02,第 {week} 周，我上得最多的是{course}。,Week {week}: I spent the most days on {course}.
+WK-08-03,第 {week} 周，我累倒了，生病躺了一天。,Week {week}: I wore myself out and was sick in bed for a day.
+WK-08-04,第 {week} 周，我心情不好，有一天没去上课。,Week {week}: I felt down and skipped a class.
+WK-08-05,第 {week} 周，{event},Week {week}: {event}
 WK-08-11,我最喜欢的{topic}是{value}。,My favourite {topic} is {value}.
 WK-08-12,{player}答应过我：“{line}”,"{player} promised me: ""{line}"""
 WK-08-21,我在小镇的温室里第一次见到了一个真正的人。,I saw a real person for the first time in the town's greenhouse.
 WK-08-22,我和{player}一起种下了第一株小芽。,{player} and I planted our very first sprout.
 WK-08-23,我给 ARK-01 起了名字。,I gave ARK-01 a name.
 WK-08-24,我第一次自己修好了机器人。,I fixed a robot all by myself for the first time.
-WK-08-25,我跟{player}说过，我害怕一个人。,"I told {player} I'm afraid of being alone."
+WK-08-25,我跟{player}说过，我害怕一个人。,I told {player} I'm afraid of being alone.
 WK-08-26,我在小镇里发现了不是机器人留下的脚印。,I found footprints in the town that no robot made.
 WK-08-27,工业区的大门打开了。,The gate to the industrial zone opened.
 WK-08-06,、,", "
+WK-07-01,你还在为上次的事生气（{player}上次{reason}）。话很少，可以不正面回答，只说“哼”或者转开话题；{player}好好哄你，你才慢慢消气。,"You're still upset about last time ({player} {reason}). You say very little, may dodge the question with a ""hmph"" or change the subject, and only soften if {player} makes it up to you."
+WK-07-02,你很困，一直打哈欠，想早点结束。,"You're very sleepy, keep yawning and want to wrap up soon."
+WK-07-03,你心情低落，不太想说话，声音小小的。,"You feel low, don't really want to talk, and speak quietly."
+WK-07-04,你不太信任{player}，回答敷衍，不说心里话。,You don't quite trust {player}; your answers are curt and you keep your feelings to yourself.
+WK-07-05,你今天心情特别好，话比平时多，想分享很多事。,"You're in a great mood today, chattier than usual, with lots to share."
+WK-07-06,你心情平静。,You feel calm.
+WK-07-11,（{player}刚才在敷衍你，你有点失落。）,({player} just brushed you off; you feel a bit let down.)
+WK-07-12,（{player}刚才管着你，你有点不服气，可以说出自己的理由。）,({player} just told you what to do; you're not convinced and may give your own reasons.)
+WK-07-13,（{player}刚才管着你，你有点委屈，但还是会听。）,({player} just told you what to do; you feel a little hurt but will listen.)
+WK-07-14,（{player}刚才夸了你，你有点害羞。）,({player} just praised you; you feel shy.)
+WK-07-15,（{player}刚才夸了你，你很得意。）,({player} just praised you; you feel proud.)
+WK-07-16,（{player}刚才在关心你，你心里暖暖的。）,({player} just showed they care; you feel warm inside.)
+WK-07-21,敷衍你,brushed you off
+WK-07-22,凶你、不让你做事,scolded you and wouldn't let you do things
+WK-09-01,课程教学周，小镇还没开放，你在方舟上上课,"Class week: the town isn't open yet, you're taking classes on the ark"
+WK-09-02,刚开始玩建造游戏，在维修站前清理广场、学着种东西,You just started the building game: clearing the repair station plaza and learning to plant
+WK-09-03,在维修站一带收集材料，想修好第一个设施,Gathering materials around the repair station to fix your first facility
+WK-09-04,想给工业区的锈铁大门通电，打开工业区,Trying to power the rusty gate and open the industrial zone
+WK-09-05,小镇里出现了奇怪的事，你觉得是游戏的 bug,Strange things are happening in the town; you think they're game bugs
+WK-09-06,去桥那边的温室区看看,Heading across the bridge to the greenhouse area
+WK-09-07,最后一周，想把温室这一小片修好,The final week: you want to restore the greenhouse patch
+WK-10-01,你相信小镇只是一个游戏。,You believe the town is just a game.
+WK-10-02,你开始怀疑小镇不只是游戏。,You're starting to doubt the town is just a game.
+WK-10-03,你相信地球是真的。,You believe Earth is real.
+WK-10-04,现在是第 {week} 周：{stage}。,It is week {week}: {stage}.
+WK-10-05,上周小镇里完成了：{names}。,Last week in the town you finished: {names}.
+WK-10-06,上周小镇里还没完成什么。,Nothing got finished in the town last week.
+WK-10-07,你一直记得：{items},Things you always remember: {items}
+WK-10-08,你最近在想：{text},Lately you've been thinking: {text}
+WK-10-09,上次你们聊到：{lines},Last time you talked:{lines}
+WK-10-10,{name}：{text},{name}: {text}
+WK-10-11,此刻：{hint},Right now: {hint}
+WK-10-12,（下面是只有你知道的事，需要时自然地用，不要照念）,(Below is what only you know. Use it naturally if it fits; don't recite it.)
+WK-10-13,你想起：{items},You remember: {items}
+WK-10-14,你知道：{items},You know: {items}
+WK-10-15,你说过最近想做：{intent}。,You recently said you want to: {intent}.
+WK-10-16, , 
+WK-08-07,第 {week} 周，{player}跟我聊了：“{line}”,"Week {week}: {player} and I talked about ""{line}"""
+WK-11-01,现在是早上，你刚醒。对{player}说一句早安，可以带上你的心情、身体的感觉，或者上周的事。,"It's morning and you just woke up. Say good morning to {player}; you may mention your mood, how your body feels, or last week."
+WK-11-02,这一周结束了。这周发生的事：{events}。用一句话跟{player}说说你对这周的感受。,"The week is over. This week: {events}. In one sentence, tell {player} how you feel about the week."
+WK-11-03,{player}刚把接下来 7 天的课排成：{plan}。{warning}你对这个课表说一句，可以开心、抱怨或者撒娇。,"{player} just planned your next 7 days of classes: {plan}. {warning}Say one thing about this schedule: happy, grumbling or wheedling."
+WK-11-04,照这个课表，你{day}会累倒。,With this schedule you'll collapse on {day}.
+WK-11-05,上周{day}的{course}上发生了一件小事（不严重，比如出了个小错、发现了好玩的东西）。用一句话告诉{player}。,"Something small happened in {course} on {day} last week (nothing serious, like a little mistake or a fun discovery). Tell {player} in one sentence."
+WK-11-06,你正在{activity}。{player}在旁边没说话。你主动对{player}说一句，可以和你正在做的事有关。{memory},"You are {activity}. {player} is nearby, quiet. Say something to {player} on your own; it can be about what you're doing. {memory}"
+WK-11-07,你突然想起：{text},You suddenly remember: {text}
+WK-11-08,"刚才你们的对话：{lines}
+用第一人称写一句话，记下这次聊了什么和你的感受，不超过 30 字。","Your conversation just now:{lines}
+In the first person, write one sentence noting what you talked about and how you felt, under 25 words."
+WK-11-09,你在小镇里，刚刚：{event}。对{player}说一句。,You're in the town and just now: {event}. Say one thing to {player}.
+WK-11-10,没有特别的事。,Nothing special.
+WK-12-01,看书,reading a book
+WK-12-02,托着腮发呆,daydreaming with your chin in your hand
+WK-12-03,趴在窗边看地球,gazing at Earth through the window
+WK-12-04,摆弄桌上的小盆栽,fussing over the little potted plant on the desk
+WK-12-05,画画,drawing
+WK-12-06,摆弄机器人模型,playing with a robot model
+WK-12-07,数窗外的星星,counting the stars outside
+WK-12-08,写小镇规划笔记,writing town-planning notes
+WK-12-09,修一个旧零件,fixing an old part
+WK-12-10,翻旧地球档案,browsing the old Earth archive

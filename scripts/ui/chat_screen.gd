@@ -14,6 +14,16 @@ var _thinking: Label
 var _option_buttons: Array[Button] = []
 var _busy := false
 var _conversation_started := false  # 模型可能还在加载，人设设好之前不能发话
+var _attitudes: Array[String] = []  # 这次聊天玩家每轮的态度，情绪惯性用
+var _last_attitude := ""             # 上一轮玩家的态度，跟着下一句提醒模型她的感受
+var _lines: Array[Dictionary] = []   # 这次聊天的原话，离开时缩成一句摘要记进记忆
+
+
+## 离开聊天画面时，把这次聊的内容缩成一句记下来（后台做，不让玩家等）
+func _exit_tree() -> void:
+	if not _lines.is_empty():
+		ChatLines.summarize(_lines.duplicate())
+		_lines.clear()
 
 
 func _ready() -> void:
@@ -75,10 +85,8 @@ func _on_submitted(raw_text: String) -> void:
 	if not is_inside_tree():
 		return
 
-	# 收尾提示跟着这句话发，不中途改人设：改人设会让模型把整段对话重算一遍，最后一轮曾因此卡住
-	var message := text
-	if _is_closing_round():
-		message = "%s\n%s" % [text, Text.t("WK-05-01")]
+	# 记忆、设定、收尾提示都跟着这句话发，不中途改人设：改人设会让模型把整段对话重算一遍，最后一轮曾因此卡住
+	var message := ChatPrompt.turn_message(text, _last_attitude, _is_closing_round())
 	var reply := await ModelService.ask(message)
 	if not is_inside_tree():
 		return  # 等回复时玩家已经离开了这个画面
@@ -94,6 +102,7 @@ func _on_submitted(raw_text: String) -> void:
 func _apply_reply(reply: Dictionary, player_text: String) -> void:
 	_add_line(Text.f("UI-09-06", {"girl": GameState.girl_name, "text": reply["reply"]}))
 	GameState.girl_emotion = reply["emotion"]  # demo 只有默认微笑和眨眼，暂不使用；以后开发表情时用它切换
+	ModelService.last_action = reply["action"]  # 动作标签，模块 9 有模型后播放对应动画
 	GameState.chat_rounds_left -= 1
 	if str(reply["intent"]) != "none":
 		GameState.girl_intent = reply["intent"]
@@ -102,6 +111,13 @@ func _apply_reply(reply: Dictionary, player_text: String) -> void:
 		var changes := ChatRules.round_changes(reply["player_attitude"], player_text, GameState.chat_week_changes)
 		for id: String in changes:
 			GameState.change_stat(id, changes[id])
+		# 记下原话、认出喜好和约定；记下态度，下次开聊时她还记着你凶没凶她
+		MemoryWriter.record_turn(GameState.memory, player_text, reply["reply"])
+		_last_attitude = reply["player_attitude"]
+		_attitudes.append(_last_attitude)
+		ChatMood.remember_tone(GameState.memory, _attitudes)
+		_lines.append({"speaker": MemoryStore.SPEAKER_PLAYER, "text": player_text})
+		_lines.append({"speaker": MemoryStore.SPEAKER_GIRL, "text": reply["reply"]})
 	var has_more := WeekSystem.chat_rounds_left() > 0
 	for i in OPTION_BUTTON_COUNT:
 		_option_buttons[i].text = reply["options"][i]

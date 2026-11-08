@@ -1,0 +1,106 @@
+class_name ChatLines
+extends RefCounted
+## 聊天以外，她"说一句"的地方（比赛版 4.2、4.5，demo 文案"每周流程"）：
+## 早安、周总结（同时记成她的感想）、改课表时的评论、上课小事件、主界面主动开口、小镇里的实时评论，
+## 还有聊完后的一句摘要。全部有固定后备句，模型没加载、超时、回复不合格都不会卡住。
+## 返回 {reply, action, fallback}。
+
+const KIND_LINE := "line"
+
+
+## 早安：第 model_morning_from_week 周起由模型说，之前用固定句（第 1～3 周文案写好的）
+static func morning() -> Dictionary:
+	var fixed := Text.t("WK-01-01")
+	if GameState.week < int(DataDB.balance("model_morning_from_week")):
+		return _fixed(fixed)
+	return await _say(Text.t("WK-11-01"), fixed)
+
+
+## 周总结：她对这周的感受。同一句话记成她的"感想"（反思），以后聊天会想起
+static func week_summary(events: PackedStringArray) -> Dictionary:
+	var happened := Text.t("WK-08-06").join(events) if not events.is_empty() else Text.t("WK-11-10")
+	var line := await _say(Text.f("WK-11-02", {"events": happened}), Text.t("FB-04-01"))
+	if not line["fallback"]:
+		GameState.memory.remember_event(line["reply"], MemoryStore.KIND_REFLECTION, int(DataDB.balance("memory_reflection_importance")), GameState.week, GameState.age)
+	return line
+
+
+## 改课表时评论一句；照这个课表会累倒的话，告诉模型哪天，让她说得出来
+static func schedule_comment(plan: Array[String], collapse_day: int, day_names: PackedStringArray) -> Dictionary:
+	var names := PackedStringArray()
+	for course in plan:
+		names.append(Text.t(str(DataDB.row("courses", course)["name_key"])))
+	var warning := ""
+	if collapse_day >= 0 and collapse_day < day_names.size():
+		warning = Text.f("WK-11-04", {"day": day_names[collapse_day]})
+	return await _say(Text.f("WK-11-03", {"plan": Text.t("WK-08-06").join(names), "warning": warning}), Text.t("FB-04-02"))
+
+
+## 上课小事件（10% 概率，不改数值）：让她讲一件和这门课有关的小事，并记成一条不太重要的记忆
+static func course_event(course: String, day_name: String) -> Dictionary:
+	var course_name := Text.t(str(DataDB.row("courses", course)["name_key"]))
+	var line := await _say(Text.f("WK-11-05", {"day": day_name, "course": course_name}), Text.t("FB-04-03"))
+	if not line["fallback"]:
+		GameState.memory.remember_event(line["reply"], MemoryStore.KIND_EVENT, 1, GameState.week - 1, GameState.age)
+	return line
+
+
+## 主界面闲着时主动开口。有时顺便提一件旧事，她会主动提起过去
+static func idle(activity: String, rng: RandomNumberGenerator) -> Dictionary:
+	var doing := Text.t(str(DataDB.row("chat_idle", activity)["doing_key"]))
+	var memory := ""
+	var store: MemoryStore = GameState.memory
+	if not store.events.is_empty() and rng.randf() < float(DataDB.balance("chat_idle_memory_chance")):
+		var picked: Dictionary = store.events[rng.randi_range(0, store.events.size() - 1)]
+		memory = Text.f("WK-11-07", {"text": picked["text"]})
+	return await _say(Text.f("WK-11-06", {"activity": doing, "memory": memory}), "")
+
+
+## 小镇里看到什么说一句（实时评论，和模块 6 共用）。fixed 是地球线程原来的固定句，失败时就用它
+static func earth_comment(event_text: String, fixed: String) -> Dictionary:
+	return await _say(Text.f("WK-11-09", {"event": event_text}), fixed)
+
+
+## 聊完后把这次对话缩成一句记下来（比赛版 4.5：早期对话压缩成摘要），下次不用整段塞给模型。
+## 模型失败时用程序拼的一句（玩家说的第一句话），保证记忆里总有这次聊天
+static func summarize(lines: Array[Dictionary]) -> String:
+	if lines.is_empty():
+		return ""
+	var said := ""
+	var first_player := ""
+	for line in lines:
+		var is_player: bool = line["speaker"] == MemoryStore.SPEAKER_PLAYER
+		var who := GameState.player_name if is_player else GameState.girl_name
+		said += "\n" + Text.f("WK-10-10", {"name": who, "text": line["text"]})
+		if is_player and first_player.is_empty():
+			first_player = line["text"]
+	var fixed := Text.f("WK-08-07", {"week": GameState.week, "line": first_player})
+	var result := await _say(Text.f("WK-11-08", {"lines": said}), fixed)
+	var summary: String = result["reply"]
+	GameState.memory.remember_event(summary, MemoryStore.KIND_SUMMARY, int(DataDB.balance("memory_summary_importance")), GameState.week, GameState.age)
+	return summary
+
+
+## 说一句用的人设：角色卡 + 状态卡 + 记忆 + 此刻心情 + 只要一句话的规则
+static func system_prompt() -> String:
+	var store: MemoryStore = GameState.memory
+	var mood := ChatMood.state(store)
+	var names := {"girl": GameState.girl_name, "player": GameState.player_name}
+	var card := FileAccess.get_file_as_string(ChatPrompt.TEMPLATE_DIR + "card_%s_%d.txt" % [Text.language, ChatPrompt.card_age()]).format(names)
+	var limit := int(DataDB.balance("chat_line_max_en" if Text.language == "en" else "chat_line_max_zh"))
+	var rules := FileAccess.get_file_as_string(ChatPrompt.TEMPLATE_DIR + "line_rules_%s.txt" % Text.language).format(names).replace("{max_chars}", str(limit))
+	var parts := PackedStringArray([card, ChatPrompt.state_card()])
+	var remembered := ChatPrompt.memory_block(store)
+	if not remembered.is_empty():
+		parts.append(remembered)
+	parts.append(Text.f("WK-10-11", {"hint": ChatMood.hint(mood, store)}))
+	parts.append(rules)
+	return "\n\n".join(parts)
+
+
+static func _say(request: String, fallback_text: String) -> Dictionary:
+	return await ModelService.say_line(system_prompt(), request, fallback_text)
+
+
+static func _fixed(text: String) -> Dictionary:
+	return {"reply": text, "action": ModelService.NO_ACTION, "fallback": true}

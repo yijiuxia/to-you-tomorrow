@@ -1,0 +1,10 @@
+{
+  "x-guidance": { "whitespace_flexible": false },
+  "type": "object",
+  "properties": {
+    "reply": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "action": { "enum": ["nod", "shake_head", "wave", "look_down", "chin_rest", "tilt_head", "pout", "cheer", "point", "look_away", "fidget", "none"] }
+  },
+  "required": ["reply", "action"],
+  "additionalProperties": false
+}

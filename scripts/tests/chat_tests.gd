@@ -20,6 +20,13 @@ func _ready() -> void:
 	test_learn_favourite_and_promise()
 	test_record_week()
 	test_record_courses()
+	test_prompt_cards()
+	test_state_card()
+	test_mood_inertia()
+	test_turn_message()
+	test_schema_matches_tables()
+	test_reply_action()
+	await test_lines_fallback()
 	print("聊天测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -166,6 +173,139 @@ func test_record_courses() -> void:
 	_ok(_any_contains(added, "第 2 周") and _any_contains(added, Text.t("CR-NAME-01")), "记成上周的机械课")
 
 
+func test_prompt_cards() -> void:
+	_fresh()
+	var child := ChatPrompt.build()
+	_ok(child.contains("8 岁") and child.contains("你看你看"), "8 岁用幼年角色卡")
+	_ok(not child.contains("{girl}") and not child.contains("{max_chars}"), "占位符都填好了")
+	_ok(child.contains("最多 %d 个字" % ChatMood.max_length(ChatMood.NORMAL)), "按心情写回复长度")
+	GameState.age = int(DataDB.balance("teen_age"))
+	_ok(ChatPrompt.build().contains("15 岁"), "长大后用少女角色卡")
+	Text.language = "en"
+	var english := ChatPrompt.build()
+	_ok(english.contains("15 years old") and english.contains("English only"), "英文用英文角色卡和规则")
+	_ok(english.contains("at most %d words" % ChatMood.max_length(ChatMood.NORMAL)), "英文按词数限制长度")
+	Text.language = Text.DEFAULT_LANGUAGE
+
+
+func test_state_card() -> void:
+	_fresh()
+	GameState.week = 3
+	GameState.last_earth_report = {"finished": ["净水站"]}
+	GameState.girl_intent = "plant"
+	var card := ChatPrompt.state_card()
+	_ok(card.contains("第 3 周") and card.contains(Text.t("WK-09-03")), "状态卡写剧情阶段")
+	_ok(card.contains(Text.t("WK-10-01")), "状态卡写她以为是游戏")
+	_ok(card.contains("净水站"), "状态卡写上周小镇的事")
+	_ok(card.contains(Text.t("UI-12-plant")), "状态卡写她想做的事")
+	GameState.memory.remember_core("like_颜色", "我最喜欢的颜色是蓝色。", 2)
+	GameState.memory.remember_event("这周有点累。", MemoryStore.KIND_REFLECTION, 2, 3, 8)
+	GameState.memory.remember_line(MemoryStore.SPEAKER_PLAYER, "晚安")
+	var prompt := ChatPrompt.build()
+	_ok(prompt.contains("蓝色"), "核心记忆每次都带")
+	_ok(prompt.contains("这周有点累"), "带上最近的感想")
+	_ok(prompt.contains(GameState.player_name + "：晚安"), "带上上次聊到的原话")
+
+
+func test_mood_inertia() -> void:
+	_fresh()
+	GameState.week = 3
+	var store: MemoryStore = GameState.memory
+	_eq(ChatMood.state(store), ChatMood.NORMAL, "平常心情")
+	var tone: Array[String] = ["ignore", "neutral", "ignore"]
+	ChatMood.remember_tone(store, tone)
+	_eq(ChatMood.state(store), ChatMood.SULKY, "上次被敷衍两次，这次还在生气")
+	_ok(ChatMood.hint(ChatMood.SULKY, store).contains(Text.t("WK-07-21")), "生气的理由是被敷衍")
+	_ok(ChatMood.max_length(ChatMood.SULKY) < ChatMood.max_length(ChatMood.NORMAL), "生气时话更短")
+	GameState.week = 5
+	_ne(ChatMood.state(store), ChatMood.SULKY, "过了很久就不气了")
+	GameState.week = 3
+	tone = ["ignore", "comfort", "restrict", "encourage", "comfort"]
+	ChatMood.remember_tone(store, tone)
+	_ne(ChatMood.state(store), ChatMood.SULKY, "后来哄好了就不生气")
+	store.tone.clear()
+	GameState.stats["stamina"] = 10
+	_eq(ChatMood.state(store), ChatMood.SLEEPY, "体力低时犯困")
+	GameState.stats["stamina"] = 70
+	GameState.stats["mood"] = 90
+	GameState.stats["trust"] = 80
+	_eq(ChatMood.state(store), ChatMood.CHEERFUL, "心情好又信任你时话多")
+	GameState.stats["confidence"] = 20
+	_eq(ChatMood.after_hint("encourage"), Text.t("WK-07-14"), "自信低时被夸会害羞")
+	_eq(ChatMood.after_hint("neutral"), "", "普通的话没有情绪提示")
+
+
+func test_turn_message() -> void:
+	_fresh()
+	GameState.week = 3
+	GameState.memory.remember_event("第 2 周，我们种下了第一株小芽。", MemoryStore.KIND_EVENT, 3, 2, 8)
+	var message := ChatPrompt.turn_message("小芽还好吗？", "", false)
+	_ok(message.begins_with("小芽还好吗？"), "玩家原话在最前面")
+	_ok(message.contains("第一株小芽"), "附上相关的记忆")
+	_ok(message.contains(Text.t("WK-10-12")), "说明这是只有她知道的事")
+	_eq(ChatPrompt.turn_message("你好", "", false), "你好", "没关系的话什么都不附")
+	_ok(ChatPrompt.turn_message("你好", "ignore", true).contains(Text.t("WK-05-01")), "最后一轮附上收尾提示")
+	_ok(ChatPrompt.turn_message("你好", "ignore", false).contains(Text.t("WK-07-11")), "附上上一句留下的情绪")
+
+
+func test_schema_matches_tables() -> void:
+	var schema: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ModelService.SCHEMA_PATH))
+	var actions: Array = schema["properties"]["action"]["enum"]
+	var table_actions: Array = DataDB.table("chat_actions").keys()
+	actions.sort()
+	table_actions.sort()
+	_eq(actions, table_actions, "聊天格式的动作和 chat_actions 表一致")
+	var line_schema: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ModelService.LINE_SCHEMA_PATH))
+	var line_actions: Array = line_schema["properties"]["action"]["enum"]
+	line_actions.sort()
+	_eq(line_actions, table_actions, "一句话格式的动作和 chat_actions 表一致")
+	for intent: String in schema["properties"]["intent"]["enum"]:
+		if intent != "none":
+			_ok(Text.t("UI-12-" + intent) != "UI-12-" + intent, "intent 有显示文字：" + intent)
+	for intent in ["repair_robot", "protect", "old_power", "bridge", "transceiver"]:
+		_ok((schema["properties"]["intent"]["enum"] as Array).has(intent), "补上 intent：" + intent)
+
+
+func test_reply_action() -> void:
+	var base := {"player_attitude": "neutral", "intent": "none", "emotion": "calm", "reply": "嗯。", "options": ["好", "不好", "换个话题"]}
+	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], ModelService.NO_ACTION, "没有动作当作不动")
+	base["action"] = "wave"
+	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], "wave", "认识的动作保留")
+	base["action"] = "fly"
+	_eq(ModelService.parse_reply(JSON.stringify(base))["action"], ModelService.NO_ACTION, "不认识的动作当作不动")
+
+
+## 没有模型时，各处"说一句"都用固定句，并且不卡住
+func test_lines_fallback() -> void:
+	_fresh()
+	GameState.week = 2
+	var morning := await ChatLines.morning()
+	_eq(morning["reply"], Text.t("WK-01-01"), "第 4 周前早安用固定句")
+	GameState.week = 5
+	morning = await ChatLines.morning()
+	_ok(morning["fallback"] and morning["reply"] == Text.t("WK-01-01"), "没模型时早安用固定句")
+	var summary := await ChatLines.week_summary(PackedStringArray(["第 5 周，我们修好了净水站。"]))
+	_eq(summary["reply"], Text.t("FB-04-01"), "没模型时周总结用固定句")
+	_eq(GameState.memory.latest_reflection(), "", "后备句不当成她的感想")
+	var idle := await ChatLines.idle("read", RandomNumberGenerator.new())
+	_eq(idle["reply"], "", "没模型时主界面不主动说话")
+	var lines: Array[Dictionary] = [
+		{"speaker": MemoryStore.SPEAKER_PLAYER, "text": "我们明天去看温室吧"},
+		{"speaker": MemoryStore.SPEAKER_GIRL, "text": "好呀"},
+	]
+	var note := await ChatLines.summarize(lines)
+	_ok(note.contains("我们明天去看温室吧"), "没模型时摘要用玩家说的第一句")
+	_eq(GameState.memory.recall("温室", 3, 5, 15).size(), 1, "聊天摘要记进记忆，之后能想起")
+	var prompt := ChatLines.system_prompt()
+	_ok(prompt.contains("最多 %d 个字" % int(DataDB.balance("chat_line_max_zh"))), "说一句的人设限制长度")
+	_ok(not prompt.contains("options"), "说一句不要求给选项")
+	var plan: Array[String] = ["mechanics", "mechanics"]
+	var comment := await ChatLines.schedule_comment(plan, 1, PackedStringArray(["周一", "周二"]))
+	_eq(comment["reply"], Text.t("FB-04-02"), "没模型时课表评论用固定句")
+	_eq(ModelService.parse_line("{\"reply\":\"早！\",\"action\":\"wave\"}")["action"], "wave", "说一句的回复能解析")
+	_ok(ModelService.parse_line("{\"reply\":\"\",\"action\":\"wave\"}").is_empty(), "空的一句不要")
+
+
 # ---------- 工具 ----------
 
 func _fresh() -> void:
@@ -185,6 +325,13 @@ func _ok(condition: bool, message: String) -> void:
 	if not condition:
 		_failures += 1
 		print("失败：" + message)
+
+
+func _ne(actual: Variant, other: Variant, message: String) -> void:
+	_count += 1
+	if actual == other:
+		_failures += 1
+		print("失败：%s，不应该是 %s" % [message, str(other)])
 
 
 func _eq(actual: Variant, expected: Variant, message: String) -> void:

@@ -69,3 +69,17 @@ memory_core_max,8,核心记忆（喜好、约定）最多几条
 memory_events_max,60,事件记忆最多几条，多了先忘最不重要的
 memory_recent_lines,12,记住最近几句原话（一轮两句，12 句就是 6 轮）
 chat_worldbook_max,2,每句话最多补几条世界书设定
+chat_cheerful_mood,80,心情大于等于这个值、信任又高时，她话多
+chat_sulk_min,2,上次聊天被凶或被敷衍至少几次，这次开聊还在生气
+chat_sulk_weeks,1,生气最多带到几周后
+model_line_timeout_sec,15,"说一句"（早安、周总结、主动开口）最多等多少秒，超时用固定句
+chat_idle_change_sec,12,主界面她每隔多少秒换一件事做
+chat_idle_speak_chance,0.35,每次换事时主动跟你说一句的概率
+chat_idle_first_sec,5,进主界面多少秒后她第一次换事或开口
+chat_idle_max_lines,2,每次在主界面最多主动说几句，不吵你
+chat_idle_memory_chance,0.5,主动开口时顺便提起一件旧事的概率
+model_morning_from_week,4,从第几周起早安由模型说（之前用固定句）
+chat_line_max_zh,30,"说一句"中文最多几个字
+chat_line_max_en,22,"说一句"英文最多几个词
+memory_summary_importance,1,聊天摘要的重要程度
+memory_reflection_importance,2,每周感想的重要程度
