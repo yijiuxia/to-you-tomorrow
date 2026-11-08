@@ -14,3 +14,9 @@ addons/nobodywho/*.pdb
 # Python 缓存
 __pycache__/
 *.pyc
+
+# 场景建模线程的草稿：整批交付前不进仓库（2026-11-08）
+art_source/
+assets/models/a_repair/
+assets/models/kit/
+tools/
