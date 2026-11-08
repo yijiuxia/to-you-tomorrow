@@ -1,0 +1,16 @@
+keys,zh,en
+# 第 2 周建造教学的【界面·教学】提示（文案 04_第2周.md），地球画面负责显示。剧情台词以后也加在这里。
+W2-02-03,目标：让废墟重新变得能住人。每片区域有四项恢复度：废墟清理、供电、水源、植被。,"Goal: make the ruins livable again. Each area has four recovery levels: ruins cleared, power, water, plants."
+W2-02-04,俯视时，由你规划建筑、安排机器人施工；第三人称时，你操控 ARK-01 亲自走动、查看、拆小件、做修理。,"In top view, you plan buildings and send robots to work. In third person, you drive ARK-01 yourself to walk, look around, cut small scrap and repair."
+W2-02-05,{girl}在课上学到的本领，决定了这里能修什么、能建什么。,What {girl} learns in class decides what can be repaired and built here.
+W2-02-06,施工机器人每周能干的活有限，用"工作单位"表示。施工要消耗工作单位；走动、查看、拆小件不消耗。,"The robots can only do so much each week, counted in work units. Construction uses work units; walking, looking and cutting small scrap don't."
+W2-02-07,施工不会马上完成，点"结束本周"时统一结算。,"Construction doesn't finish right away. It's all settled when you click End Week."
+W2-02-08,本周目标：清理维修站前的广场,This week's goal: clear the plaza in front of the repair station
+W2-03-02,WASD 移动镜头，滚轮缩放，按住右键旋转。,"WASD to move the camera, mouse wheel to zoom, hold right mouse to rotate."
+W2-03-03,右上角是本周剩下的工作单位：{units}。,The work units left this week are shown at the top: {units}.
+W2-04-01,按 V 切换到第三人称，操控 ARK-01。,Press V to switch to third person and drive ARK-01.
+W2-04-03,WASD 移动，空格越过障碍，E 交互。,"WASD to move, Space to hop over obstacles, E to interact."
+W2-04-04,Tab 切换工具头，选择切割头。,Press Tab to switch tool heads and pick the cutter.
+W2-05-01,按 V 回到俯视。选中广场上的废墟，点"清理"。,"Press V to go back to top view. Select the ruins on the plaza and click Clear."
+W2-05-04,施工会一直进行到本周结束，点"结束本周"时完成。,Work continues until the end of the week and finishes when you click End Week.
+W2-06-01,本周还剩 {units} 个工作单位。可以继续安排施工，也可以四处看看，或者直接结束本周。,"You have {units} work units left this week. Keep building, look around, or end the week."

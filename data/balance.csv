@@ -121,3 +121,5 @@ earth_germination_base,0.4,种子发芽的基础比例；加上生态技能 ÷ 1
 chat_lie_free_times,1,每周前几次说错往事不追究（可能是玩家记错或判断错了）
 chat_lie_trust,-2,之后每次乱说，信任变化多少（也受每周封顶限制）
 story_w3_repair_mechanics,10,第 3 周修机器人要的机械，她据此说会不会修（文案 W3-02）；和地球的修复门槛保持一致
+earth_plant_story_margin,2,第 3 周植物事件：ARK-01 走到广场周围几格内就触发
+earth_tutorial_scraps,3,拆完几块小废料后提示回俯视整片清理（文案 W2-04）

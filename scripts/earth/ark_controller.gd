@@ -9,6 +9,7 @@ signal message(text: String)
 signal prompt_changed(text: String)
 signal tool_changed(tool: String)
 signal girl_comment(text: String)
+signal scrap_cut
 
 const TOOLS: Array[String] = ["cutter", "welder", "assembler", "sprayer"]
 const TOOL_KEYS := {"cutter": "UI-18-20", "welder": "UI-18-21", "assembler": "UI-18-22", "sprayer": "UI-18-23"}
@@ -217,6 +218,7 @@ func cell_half() -> float:
 func cut(ruin_id: String) -> void:
 	if not world.cut_small(ruin_id).is_empty():
 		message.emit(Text.t("UI-18-01"))
+		scrap_cut.emit()
 
 
 func pick_up_nearest() -> void:

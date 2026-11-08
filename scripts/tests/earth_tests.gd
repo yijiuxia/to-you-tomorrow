@@ -38,6 +38,7 @@ func _ready() -> void:
 	test_events()
 	test_farm_unlock()
 	test_germination()
+	test_tutorial_once()
 	print("地球测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -518,6 +519,19 @@ func test_germination() -> void:
 	GameState.stats["ecology"] = 0
 	w.end_week()
 	_eq(w.plants.size(), 4 + 2, "生态 0：4 格只发芽 2 格（0.4 × 4 四舍五入）")
+
+
+func test_tutorial_once() -> void:
+	GameState.reset()
+	GameState.flags.clear()
+	_eq(EarthTutorial.lines_for("enter", {"units": 6}).size(), 0, "第 1 周没有建造教学")
+	GameState.week = 2
+	var lines := EarthTutorial.lines_for("enter", {"units": 6})
+	_eq(lines.size(), 8, "第 2 周进小镇：介绍 5 条 + 镜头 3 条")
+	_true(lines[6].contains("6"), "工作单位数填进去了")
+	_eq(EarthTutorial.lines_for("enter", {"units": 6}).size(), 0, "只出现一次")
+	_eq(EarthTutorial.lines_for("third_person", {}).size(), 2, "第一次切第三人称")
+	GameState.reset()
 
 
 ## 直接建好一座建筑，省掉等工作单位的步骤

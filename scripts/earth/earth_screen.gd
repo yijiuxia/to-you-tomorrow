@@ -6,6 +6,7 @@ signal back_pressed
 signal end_week_confirmed
 
 const EndWeekDialog := preload("res://scripts/ui/end_week_dialog.gd")
+const StoryScreen := preload("res://scripts/ui/story_screen.gd")
 const MENU_ORDER: Array[String] = ["recycler", "repair_station", "generator", "power_node", "purifier", "water_pipe", "farm_plot", "soil_improver", "relay"]
 const CONTINUOUS_TYPES: Array[String] = [EarthWorld.PIPE, EarthWorld.NODE_ID]  # 这些会连续放很多个
 const GHOST_OK := Color(0.3, 1.0, 0.4, 0.5)
@@ -54,6 +55,12 @@ var _last_region := ""
 var _rng := RandomNumberGenerator.new()
 var proposal: Dictionary = {}      # 当前等你回答的方案（测试也读它）
 var event: Dictionary = {}         # 当前的突发事件
+var _tutorial: PanelContainer      # 建造教学提示：在画面上方，不挡操作
+var _tutorial_lines: Label
+var _scraps_cut := 0
+var _plant_area := Rect2i()        # 第 3 周植物事件：ARK-01 走近广场边缘就触发
+var _story_playing := false
+var _seed_jar_known := false
 var _event_chat: ChatEventPanel = null  # 人物 AI 线程加：突发事件对话
 
 
@@ -66,7 +73,38 @@ func _ready() -> void:
 	_on_world_changed()
 	_set_third_person(false)
 	_rng.randomize()
+	var plaza: Dictionary = world.ruins.get("plaza", {})
+	if not plaza.is_empty():
+		_plant_area = Rect2i(int(plaza["x"]), int(plaza["z"]), int(plaza["w"]), int(plaza["h"])).grow(int(DataDB.balance("earth_plant_story_margin")))
+	_seed_jar_known = GameState.flags.get("seed_jar_found", false)
+	_show_tutorial("enter")
+	# 第 3 周第一次进小镇有剧情（界面线程的剧情表 earth_enter）；播完再轮到她的方案和事件
+	if await _play_story("earth_enter"):
+		return
 	_start_girl_moments()
+
+
+## 在小镇画面上直接播剧情；没有要播的返回 false。播的时候暂停 ARK-01 的操作。
+func _play_story(moment: String) -> bool:
+	var holder: Node = StoryScreen.play_over(self, moment)
+	if holder == null:
+		return false
+	_story_playing = true
+	ark.set_active(false)
+	await Signal(holder, "all_finished")  # 剧情画面用 add_user_signal 加的信号
+	_story_playing = false
+	if is_inside_tree():
+		ark.set_active(third_person)
+		_start_girl_moments()
+	return true
+
+
+func _show_tutorial(trigger: String) -> void:
+	var lines := EarthTutorial.lines_for(trigger, {"units": world.work_units_left()})
+	if lines.is_empty():
+		return
+	_tutorial_lines.text = "\n".join(lines)
+	_tutorial.visible = true
 
 
 ## 进小镇时：本周目标、她的方案、突发事件（都是她"活着"的地方，比赛版 4.4）
@@ -159,6 +197,7 @@ func _process(delta: float) -> void:
 		_update_ghost()
 	else:
 		_check_region_comment()
+		_check_plant_story()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -275,6 +314,8 @@ func _set_third_person(value: bool) -> void:
 	_right_panel.visible = not value and _info_box.get_child_count() > 0
 	_hint.text = Text.t("UI-17-10") if value else Text.t("UI-17-11")
 	_on_world_changed()
+	if value:
+		_show_tutorial("third_person")
 
 
 func _cell_under(screen_position: Vector2) -> Vector2i:
@@ -343,6 +384,7 @@ func _build_world() -> void:
 	ark.setup(view, view.cell_center(ARK_START) if start == Vector3.INF else start)
 	ark.message.connect(_show_message)
 	ark.girl_comment.connect(girl_says)
+	ark.scrap_cut.connect(_on_scrap_cut)
 	ark.prompt_changed.connect(func(text: String) -> void: _prompt.text = text)
 
 	_ghost = MeshInstance3D.new()
@@ -399,6 +441,16 @@ func _build_hud() -> void:
 	bottom.alignment = BoxContainer.ALIGNMENT_END
 	add_child(bottom)
 	_girl_line = _bottom_label(bottom)
+	_tutorial = PanelContainer.new()
+	_tutorial.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_tutorial.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_tutorial.offset_top = 80.0
+	_tutorial.visible = false
+	add_child(_tutorial)
+	var tutorial_box := VBoxContainer.new()
+	_tutorial.add_child(tutorial_box)
+	_tutorial_lines = UiKit.short_label(tutorial_box, "")
+	UiKit.button(tutorial_box, Text.t("UI-17-15"), func() -> void: _tutorial.visible = false)
 	_goal_label = _bottom_label(bottom)
 	_message = _bottom_label(bottom)
 	_prompt = _bottom_label(bottom)
@@ -434,6 +486,14 @@ func _bottom_label(parent: Control) -> Label:
 
 # ---------- 刷新显示 ----------
 
+## 第三人称下 ARK-01 走近广场边缘：第 3 周的植物事件（剧情表 earth_plant_found）
+func _check_plant_story() -> void:
+	if _story_playing or _plant_area.size == Vector2i.ZERO or GameState.flags.get("plant_event_done", false):
+		return
+	if _plant_area.has_point(view.cell_at(ark.position)):
+		_play_story("earth_plant_found")
+
+
 func _check_region_comment() -> void:
 	var region := world.region_of(view.cell_at(ark.position))
 	if region != _last_region:
@@ -442,7 +502,19 @@ func _check_region_comment() -> void:
 		_last_region = region
 
 
+func _on_scrap_cut() -> void:
+	_scraps_cut += 1
+	if _scraps_cut >= int(DataDB.balance("earth_tutorial_scraps")):
+		_show_tutorial("scraps_3")
+
+
 func _on_world_changed() -> void:
+	# 扫到种子罐：播剧情（剧情表 earth_seed_jar_found）
+	if not _seed_jar_known and GameState.flags.get("seed_jar_found", false):
+		_seed_jar_known = true
+		if is_node_ready():
+			_play_story.call_deferred("earth_seed_jar_found")
+
 	_status.text = "%s    %s    %s" % [
 		Text.f("UI-17-13", {"week": GameState.week}),
 		Text.f("UI-14-05", {
@@ -572,6 +644,7 @@ func request_clear(ruin_id: String) -> void:
 		return
 	_confirm_clear = ""
 	world.queue_clear(ruin_id)
+	_show_tutorial("clear_queued")
 
 
 func _building_job(uid: int) -> Dictionary:
