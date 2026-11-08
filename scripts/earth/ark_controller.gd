@@ -8,6 +8,7 @@ extends CharacterBody3D
 signal message(text: String)
 signal prompt_changed(text: String)
 signal tool_changed(tool: String)
+signal girl_comment(text: String)
 
 const TOOLS: Array[String] = ["cutter", "welder", "assembler", "sprayer"]
 const TOOL_KEYS := {"cutter": "UI-18-20", "welder": "UI-18-21", "assembler": "UI-18-22", "sprayer": "UI-18-23"}
@@ -173,6 +174,7 @@ func use_tool(target: Dictionary) -> void:
 		"repair":
 			if world.repair_building(target["id"]):
 				message.emit(Text.t("UI-18-27"))
+				girl_comment.emit(Text.t("UI-20-22"))
 		"special":
 			var result := world.try_special(target["id"], _rng)
 			if result["ok"]:
@@ -245,6 +247,8 @@ func scan() -> void:
 			world.discover_clue(id)
 			found += 1
 	message.emit(Text.f("UI-18-04", counts) + ("" if found == 0 else " " + Text.f("UI-18-30", {"count": found})))
+	if found > 0:
+		girl_comment.emit(Text.t("UI-20-21"))
 
 
 func _update_cutting(delta: float) -> void:

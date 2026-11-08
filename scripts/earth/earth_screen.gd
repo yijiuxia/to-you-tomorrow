@@ -45,6 +45,15 @@ var _menu_buttons := {}
 var _queue_box: VBoxContainer
 var _info_box: VBoxContainer
 var _message_left := 0.0
+var _card: PanelContainer          # 她的方案 / 突发事件卡片：在画面中间，选完就消失
+var _girl_line: Label              # 她的实时评论
+var _comment_ready_at := 0.0       # 实时评论冷却（比赛版 4.4：最少隔 20 秒）
+var _goal_label: Label
+var _confirm_clear := ""           # 共情高时拆植物旁的废墟要点两次
+var _last_region := ""
+var _rng := RandomNumberGenerator.new()
+var proposal: Dictionary = {}      # 当前等你回答的方案（测试也读它）
+var event: Dictionary = {}         # 当前的突发事件
 
 
 func _ready() -> void:
@@ -55,6 +64,72 @@ func _ready() -> void:
 	world.changed.connect(_on_world_changed)
 	_on_world_changed()
 	_set_third_person(false)
+	_rng.randomize()
+	_start_girl_moments()
+
+
+## 进小镇时：本周目标、她的方案、突发事件（都是她"活着"的地方，比赛版 4.4）
+func _start_girl_moments() -> void:
+	if not GameState.weekly.has("goal"):
+		GameState.weekly["goal"] = GirlEarth.pick_week_goal(world)
+	var goal: Dictionary = GameState.weekly["goal"]
+	_goal_label.text = "" if goal.is_empty() else Text.f("UI-20-09", {"goal": Text.t(str(goal["say_key"]))})
+	proposal = GirlEarth.maybe_propose(world, _rng)
+	if not proposal.is_empty():
+		_show_card(Text.t(str(proposal["say_key"])), [
+			[Text.t("UI-20-06"), GirlEarth.ACCEPT], [Text.t("UI-20-07"), GirlEarth.EXPLAIN], [Text.t("UI-20-08"), GirlEarth.REJECT],
+		], answer_proposal)
+		return
+	event = GirlEarth.pick_event(world, _rng)
+	if not event.is_empty():
+		GirlEarth.start_event(world, event)
+		var options: Array = []
+		for i in range(1, 4):
+			options.append([Text.t(str(event["option%d_key" % i])), str(event["option%d_intent" % i])])
+		_show_card(Text.t(str(event["say_key"])), options, answer_event)
+
+
+func answer_proposal(choice: String) -> void:
+	GirlEarth.answer(world, proposal, choice)
+	proposal = {}
+	_close_card()
+
+
+func answer_event(intent: String) -> void:
+	var result := GirlEarth.resolve_event(world, event, intent)
+	event = {}
+	_close_card()
+	if not result.is_empty():
+		_show_message(Text.t(result))
+
+
+## 她的实时评论：有冷却，冷却中的就不说了（人物 AI 线程接好后换成模型生成）
+func girl_says(text: String) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	if now < _comment_ready_at:
+		return
+	_comment_ready_at = now + float(DataDB.balance("girl_comment_cooldown_sec"))
+	_girl_line.text = text
+
+
+func _show_card(text: String, options: Array, on_choice: Callable) -> void:
+	_close_card()
+	_card = PanelContainer.new()
+	_card.set_anchors_preset(Control.PRESET_CENTER)
+	_card.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_card.grow_vertical = Control.GROW_DIRECTION_BOTH
+	add_child(_card)
+	var box := VBoxContainer.new()
+	_card.add_child(box)
+	UiKit.short_label(box, text)
+	for option: Array in options:
+		UiKit.button(box, str(option[0]), on_choice.bind(option[1]))
+
+
+func _close_card() -> void:
+	if _card != null:
+		_card.queue_free()
+		_card = null
 
 
 func _exit_tree() -> void:
@@ -71,6 +146,8 @@ func _process(delta: float) -> void:
 			_message.text = ""
 	if not third_person:
 		_update_ghost()
+	else:
+		_check_region_comment()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -145,6 +222,8 @@ func select_cell(cell: Vector2i) -> void:
 ## 放蓝图；成功返回建筑编号
 func place_at(cell: Vector2i) -> int:
 	var uid := world.place(placing_type, cell.x, cell.y)
+	if uid != 0 and GirlEarth.objects_to_plan(_rng):
+		girl_says(Text.t("UI-20-16"))
 	if uid != 0 and not CONTINUOUS_TYPES.has(placing_type):
 		cancel_placing()
 	return uid
@@ -251,6 +330,7 @@ func _build_world() -> void:
 	var start := world.ark_position
 	ark.setup(view, view.cell_center(ARK_START) if start == Vector3.INF else start)
 	ark.message.connect(_show_message)
+	ark.girl_comment.connect(girl_says)
 	ark.prompt_changed.connect(func(text: String) -> void: _prompt.text = text)
 
 	_ghost = MeshInstance3D.new()
@@ -306,6 +386,8 @@ func _build_hud() -> void:
 	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bottom.alignment = BoxContainer.ALIGNMENT_END
 	add_child(bottom)
+	_girl_line = _bottom_label(bottom)
+	_goal_label = _bottom_label(bottom)
 	_message = _bottom_label(bottom)
 	_prompt = _bottom_label(bottom)
 	_reason = _bottom_label(bottom)
@@ -339,6 +421,14 @@ func _bottom_label(parent: Control) -> Label:
 
 
 # ---------- 刷新显示 ----------
+
+func _check_region_comment() -> void:
+	var region := world.region_of(view.cell_at(ark.position))
+	if region != _last_region:
+		if not _last_region.is_empty() and not region.is_empty():
+			girl_says(Text.f("UI-20-20", {"name": Text.t(str(DataDB.row("earth_regions", region)["name_key"]))}))
+		_last_region = region
+
 
 func _on_world_changed() -> void:
 	_status.text = "%s    %s    %s" % [
@@ -427,7 +517,7 @@ func _ruin_info(ruin: Dictionary) -> void:
 	if world.is_ruin_queued(id):
 		UiKit.button(_info_box, Text.t("UI-16-09"), world.cancel_clear.bind(id))
 	else:
-		UiKit.button(_info_box, Text.f("UI-16-08", {"work": ruin["work_units"]}), world.queue_clear.bind(id))
+		UiKit.button(_info_box, Text.f("UI-16-08", {"work": ruin["work_units"]}), request_clear.bind(id))
 
 
 func _building_info(building: Dictionary) -> void:
@@ -459,6 +549,17 @@ func _prop_info(id: String) -> void:
 		var reason := world.special_reason(special)
 		if not reason.is_empty():
 			UiKit.label(_info_box, Text.f(reason["key"], reason["values"]))
+
+
+## 排清理：共情高、废墟旁有植物时她会阻止，要再点一次才算数（比赛版 4.4）
+func request_clear(ruin_id: String) -> void:
+	if _confirm_clear != ruin_id and GirlEarth.objects_to_clear(world, ruin_id):
+		_confirm_clear = ruin_id
+		girl_says(Text.t("UI-20-15"))
+		_show_message(Text.t("UI-20-15"))
+		return
+	_confirm_clear = ""
+	world.queue_clear(ruin_id)
 
 
 func _building_job(uid: int) -> Dictionary:

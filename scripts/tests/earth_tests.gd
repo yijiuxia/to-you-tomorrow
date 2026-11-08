@@ -32,6 +32,10 @@ func _ready() -> void:
 	test_hand_plant_and_dig()
 	test_broken_building()
 	test_plants_grow_up()
+	test_proposals()
+	test_threshold_behaviors()
+	test_week_goal()
+	test_events()
 	print("地球测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
 
@@ -394,6 +398,94 @@ func test_plants_grow_up() -> void:
 	_true(w.plant_grown(Vector2i(4, 8)), "花长两周后长大")
 
 
+func test_proposals() -> void:
+	var w := _world()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	GameState.stats["stamina"] = 20
+	_true(GirlEarth.maybe_propose(w, rng).is_empty(), "体力低时不提方案")
+	GameState.stats["stamina"] = 70
+	var got := 0
+	for i in 20:
+		if not GirlEarth.maybe_propose(w, rng).is_empty():
+			got += 1
+	_eq(got, 2, "每周最多 2 次")
+	GameState.weekly = {}
+	var proposal := {}
+	while proposal.is_empty():
+		proposal = GirlEarth.maybe_propose(w, rng)
+	_eq(proposal["id"], "fix_shed", "默认提清理棚屋")
+	GirlEarth.answer(w, proposal, GirlEarth.ACCEPT)
+	_true(w.is_ruin_queued("shed"), "同意后排进施工队列")
+	_eq(GameState.get_stat("confidence"), 42, "同意自信 +2")
+	_eq(GameState.get_stat("trust"), 51, "同意信任 +1")
+	GirlEarth.answer(w, proposal, GirlEarth.REJECT)
+	_eq(GameState.get_stat("trust"), 49, "直接否决信任 -2")
+	_eq(GameState.flags.get("proposal_rejects"), 1, "记下被否决")
+	GirlEarth.answer(w, proposal, GirlEarth.EXPLAIN)
+	_eq(GameState.get_stat("trust"), 49, "说明理由否决不变")
+
+
+func test_threshold_behaviors() -> void:
+	var w := _world()
+	w.hand_plant(Vector2i(4, 9))  # 堆场废墟（3,10）旁边
+	_true(not GirlEarth.objects_to_clear(w, "yard"), "共情不高不阻止")
+	GameState.change_stat("empathy", 20)
+	_true(GirlEarth.objects_to_clear(w, "yard"), "共情 60 阻止拆植物旁的废墟")
+	_true(not GirlEarth.objects_to_clear(w, "tank"), "旁边没植物不阻止")
+	_true(not GirlEarth.reveals_clues(), "好奇不高不标隐藏点")
+	GameState.change_stat("curiosity", 20)
+	_true(GirlEarth.reveals_clues(), "好奇 60 标隐藏点")
+	GameState.flags["anomaly_started"] = true
+	GameState.change_stat("trust", -25)
+	_eq(GirlEarth.week_end_discovery(w), "", "信任低：找到了也不说")
+	_true(GameState.flags.has("hidden_clue_dug_hole"), "但她确实找到了")
+	GameState.change_stat("trust", 40)
+	_eq(GirlEarth.week_end_discovery(w), "dug_hole", "信任够了会告诉你")
+
+
+func test_week_goal() -> void:
+	var w := _world()
+	_true(GirlEarth.pick_week_goal(w).is_empty(), "自信不高不定目标")
+	GameState.change_stat("confidence", 20)
+	var goal := GirlEarth.pick_week_goal(w)
+	_eq(goal["id"], "goal_ruins", "第一个目标是清废墟")
+	_true(not GirlEarth.goal_reward(w, goal), "没完成没奖励")
+	for id in ["plaza", "yard", "shed"]:
+		w.ruins[id]["cleared"] = true
+	_true(GirlEarth.goal_reward(w, goal), "完成有奖励")
+	_eq(GameState.get_stat("confidence"), 62, "自信 +2")
+
+
+func test_events() -> void:
+	var w := _rich_world()
+	_built(w, "generator", 0, 25)
+	var user := _built(w, "soil_improver", 3, 25)
+	var rng := RandomNumberGenerator.new()
+	var picked := {}
+	for i in 300:
+		GameState.weekly = {}
+		rng.seed = i
+		var e := GirlEarth.pick_event(w, rng)
+		if not e.is_empty():
+			picked[e["id"]] = true
+	_true(picked.has("device_stop") and picked.has("ark_failure"), "两种事件都会出现")
+	_true(not picked.has("danger_zone"), "好奇不够不会想进危险区域")
+	GameState.weekly = {}
+	var count := 0
+	for i in 50:
+		if not GirlEarth.pick_event(w, rng).is_empty():
+			count += 1
+	_true(count <= 1, "每周最多 1 次")
+	var stop: Dictionary = DataDB.row("earth_events", "device_stop")
+	GirlEarth.start_event(w, stop)
+	_true(w.problems(user).has(EarthWorld.BROKEN_PROBLEM), "设备停运真的坏了")
+	_eq(GirlEarth.resolve_event(w, stop, "continue"), "UI-21-40", "机械够她自己修好")
+	_true(w.problems(user).is_empty(), "修好了")
+	GirlEarth.start_event(w, stop)
+	_eq(GirlEarth.resolve_event(w, stop, "ask_help"), "UI-21-41", "让你修就还坏着")
+
+
 ## 直接建好一座建筑，省掉等工作单位的步骤
 func _built(w: EarthWorld, type: String, x: int, z: int) -> int:
 	var uid := w.place(type, x, z)
@@ -412,6 +504,7 @@ func _built(w: EarthWorld, type: String, x: int, z: int) -> int:
 func _world() -> EarthWorld:
 	GameState.reset()
 	GameState.flags.clear()
+	GameState.weekly = {}
 	return EarthWorld.new()
 
 

@@ -94,108 +94,143 @@ UI-12-rest,休息一下,
 UI-12-investigate,调查奇怪的地方,
 UI-12-withdraw,先撤回来,
 UI-12-ask_help,找你帮忙,
-UI-BLD-01,回收站,
-UI-BLD-02,发电设备,
-UI-BLD-03,净水站,
-UI-BLD-04,维修站,
-UI-BLD-05,种植区,
-UI-BLD-06,土壤改良器,
-UI-BLD-07,温室,
-UI-BLD-08,通信中继,
-UI-BLD-09,供电节点,
-UI-BLD-10,水管,
-UI-13-01,超出了这片区域。,
-UI-13-02,这里已经有东西了。,
-UI-13-03,地面污染太重，种不了。,
-UI-13-04,需要 {skill} {need}（现在 {now}）,
-UI-13-05,缺少 {material} {count},
-UI-13-06,这个建筑只能建在固定位置。,
-UI-13-07,剧情还没到，暂时不能建。,
-UI-14-01,金属,
-UI-14-02,电子元件,
-UI-14-03,能源,
-UI-14-04,清洁水,
-UI-14-05,{metal_name} {metal} · {electronics_name} {electronics} · {energy_name} {energy_used} / {energy} · {water_name} {water_used} / {water},
-UI-14-06,本周还剩 {left} / {total} 个工作单位,
-UI-15-01,废墟清理,
-UI-15-02,供电,
-UI-15-03,水源,
-UI-15-04,植被,
-UI-15-05,{name} {value}%,
-UI-16-01,缺电,
-UI-16-02,缺水,
-UI-16-03,土壤污染,
-UI-16-04,运行正常,
-UI-16-05,蓝图，等机器人施工（{done} / {total}）,
-UI-16-06,取消蓝图,
-UI-16-07,拆除,
-UI-16-08,清理（要 {work} 个工作单位）,
-UI-16-09,取消清理,
-UI-16-10,废墟：清理后得 金属 {metal}、电子元件 {electronics},
-UI-16-11,小废料：用 ARK-01 的切割头拆,
-UI-16-12,排队中（{done} / {total}，本周能做 {planned}）,
-UI-17-01,建造,
-UI-17-02,施工队列,
-UI-17-03,（空）,
-UI-17-04,返回,
-UI-17-05,俯视（V 切换）,
-UI-17-06,第三人称（V 切换）,
-UI-17-07,{name}（金属 {metal}，电子 {electronics}，{work} 工作单位）,
-UI-17-08,左键放置，右键或 Esc 取消,
-UI-17-09,{name}：{done} / {total},
-UI-17-10,WASD 移动，Tab 换工具，按住 E 使用，F 拾取，Q 扫描，空格跳,
-UI-17-11,WASD 移动镜头，滚轮缩放，按住右键旋转,
-UI-17-12,清理 {name}：{done} / {total},
-UI-18-01,拆下来了，按 F 拾取,
-UI-18-02,金属 +{metal},
-UI-18-03,金属 +{metal}，电子元件 +{electronics},
-UI-18-04,扫描：废墟 {ruins} 处，建筑 {buildings} 座，小废料 {scraps} 块,
-UI-18-05,按住 E 拆解,
-UI-18-06,这块太大了，要回俯视让机器人清理,
-UI-18-07,（测试）技能和材料已加满,
-UI-19-01,废墟,
-UI-19-02,小废料,
-UI-07-07,施工完成：{names},
-UI-07-08,获得：金属 +{metal}，电子元件 +{electronics},
-UI-07-09,维修站区域：{recovery},
-UI-17-13,第 {week} 周,
-UI-17-14,拆除建筑不退材料,
-UI-13-08,这片区域还没打开。,
-UI-13-09,干河道里不能建。,
-UI-13-10,超出通信范围，先建通信中继。,
-UI-15-10,维修站区域,
-UI-15-11,工业区,
-UI-15-12,干河道,
-UI-15-13,温室与旧居民区,
-UI-15-20,锈铁大门,
-UI-15-21,旧备用电源,
-UI-15-22,断桥,
-UI-15-23,材料堆,
-UI-15-24,雨水罐,
-UI-15-25,大玻璃温室,
-UI-15-26,地下入口,
-UI-15-30,修旧备用电源,
-UI-15-31,修桥,
-UI-15-32,修音频收发器,
-UI-15-40,脚印,
-UI-15-41,被挖走的苗留下的坑,
-UI-15-42,不明信号,
-UI-15-50,草,
-UI-15-51,花,
-UI-15-52,{girl}的苗,
-UI-15-60,{name}：{recovery},
-UI-16-13,坏了，要用焊接头修,
-UI-18-12,{girl}太累了，手一抖没装上。体力恢复了再试试。,
-UI-18-20,切割头,
-UI-18-21,焊接头,
-UI-18-22,装配头,
-UI-18-23,喷洒头,
-UI-18-24,按住 E 焊好它,
-UI-18-25,按住 E：{name},
-UI-18-26,按住 E 在脚下种一株花,
-UI-18-27,修好了，设备重新运转。,
-UI-18-28,成功了！,
-UI-18-29,种下了一株花。,
-UI-18-30,发现线索 {count} 处！,
-UI-18-31,[Tab] {tool},
-UI-18-32,需要 ARK-01 到现场：{name}（装配头）,
+UI-BLD-01,回收站,Recycler
+UI-BLD-02,发电设备,Generator
+UI-BLD-03,净水站,Water Purifier
+UI-BLD-04,维修站,Repair Station
+UI-BLD-05,种植区,Planting Plot
+UI-BLD-06,土壤改良器,Soil Conditioner
+UI-BLD-07,温室,Greenhouse
+UI-BLD-08,通信中继,Comms Relay
+UI-BLD-09,供电节点,Power Node
+UI-BLD-10,水管,Water Pipe
+UI-13-01,超出了这片区域。,Outside this area.
+UI-13-02,这里已经有东西了。,Something is already here.
+UI-13-03,地面污染太重，种不了。,The soil is too polluted to plant.
+UI-13-04,需要 {skill} {need}（现在 {now}）,Needs {skill} {need} (now {now})
+UI-13-05,缺少 {material} {count},Not enough {material}: need {count} more
+UI-13-06,这个建筑只能建在固定位置。,This can only be built in its fixed spot.
+UI-13-07,剧情还没到，暂时不能建。,Not available yet in the story.
+UI-14-01,金属,Metal
+UI-14-02,电子元件,Electronics
+UI-14-03,能源,Energy
+UI-14-04,清洁水,Clean Water
+UI-14-05,{metal_name} {metal} · {electronics_name} {electronics} · {energy_name} {energy_used} / {energy} · {water_name} {water_used} / {water},{metal_name} {metal} · {electronics_name} {electronics} · {energy_name} {energy_used} / {energy} · {water_name} {water_used} / {water}
+UI-14-06,本周还剩 {left} / {total} 个工作单位,Work units left this week: {left} / {total}
+UI-15-01,废墟清理,Ruins cleared
+UI-15-02,供电,Power
+UI-15-03,水源,Water
+UI-15-04,植被,Plants
+UI-15-05,{name} {value}%,{name} {value}%
+UI-16-01,缺电,No power
+UI-16-02,缺水,No water
+UI-16-03,土壤污染,Polluted soil
+UI-16-04,运行正常,Working normally
+UI-16-05,蓝图，等机器人施工（{done} / {total}）,"Blueprint, waiting for robots ({done} / {total})"
+UI-16-06,取消蓝图,Cancel blueprint
+UI-16-07,拆除,Demolish
+UI-16-08,清理（要 {work} 个工作单位）,Clear ({work} work units)
+UI-16-09,取消清理,Cancel clearing
+UI-16-10,废墟：清理后得 金属 {metal}、电子元件 {electronics},"Ruins: clearing gives Metal {metal}, Electronics {electronics}"
+UI-16-11,小废料：用 ARK-01 的切割头拆,Small scrap: cut it with ARK-01's cutter
+UI-16-12,排队中（{done} / {total}，本周能做 {planned}）,"Queued ({done} / {total}, {planned} this week)"
+UI-17-01,建造,Build
+UI-17-02,施工队列,Work queue
+UI-17-03,（空）,(empty)
+UI-17-04,返回,Back
+UI-17-05,俯视（V 切换）,Top view (V to switch)
+UI-17-06,第三人称（V 切换）,Third person (V to switch)
+UI-17-07,{name}（金属 {metal}，电子 {electronics}，{work} 工作单位）,"{name} (Metal {metal}, Elec {electronics}, {work} work units)"
+UI-17-08,左键放置，右键或 Esc 取消,"Left-click to place, right-click or Esc to cancel"
+UI-17-09,{name}：{done} / {total},{name}: {done} / {total}
+UI-17-10,WASD 移动，Tab 换工具，按住 E 使用，F 拾取，Q 扫描，空格跳,"WASD move, Tab switch tool, hold E to use, F pick up, Q scan, Space jump"
+UI-17-11,WASD 移动镜头，滚轮缩放，按住右键旋转,"WASD move camera, wheel zoom, hold right mouse to rotate"
+UI-17-12,清理 {name}：{done} / {total},Clear {name}: {done} / {total}
+UI-18-01,拆下来了，按 F 拾取,Cut loose. Press F to pick it up
+UI-18-02,金属 +{metal},Metal +{metal}
+UI-18-03,金属 +{metal}，电子元件 +{electronics},"Metal +{metal}, Electronics +{electronics}"
+UI-18-04,扫描：废墟 {ruins} 处，建筑 {buildings} 座，小废料 {scraps} 块,"Scan: {ruins} ruins, {buildings} buildings, {scraps} scraps"
+UI-18-05,按住 E 拆解,Hold E to cut
+UI-18-06,这块太大了，要回俯视让机器人清理,Too big. Go back to top view and send the robots
+UI-18-07,（测试）技能和材料已加满,(Test) Skills and materials maxed
+UI-19-01,废墟,Ruins
+UI-19-02,小废料,Small scrap
+UI-07-07,施工完成：{names},Finished: {names}
+UI-07-08,获得：金属 +{metal}，电子元件 +{electronics},"Gained: Metal +{metal}, Electronics +{electronics}"
+UI-07-09,维修站区域：{recovery},Repair Station Area: {recovery}
+UI-17-13,第 {week} 周,Week {week}
+UI-17-14,拆除建筑不退材料,Demolishing doesn't refund materials
+UI-13-08,这片区域还没打开。,This area isn't open yet.
+UI-13-09,干河道里不能建。,Can't build in the dry riverbed.
+UI-13-10,超出通信范围，先建通信中继。,Out of comms range. Build a relay first.
+UI-15-10,维修站区域,Repair Station Area
+UI-15-11,工业区,Industrial Zone
+UI-15-12,干河道,Dry Riverbed
+UI-15-13,温室与旧居民区,Greenhouse & Old Town
+UI-15-20,锈铁大门,Rusted Gate
+UI-15-21,旧备用电源,Old Backup Power
+UI-15-22,断桥,Broken Bridge
+UI-15-23,材料堆,Material Pile
+UI-15-24,雨水罐,Rain Tank
+UI-15-25,大玻璃温室,Glass Greenhouse
+UI-15-26,地下入口,Underground Entrance
+UI-15-30,修旧备用电源,Repair the old backup power
+UI-15-31,修桥,Repair the bridge
+UI-15-32,修音频收发器,Repair the audio transceiver
+UI-15-40,脚印,Footprints
+UI-15-41,被挖走的苗留下的坑,A hole where a sprout was dug up
+UI-15-42,不明信号,Unknown signal
+UI-15-50,草,Grass
+UI-15-51,花,Flower
+UI-15-52,{girl}的苗,{girl}'s sprout
+UI-15-60,{name}：{recovery},{name}: {recovery}
+UI-16-13,坏了，要用焊接头修,Broken. Fix it with the welder.
+UI-18-12,{girl}太累了，手一抖没装上。体力恢复了再试试。,{girl} is too tired and her hand slipped. Try again after she rests.
+UI-18-20,切割头,Cutter
+UI-18-21,焊接头,Welder
+UI-18-22,装配头,Assembler
+UI-18-23,喷洒头,Sprayer
+UI-18-24,按住 E 焊好它,Hold E to weld it
+UI-18-25,按住 E：{name},Hold E: {name}
+UI-18-26,按住 E 在脚下种一株花,Hold E to plant a flower here
+UI-18-27,修好了，设备重新运转。,Fixed. It's running again.
+UI-18-28,成功了！,It worked!
+UI-18-29,种下了一株花。,Planted a flower.
+UI-18-30,发现线索 {count} 处！,Found {count} clue(s)!
+UI-18-31,[Tab] {tool},[Tab] {tool}
+UI-18-32,需要 ARK-01 到现场：{name}（装配头）,ARK-01 must go there: {name} (assembler)
+UI-20-01,{girl}：那间塌掉的棚屋，我们先把它清出来好不好？,{girl}: That collapsed shed... can we clear it out first?
+UI-20-02,{girl}：储罐旁边冒出了一点绿色……我们别动那边，好吗？,{girl}: Something green is growing by the tank... can we leave that spot alone?
+UI-20-03,{girl}：断墙后面会有什么呀？我想把它清掉看看！,{girl}: What's behind that broken wall? I want to clear it and see!
+UI-20-04,{girl}：我想先把发电设备修好，这样别的才能用电。,"{girl}: I want to fix the generator first, so everything else gets power."
+UI-20-05,{girl}：工业区那间厂房，清出来能用好多材料！,"{girl}: If we clear that factory, we'll get loads of materials!"
+UI-20-06,好，听你的,"OK, let's do it"
+UI-20-07,现在不行，因为材料要留着,"Not now, we need the materials"
+UI-20-08,不行,No
+UI-20-09,{girl}的本周目标：{goal},{girl}'s goal this week: {goal}
+UI-20-10,废墟清理到 30%,Clear 30% of the ruins
+UI-20-11,建一座回收站,Build a recycler
+UI-20-12,供电恢复到 50%,Restore power to 50%
+UI-20-13,植被到 5%,Plants at 5%
+UI-20-14,{girl}完成了自己定的目标！,{girl} reached her own goal!
+UI-20-15,{girl}：等等！那边有植物，拆的时候会伤到它们……真的要拆吗？（再点一次确认）,{girl}: Wait! There are plants there... they'll get hurt. Do you really want to clear it? (Click again to confirm)
+UI-20-16,{girl}：嗯……我不太想建在这里。,{girl}: Hmm... I don't really want to build here.
+UI-20-17,{girl}自己找到了一处线索：{name},{girl} found a clue on her own: {name}
+UI-20-18,{girl}自己处理了一件意外，没来找你。,{girl} handled an accident herself and didn't come to you.
+UI-20-20,{girl}：这里是{name}！以前从没来过。,{girl}: This is the {name}! I've never been here before.
+UI-20-21,{girl}：发现了奇怪的东西……,{girl}: I found something strange...
+UI-20-22,{girl}：修好啦！,{girl}: Fixed it!
+UI-21-01,{girl}：有台设备突然停了！怎么办？,{girl}: One of the machines just stopped! What do we do?
+UI-21-02,{girl}：ARK-01 好像卡住了，动不了……,{girl}: ARK-01 seems stuck. It won't move...
+UI-21-03,{girl}：那边看起来好危险，可是我好想过去看看……,"{girl}: It looks dangerous over there, but I really want to go see..."
+UI-21-11,你自己试着修修看,Try fixing it yourself
+UI-21-12,我来修，你看着,"I'll fix it, you watch"
+UI-21-13,先不管它，去休息吧,Leave it for now and rest
+UI-21-21,你试试自己修好它,Try to fix it yourself
+UI-21-22,我来接手操控,I'll take over
+UI-21-23,先撤回来,Pull back for now
+UI-21-31,去吧，小心点,"Go ahead, be careful"
+UI-21-32,先扫描一下再说,Scan it first
+UI-21-33,不行，太危险了,"No, it's too dangerous"
+UI-21-40,{girl}自己把设备修好了。,{girl} fixed the machine herself.
+UI-21-41,设备还坏着，用焊接头修吧。,The machine is still broken. Fix it with the welder.

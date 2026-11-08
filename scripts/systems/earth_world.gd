@@ -247,7 +247,7 @@ func recovery(region := "") -> Dictionary:
 			var row := DataDB.row("earth_regions", id)
 			cell_total += grid_width * (int(row["z_to"]) - int(row["z_from"]) + 1)
 	for cell: Vector2i in plants:
-		if region.is_empty() or region_of(cell) == region:
+		if _in_region(cell, region):
 			plant_count += 1
 	for ruin: Dictionary in ruins.values():
 		if not _in_region(Vector2i(int(ruin["x"]), int(ruin["z"])), region):
@@ -780,8 +780,11 @@ func _prop_rect(id: String) -> Rect2i:
 	return Rect2i(int(row["x"]), int(row["z"]), int(row["w"]), int(row["h"]))
 
 
+## region 为空时表示"所有已开放、能建造的区域"
 func _in_region(cell: Vector2i, region: String) -> bool:
-	return region.is_empty() or region_of(cell) == region
+	if region.is_empty():
+		return open_regions().has(region_of(cell))
+	return region_of(cell) == region
 
 
 func _max_pollution(building: Dictionary) -> int:

@@ -1,0 +1,5 @@
+id,kind,target,amount,say_key,note
+goal_ruins,recovery,ruins,30,UI-20-10,她给自己定的目标：废墟清理到 30%
+goal_recycler,build,recycler,1,UI-20-11,建一座回收站
+goal_power,recovery,power,50,UI-20-12,供电恢复到 50%
+goal_plants,recovery,plants,5,UI-20-13,植被到 5%

@@ -326,6 +326,8 @@ func _sync_props() -> void:
 func _sync_clues() -> void:
 	var live := {}
 	for id in world.active_clues():
+		if not GirlEarth.reveals_clues():
+			continue
 		live[id] = true
 		if not _clue_nodes.has(id):
 			var node := _box_mesh(CLUE_SIZE, CLUE_COLOR)

@@ -59,6 +59,12 @@ static func _earth_lines() -> PackedStringArray:
 		result.append(Text.f("UI-07-07", {"names": "、".join(PackedStringArray(finished))}))
 	if int(report["metal"]) != 0 or int(report["electronics"]) != 0:
 		result.append(Text.f("UI-07-08", {"metal": report["metal"], "electronics": report["electronics"]}))
+	if report.get("goal_done", false):
+		result.append(Text.t("UI-20-14"))
+	if not str(report.get("girl_clue", "")).is_empty():
+		result.append(Text.f("UI-20-17", {"name": Text.t(str(DataDB.row("earth_clues", report["girl_clue"])["name_key"]))}))
+	if not str(report.get("self_handled", "")).is_empty():
+		result.append(Text.t("UI-20-18"))
 	var regions: Dictionary = report.get("regions", {})
 	for region: String in regions:
 		var name := Text.t(str(DataDB.row("earth_regions", region)["name_key"]))

@@ -62,3 +62,13 @@ earth_trait_from_plant,1,每种下植物共情加多少
 earth_trait_from_clue,1,每发现线索好奇加多少
 ark_tired_fail_chance,0.5,体力低时特殊施工失败的概率
 ark_special_seconds,2.0,按住 E 做特殊施工要多久（秒）
+girl_proposals_per_week,2,她每周最多提几次方案（比赛版 4.4）
+girl_proposal_chance,0.6,每次进小镇她提方案的概率
+girl_proposal_chance_drop,0.1,每被直接否决一次，提方案的概率降多少
+girl_mood_object_chance,0.3,心情低时你放建筑她出声反对的概率
+girl_goal_reward,2,完成她自己定的目标：自信和信任各加多少
+girl_comment_cooldown_sec,20,实时评论最短间隔（秒）
+event_per_week,1,普通突发事件每周最多几次（比赛版 4.3）
+event_chance,0.35,每次进小镇触发突发事件的概率
+event_self_handle_chance,0.5,自信高时她自己处理、不找你的概率
+event_self_repair_mechanics,30,设备停运时她自己修需要的机械

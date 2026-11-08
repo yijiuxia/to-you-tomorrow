@@ -1,6 +1,7 @@
 extends Node
 ## 从头点到结局的自动测试：像玩家一样按按钮，顺便给每种画面截图。
-## 运行（要截图不能加 --headless）：
+## 平时在后台运行，不弹窗口（yi 要求）：加 --headless，此时不截图。
+## 只有需要看截图时才去掉 --headless：
 ## Godot_console.exe --path . res://scenes/tests/playthrough_test.tscn -- --out=截图文件夹
 ## 通过时退出码是 0。
 
@@ -181,6 +182,9 @@ func _visit_town() -> void:
 	await _frames()
 	var earth: Control = _main.current
 	await _seconds(0.3)
+	await _shot("earth_card")
+	_dismiss_girl_card(earth)
+	await _frames()
 	await _shot("earth_top")
 	# 用真实的鼠标事件点地面，确认点击能穿过界面落到场景上
 	await _mouse_click_cell(earth, Vector2i(12, 7))
@@ -229,6 +233,7 @@ func _build_power_and_water() -> void:
 	_click(Text.t("UI-01-01"))
 	await _frames()
 	var earth: Control = _main.current
+	_dismiss_girl_card(earth)
 	var world: EarthWorld = GameState.earth
 	_check(world.ruins["plaza"]["cleared"], "广场废墟上周应该清理完")
 	_check(world.metal >= 5, "清理后应该有金属，实际 %d" % world.metal)
@@ -280,7 +285,23 @@ func _hover_shot(type_name: String, text_start: String, shot_name: String) -> vo
 	_check(false, "找不到要悬停的控件：%s" % text_start)
 
 
+## 她的方案和突发事件是随机出现的；测试里遇到就回答掉，不影响后面的步骤
+func _dismiss_girl_card(earth: Control) -> void:
+	if not earth.proposal.is_empty():
+		earth.answer_proposal(GirlEarth.EXPLAIN)
+	if not earth.event.is_empty():
+		earth.answer_event("rest")
+
+
 func _mouse_click_cell(earth: Control, cell: Vector2i) -> void:
+	# 后台运行没有窗口，鼠标坐标算不出来，直接调同一个处理函数；开窗口运行时才测真实鼠标
+	if DisplayServer.get_name() == "headless":
+		if earth.placing_type.is_empty():
+			earth.select_cell(cell)
+		else:
+			earth.place_at(cell)
+		await _frames()
+		return
 	var screen: Vector2 = earth.top_camera.unproject_position(earth.view.cell_center(cell))
 	for pressed: bool in [true, false]:
 		var click := InputEventMouseButton.new()
@@ -347,7 +368,8 @@ func _frames() -> void:
 
 
 func _shot(shot_name: String) -> void:
-	if _out_dir.is_empty() or _shot_names.has(shot_name):
+	# 后台（--headless）运行时没有画面，跳过截图
+	if _out_dir.is_empty() or _shot_names.has(shot_name) or DisplayServer.get_name() == "headless":
 		return
 	_shot_names[shot_name] = true
 	await RenderingServer.frame_post_draw
