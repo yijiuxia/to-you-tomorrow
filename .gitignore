@@ -10,3 +10,7 @@ addons/nobodywho/*.dll
 addons/nobodywho/*.so
 addons/nobodywho/*.dylib
 addons/nobodywho/*.pdb
+
+# Python 缓存
+__pycache__/
+*.pyc
