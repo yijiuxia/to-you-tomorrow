@@ -11,7 +11,7 @@ const TEX_DIR := "res://assets/models/girl/textures/"
 const MATERIALS := [
 	["FaceMouth", "T_Girl_FaceMouth", "scissor"],
 	["EyeIris", "T_Girl_EyeIris", "blend"],
-	["EyeHighlight", "T_Girl_EyeHighlight", "blend"],
+	["EyeHighlight", "T_Girl_EyeHighlight", "highlight"],
 	["Face_00_SKIN", "T_Girl_Face", "scissor"],
 	["EyeWhite", "T_Girl_EyeWhite", "scissor"],
 	["FaceBrow", "T_Girl_FaceBrow", "blend"],
@@ -25,6 +25,7 @@ const MATERIALS := [
 	["Sock", "T_Girl_Socks", "opaque"],
 	["Coat", "T_Girl_Coat", "scissor"],
 ]
+const HIGHLIGHT_PRIORITY := 10
 const INNER_TOP := "Tops"   # 里面那件衣服的材质名
 const SLEEVE_BONES: Array[String] = ["UpperArm", "LowerArm", "Hand", "Index", "Middle", "Ring", "Little", "Thumb"]
 ## 坐姿：骨头名 → 绕哪根轴转多少度（大腿往前抬、小腿往下弯、胳膊放下来）
@@ -57,6 +58,10 @@ const RETARGET := {
 const POINT_ARM := "J_Bip_L_UpperArm"
 const POINT_FOREARM := "J_Bip_L_LowerArm"
 const POINT_HAND := "J_Bip_L_Hand"
+const POINT_SHOULDER := "J_Bip_L_Shoulder"
+const POINT_CHEST := "J_Bip_C_UpperChest"
+const SHOULDER_SHARE := 0.35   # 肩膀跟着转几成
+const CHEST_SHARE := 0.08      # 上身跟着转几成（很小，只是带一下）
 const POINT_INDEX_ROOT := "J_Bip_L_Index1"
 const POINT_INDEX_TIP := "J_Bip_L_Index3"
 ## 指的时候握拳、只伸食指（yi 11.19）：这些手指关节往里弯
@@ -202,6 +207,9 @@ func _point() -> void:
 	var forearm := skeleton.find_bone(POINT_FOREARM)
 	if arm < 0 or forearm < 0:
 		return
+	# 先让上身和肩膀跟着往平板那边带一点，再动胳膊（yi：抬手要肩膀一起动）
+	_turn_toward(POINT_CHEST, POINT_SHOULDER, point_target, CHEST_SHARE)
+	_turn_toward(POINT_SHOULDER, POINT_ARM, point_target, SHOULDER_SHARE)
 	# 小臂伸直（回到静止时相对大臂的朝向）
 	var straight := skeleton.get_bone_rest(forearm).basis.get_rotation_quaternion()
 	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight * POINT_STRAIGHTEN))
@@ -226,6 +234,26 @@ func _point() -> void:
 	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
 	_aim_hand(room_target)
 	_make_fist(THUMB_BONES, THUMB_AXIS, THUMB_ANGLE)
+
+
+## 把一根骨头往目标方向转一部分：它到子骨头的方向，朝"它到目标的方向"转 share 成
+func _turn_toward(bone_name: String, child_name: String, target: Vector3, share: float) -> void:
+	var bone := skeleton.find_bone(bone_name)
+	var child := skeleton.find_bone(child_name)
+	if bone < 0 or child < 0:
+		return
+	var from := skeleton.global_transform * skeleton.get_bone_global_pose(bone).origin
+	var to := skeleton.global_transform * skeleton.get_bone_global_pose(child).origin
+	var now_dir := (to - from).normalized()
+	var want_dir := (target - from).normalized()
+	if now_dir.is_zero_approx() or want_dir.is_zero_approx():
+		return
+	var skel_q := skeleton.global_basis.orthonormalized().get_rotation_quaternion()
+	var bone_global := skel_q * skeleton.get_bone_global_pose(bone).basis.orthonormalized().get_rotation_quaternion()
+	var wanted: Quaternion = Quaternion.IDENTITY.slerp(Quaternion(now_dir, want_dir), _point_weight * share) * bone_global
+	var parent := skeleton.get_bone_parent(bone)
+	var parent_q := skel_q * (skeleton.get_bone_global_pose(parent).basis.orthonormalized().get_rotation_quaternion() if parent >= 0 else Quaternion.IDENTITY)
+	skeleton.set_bone_pose_rotation(bone, parent_q.inverse() * wanted)
 
 
 ## 转手腕，让伸出来的食指正对平板（食指根到指尖的方向 → 指尖到平板的方向）
@@ -372,4 +400,11 @@ func _material(texture_name: String, mode: String) -> StandardMaterial3D:
 		"blend":
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		"highlight":
+			# 眼睛高光（yi 11.19）：不受灯光影响、最后画、不被眼白和瞳孔挡住，不然在房间灯光下几乎看不见
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mat.render_priority = HIGHLIGHT_PRIORITY
+			mat.no_depth_test = true
 	return mat
