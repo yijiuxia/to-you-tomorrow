@@ -27,13 +27,13 @@ W7A-04-06,它们还活着……,They're still alive...
 W7A-05-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
 W7A-06-01,{player}，我一直在想，信号为什么会断。,"{player}, I keep wondering why the signal cuts out."
 W7A-06-02,我查了{ark}的画面是从哪传过来的。天线、中继卫星……最后是地面上的一个点。,"I traced where {ark}'s video comes from. Antenna, relay satellite... and in the end, a point on the ground."
-W7A-06-03,"信号来源：地面 · 坐标 北纬 41°18′ · 东经 123°47′","Signal source: ground · coordinates 41°18′N, 123°47′E"
+W7A-06-03,"信号来源：地面 · 地表区块 G-417 · 坐标 (412, 087)","Signal source: ground · Surface sector G-417 · (412, 087)"
 W7A-06-04,我又调了方舟的对地观测记录，看那个点。,Then I pulled the ark's Earth observation records and looked at that point.
 W7A-06-05,……是小镇。没有颜色的小镇。,...It's the town. The town without colors.
 W7A-06-06,可是……也可能只是做得很逼真，对吧？,"But... it could just be very realistic, right?"
 W7A-06-07,我想问你一件事。你们在下面……会看天吗？,Can I ask you something? Down there... do you ever look at the sky?
 W7A-06-08,{player}，我知道小镇在哪了。方舟再过一会儿，就会从那片天上飞过去。,"{player}, I know where the town is now. In a little while, the ark will fly over that sky."
-W7A-06-09,"方舟导航：预计经过坐标 北纬 41°18′ · 东经 123°47′ 上空：00:03:12","Ark navigation: estimated pass over coordinates 41°18′N, 123°47′E: 00:03:12"
+W7A-06-09,"方舟导航：预计经过地表区块 G-417 · 坐标 (412, 087) 上空：00:03:12","Ark navigation: estimated pass over surface sector G-417 · (412, 087): 00:03:12"
 W7A-06-10,我想让方舟的一块太阳能板转个角度，把光反射到那里。要是他看见了……就说明，是真的。,I want to turn one of the ark's solar panels to reflect light down there. If he sees it... then it's real.
 W7A-06-11,这个要你批准。,This needs your approval.
 W7A-06-13,嗯，我确定。,Yes. I'm sure.
@@ -49,7 +49,7 @@ W7B-02-01,《重建计划》进入第二阶段。根据方舟协议，有关地�
 W7B-02-05,……你在开玩笑吧？,"...You're joking, right?"
 W7B-02-06,……我要自己看。,...I want to see for myself.
 W7B-02-07,{ark}的画面是从哪传过来的？天线、中继卫星……,"Where does {ark}'s video come from? Antenna, relay satellite..."
-W7B-02-08,"信号来源：地面 · 坐标 北纬 41°18′ · 东经 123°47′","Signal source: ground · coordinates 41°18′N, 123°47′E"
+W7B-02-08,"信号来源：地面 · 地表区块 G-417 · 坐标 (412, 087)","Signal source: ground · Surface sector G-417 · (412, 087)"
 W7B-02-09,……是小镇。没有颜色的小镇。,...It's the town. The town without colors.
 W7B-02-10,七年。我在真的地球上，待了七年。,Seven years. I've been on the real Earth for seven years.
 W7B-02-11,那材料、苗、脚印……不是任务。,"Then the materials, the seedlings, the footprints... weren't a quest."

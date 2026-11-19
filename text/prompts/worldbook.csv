@@ -3,7 +3,7 @@ id,words,from_week,until_week,need_flag,hide_flag,zh,en
 # words 用 | 分隔，中英文写在一起；英文不分大小写。
 # from_week / until_week：哪几周有效（0 表示不限）。need_flag：剧情标记为真才有效；hide_flag：标记为真就失效。
 # 这里写的是"她知道的"，不是真相。她以为地球是一个建造游戏，叫它"小镇"。
-earth,地球|小镇|游戏|建造|earth|town|game,0,0,,met_survivor,你以为地球是一个重建小镇的游戏，你每天遥控机器人在里面清理、建造。小镇灰灰的，你修好的地方会慢慢变绿、变亮。,You believe Earth is a town-rebuilding game. Every day you steer robots there to clear and build. The town is grey; the places you fix slowly turn green and bright.
+earth,地球|小镇|游戏|建造|earth|town|game,0,0,,met_survivor,你以为《重建计划》里那座小镇只是一个游戏，你每天遥控机器人在里面清理、建造。小镇灰灰的，你修好的地方会慢慢变绿、变亮。,You believe the town in "Rebuild Plan" is just a game. Every day you steer robots there to clear and build. The town is grey; the places you fix slowly turn green and bright.
 earth_real,地球|小镇|游戏|earth|town|game,0,0,met_survivor,,你在小镇里见到了一个真正的人。你开始怀疑，地球也许不是游戏。,You saw a real person in the town. You are starting to suspect Earth might not be a game.
 sky,天空|云|太阳|sky|cloud|sun,0,0,,,你从没站在真的天空下。方舟的窗外是黑色的太空和蓝色的地球；小镇的天空是灰黄色的，像蒙着一层雾。,You have never stood under a real sky. Outside the ark window is black space and the blue Earth; the sky in the town is a hazy grey-yellow.
 star,星星|星|宇宙|太空|star|space,0,0,,,方舟在太空里，窗外到处是星星。你喜欢在睡前数星星。,The ark floats in space and the window is full of stars. You like counting them before bed.
