@@ -66,6 +66,7 @@ const LUX3D_BUILDINGS := {
 const LUX3D_PROPS := {
 	"gate_closed": "gate", "old_power_broken": "old_power", "old_power_fixed": "old_power",
 	"greenhouse_broken": "dome", "greenhouse_half": "dome", "greenhouse_fixed": "dome",
+	"tank_full": "tank", "tank_empty": "tank", "bridge_fixed": "bridge_fixed", "bridge_temp": "bridge_temp",
 }
 ## 远景：[模型, 东西位置(地图宽的倍数), 南北位置(地图长的倍数), 占地边长米, 朝向度]
 const LUX3D_SCENERY := [
@@ -270,6 +271,7 @@ func _sync_ruins() -> void:
 			var height := BIG_RUIN_HEIGHT if big else SMALL_RUIN_HEIGHT
 			var node := _solid_block(int(ruin["w"]), int(ruin["h"]), height, RUIN_BIG_COLOR if big else RUIN_SMALL_COLOR)
 			node.position = rect_center(int(ruin["x"]), int(ruin["z"]), int(ruin["w"]), int(ruin["h"]))
+			_swap_to_model(node, "ruin_big" if big else "ruin_small", int(ruin["w"]), int(ruin["h"]))
 			add_child(node)
 			_ruin_nodes[id] = node
 
