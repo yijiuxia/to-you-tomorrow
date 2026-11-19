@@ -40,6 +40,7 @@ func show_title() -> void:
 	screen.continue_pressed.connect(continue_game)
 	screen.credits_pressed.connect(show_credits)
 	screen.language_changed.connect(_on_language_changed)
+	screen.language_toggled.connect(show_title)  # 房间线程加：标题页右上角切中英文
 	_show(screen)
 
 
@@ -57,9 +58,13 @@ func _begin_first_week() -> void:
 
 
 ## 读自动存档。存档是在每周开始时存的，所以读完从那一周的开头接着玩。
-func continue_game() -> void:
-	if not SaveSystem.load_save():
+func continue_game(slot: String = SaveSystem.SLOT_AUTO) -> void:
+	var resume := SaveSystem.resume_of(slot)
+	if not SaveSystem.load_save(slot):
 		show_title()
+		return
+	if resume == SaveSystem.RESUME_HUB:  # 手动存档是在主界面存的，直接回主界面
+		show_hub()
 		return
 	if GameState.week < int(DataDB.balance("first_class_week")):
 		start_game()

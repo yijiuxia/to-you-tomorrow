@@ -20,7 +20,7 @@ static func load_and_apply() -> void:
 	volume = int(DataDB.balance("ui_volume_default", 80))
 	fullscreen = int(DataDB.balance("ui_fullscreen_default", 0)) == 1
 	text_speed = int(DataDB.balance("ui_text_speed_default", 40))
-	language = Text.DEFAULT_LANGUAGE
+	language = default_language()
 	var config := ConfigFile.new()
 	if config.load(settings_path) == OK:
 		volume = int(config.get_value(SECTION, "volume", volume))
@@ -28,6 +28,21 @@ static func load_and_apply() -> void:
 		text_speed = int(config.get_value(SECTION, "text_speed", text_speed))
 		language = str(config.get_value(SECTION, "language", language))
 	apply()
+
+
+## 没存过设置时的语言：按发布平台（yi 11.19 定）。导出设置里 itch 版带 "itch" 标签默认英文，TapTap 版带 "taptap" 标签默认中文。
+static func default_language() -> String:
+	if OS.has_feature("itch"):
+		return "en"
+	if OS.has_feature("taptap"):
+		return "zh"
+	return Text.DEFAULT_LANGUAGE
+
+
+## 标题页右上角：中文和 English 来回切，记住选择
+static func toggle_language() -> void:
+	language = "en" if language == "zh" else "zh"
+	save_settings()
 
 
 ## 改完设置后调用：生效并写进文件

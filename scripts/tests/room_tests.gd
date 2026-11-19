@@ -19,6 +19,7 @@ func _ready() -> void:
 	await test_room_view_clicks()
 	await test_hub_room()
 	await test_every_place_builds()
+	test_manual_saves()
 	GameState.reset()
 	print("房间测试 %d 项，失败 %d 项" % [_count, _failures])
 	await _frames(3)
@@ -171,6 +172,30 @@ func test_every_place_builds() -> void:
 		screen.queue_free()
 	_ok(GameState.flags.get(RoomRules.FLAG_UNDERGROUND, false), "去过地下会记下来")
 	await _frames(1)
+
+
+## 1 个自动存档 + 2 个手动存档（yi 11.19 定）
+func test_manual_saves() -> void:
+	var old_path := SaveSystem.save_path
+	SaveSystem.save_path = "user://test_room.sav"
+	for slot in SaveSystem.SLOTS:
+		SaveSystem.delete_save(slot)
+	GameState.reset()
+	_ok(not SaveSystem.has_any_save(), "开始时没有存档")
+	GameState.week = 5
+	_ok(SaveSystem.save("manual1", SaveSystem.RESUME_HUB), "能存手动存档 1")
+	_ok(not SaveSystem.has_save(), "手动存档不占自动存档位")
+	_ok(SaveSystem.has_any_save(), "有存档时继续能点")
+	_eq(SaveSystem.resume_of("manual1"), SaveSystem.RESUME_HUB, "手动存档读回来回主界面")
+	GameState.reset()
+	_ok(SaveSystem.load_save("manual1"), "能读手动存档")
+	_eq(GameState.week, 5, "手动存档周数对")
+	_ok(not Text.t("UI-11-02").is_empty() and SaveSystem.summary("manual1").has("time"), "存档位能显示时间")
+	for slot in SaveSystem.SLOTS:
+		SaveSystem.delete_save(slot)
+	SaveSystem.save_path = old_path
+	_eq(SaveSettings.default_language(), Text.DEFAULT_LANGUAGE, "编辑器里没有平台标签，用默认语言")
+	GameState.reset()
 
 
 func _frames(count: int) -> void:

@@ -304,3 +304,13 @@ UI-15-43,旧种子罐,Old seed jar
 UI-54-06,阿克,Arky
 UI-54-07,那株植物开过花，结了种子。种植区已解锁。,That little plant flowered and made seeds. Farm plots unlocked.
 UI-17-15,知道了,Got it
+UI-00-08,中文 / English,中文 / English
+UI-11-01,自动存档,Autosave
+UI-11-02,第 {week} 周 · {girl} · {age} 岁 · {time},Week {week} · {girl} · age {age} · {time}
+UI-11-03,覆盖这个存档？,Overwrite this save?
+UI-11-04,手动存档 1,Manual Save 1
+UI-11-05,手动存档 2,Manual Save 2
+UI-11-06,保存,Save
+UI-11-07,剧情进行中，暂时无法保存。,Can't save during a story scene.
+UI-11-08,空存档,Empty
+UI-11-09,读取,Load

@@ -94,6 +94,7 @@ func _build_top_bar() -> void:
 		_resource(row, "chip", Text.f("RT-09-03", {"value": GameState.earth.electronics}))
 		_resource(row, "bolt", Text.f("RT-09-14", {"value": rec.get("power", 0)}))
 		_resource(row, "drop", Text.f("RT-09-15", {"value": rec.get("water", 0)}))
+	_flat_button(row, Text.t("UI-11-06"), "", open_save)
 	_icon_button(row, "gear", _open_pause)
 
 
@@ -431,6 +432,13 @@ func open_tablet() -> void:
 		tablet.changed.connect(room.refresh)
 		add_child(tablet)
 	tablet.visible = true
+
+
+## 手动存档：两个存档位（yi 11.19 定）。主界面不会在剧情中，所以这里总能存
+func open_save() -> void:
+	var panel := SaveSlotsPanel.new()
+	panel.saving = true
+	add_child(panel)
 
 
 func open_elevator() -> void:
