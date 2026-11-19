@@ -357,13 +357,6 @@ func _fill_overview() -> void:
 	_center_header("globe", Text.t("RT-09-13"), "")
 	for line in RoomRules.earth_lines():
 		_wrap(_label(_center_box, line, 12))
-	_center_box.add_child(HSeparator.new())
-	_label(_center_box, Text.t("RT-09-40"), 12)
-	for row in RoomRules.elevator_places():
-		if row["id"] == "cabin":
-			continue
-		var key := "RT-09-42" if RoomRules.is_place_open(row["id"]) else "RT-09-41"
-		_label(_center_box, Text.f(key, {"name": Text.t(row["name_key"]), "week": row["open_week"]}), 12, GlassTheme.TEXT_DIM)
 
 
 # ---------- 右边竖排菜单 ----------

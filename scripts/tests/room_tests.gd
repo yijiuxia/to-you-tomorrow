@@ -112,7 +112,7 @@ func test_room_view_clicks() -> void:
 	view.click("tablet")
 	_ok(tablet[0], "点平板 → 打开平板")
 	view.click("door")
-	_ok(door[0], "点门 → 电梯")
+	_ok(not door[0], "舱门不能点（yi 11.19 去掉场所功能）")
 	view.click("bookshelf")
 	_ok(view.info_text().contains(Text.t("RM-02-01")), "点书架看定稿说明")
 	view.click("model_ark")
@@ -163,11 +163,7 @@ func test_hub_room() -> void:
 	_ok(hub.tablet != null and hub.tablet.visible, "平板打开")
 	_eq(hub.tablet.journal_shown(), Text.t("RT-04-60"), "第 1 周平板里还没有周记")
 	hub.room.click("door")
-	_ok(hub.elevator != null and hub.elevator.visible, "电梯菜单打开")
-	var chosen := [""]
-	hub.place_pressed.connect(func(id: String) -> void: chosen[0] = id)
-	hub.elevator.place_chosen.emit("greenhouse")
-	_eq(chosen[0], "greenhouse", "选温室")
+	_ok(hub.elevator == null, "舱门不弹电梯菜单")
 	hub.queue_free()
 	await _frames(1)
 

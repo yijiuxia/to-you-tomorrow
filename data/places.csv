@@ -1,11 +1,12 @@
 id,name_key,desc_key,open_week,in_elevator,width,depth,height,wall_color,floor_color,light_color,rail_from,rail_to,cam_y,cam_z,note,model,cam_x,cam_yaw,cam_fov,showpiece
 # showpiece：Lux3D 生成的场所模型（美术线程 11.19），放在方块房间中间靠里，自动缩放到房间宽度的一部分
+# yi 11.19 定：去掉场所功能（机械室、温室、通讯室、保护区不进电梯，舱门不能点）；第 7 周地下居民区是剧情，保留
 # model 有值时用真模型代替方块墙（房间模型来自 E:/jianmo_test/致你/房间/cabin_v02）；cam_x 镜头左右位置，cam_yaw 镜头转的角度（负数向右），cam_fov 水平视角
 # 场所（房间线程）。open_week 第几周起能去；in_elevator 为 1 才出现在舱门的电梯菜单里。
 # 镜头沿 x 从 rail_from 走到 rail_to（一样就是不动），高 cam_y，前后位置 cam_z，朝里看。
 cabin,PL-00-02,RT-02-17,1,1,6,5,3,#c8c0b0,#8a7a68,#fff0d8,0,0,1.15,2.6,她的房间,res://assets/models/room/cabin.glb,-1.6,-42,78.6,
-machine,PL-00-03,PL-01-01,1,1,9,7,3.5,#707478,#4a4c50,#e8f0ff,-2,2,1.7,3.0,机械课,,,,,res://assets/models/places/place_mechanics.glb
-greenhouse,PL-00-04,PL-02-01,1,1,10,7,4,#d0e8d0,#5a6a4a,#f0fff0,-2.5,2.5,1.7,3.0,生态课,,,,,res://assets/models/places/place_greenhouse.glb
-comms,PL-00-05,PL-03-01,1,1,9,7,3.5,#384050,#282c34,#c0d0ff,-2,2,1.7,3.0,通信课,,,,,res://assets/models/places/place_comms.glb
-preserve,PL-00-06,PL-04-01,1,1,24,7,3.5,#c8d8e8,#9098a0,#d8e8ff,-10,10,1.6,1.0,只能沿过道看,,,,,res://assets/models/places/place_preserve.glb
+machine,PL-00-03,PL-01-01,1,0,9,7,3.5,#707478,#4a4c50,#e8f0ff,-2,2,1.7,3.0,机械课,,,,,
+greenhouse,PL-00-04,PL-02-01,1,0,10,7,4,#d0e8d0,#5a6a4a,#f0fff0,-2.5,2.5,1.7,3.0,生态课,,,,,
+comms,PL-00-05,PL-03-01,1,0,9,7,3.5,#384050,#282c34,#c0d0ff,-2,2,1.7,3.0,通信课,,,,,
+preserve,PL-00-06,PL-04-01,1,0,24,7,3.5,#c8d8e8,#9098a0,#d8e8ff,-10,10,1.6,1.0,只能沿过道看,,,,,
 underground,RT-07-01,RT-07-03,7,0,26,18,9,#5a4a3a,#3a3028,#ffc070,-10,10,2.0,4.0,第 7 周跟幸存者去；世界观定了再改,,,,,res://assets/models/places/underground.glb
