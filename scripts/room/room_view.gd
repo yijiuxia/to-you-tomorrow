@@ -16,6 +16,7 @@ const SHADE_GROW := 1.6     # 灯罩比植物大多少
 const HIDDEN_ALPHA := 0.25  # 书收起来后变淡，还能点回来
 const LAMP_RANGE := 3.0
 const MAIN_LIGHT_RANGE := 30.0
+const GIRL_SIT_DROP := -0.25   # 坐下时整个人往下放多少（米），让屁股落在椅子上
 const STARFIELD_TEX := "res://assets/textures/room/T_Starfield.jpg"
 const EARTH_TEX := "res://assets/textures/room/T_Earth_Surface.jpg"
 const CLOUDS_TEX := "res://assets/textures/room/T_Earth_Clouds.png"
@@ -54,6 +55,7 @@ var _info_title: Label
 var _info_text: Label
 var _info_buttons: HBoxContainer
 var _exclaim: Label3D
+var girl: GirlModel          # 她的 VRoid 模型（没有模型文件时为空，用胶囊）
 var _model: Node3D           # 真模型（没有时是方块墙）
 var _starfield: MeshInstance3D
 var _earth: MeshInstance3D
@@ -323,6 +325,12 @@ func _make_object(row: Dictionary) -> void:
 			glass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			shade.material_override = glass
 			body.add_child(shade)
+	if row["kind"] == "talk" and GirlModel.available():
+		# 有她的模型就用模型，胶囊藏起来只当点击框
+		mesh.visible = false
+		girl = GirlModel.new()
+		girl.position = Vector3(0, -float(row["y"]) + GIRL_SIT_DROP, 0)
+		body.add_child(girl)
 	if row["kind"] == "talk":
 		_exclaim = Label3D.new()
 		_exclaim.text = "!"
@@ -414,6 +422,8 @@ func click(id: String) -> void:
 	match row["kind"]:
 		"talk":
 			set_exclaim(false)
+			if girl != null:
+				girl.smile()
 			talk_requested.emit()
 		"tablet":
 			tablet_requested.emit()
