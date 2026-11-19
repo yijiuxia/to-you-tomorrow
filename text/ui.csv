@@ -1,7 +1,7 @@
 keys,zh,en
 UI-01-01,地球建造,Earth Build
-UI-01-02,聊天,Chat
-UI-01-03,课表,Schedule
+UI-01-02,自由聊天,Free Chat
+UI-01-03,课程,Classes
 UI-01-04,结束本周,End Week
 UI-01-05,第 {week} 周 · {girl} {age} 岁,
 UI-01-06,{girl}想：{intent},

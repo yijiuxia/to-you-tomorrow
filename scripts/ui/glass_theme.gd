@@ -24,6 +24,7 @@ static func make() -> Theme:
 	var theme := Theme.new()
 	theme.default_font_size = 17
 	var panel := box(BG, BORDER, RADIUS, 14)
+	_glow(panel, 0.18)
 	theme.set_stylebox("panel", "PanelContainer", panel)
 	theme.set_stylebox("panel", "Panel", panel)
 	theme.set_stylebox("panel", "PopupPanel", panel)
@@ -58,6 +59,12 @@ static func make() -> Theme:
 		theme.set_color("font_disabled_color", type, TEXT_DISABLED)
 
 	theme.set_color("font_color", "Label", TEXT)
+	# 标题下面的分隔线
+	var line := StyleBoxLine.new()
+	line.color = Color(BORDER, 0.35)
+	line.thickness = 1
+	theme.set_stylebox("separator", "HSeparator", line)
+	theme.set_constant("separation", "HSeparator", 8)
 	theme.set_color("default_color", "RichTextLabel", TEXT)
 
 	for type: String in ["LineEdit", "TextEdit"]:
@@ -100,6 +107,19 @@ static func make() -> Theme:
 		theme.set_stylebox("grabber_highlight", type, box(ACCENT, Color(0, 0, 0, 0), 3, 0))
 		theme.set_stylebox("grabber_pressed", type, box(ACCENT, Color(0, 0, 0, 0), 3, 0))
 	return theme
+
+
+## 选中状态（页签、侧边菜单、计划里的当前行）：亮一点的底、亮描边、外发光
+static func selected_box(padding: int) -> StyleBoxFlat:
+	var style := box(BG_HOVER, BORDER_HOVER, BUTTON_RADIUS, padding)
+	_glow(style, 0.45)
+	return style
+
+
+## 外发光：用阴影做，颜色是强调色
+static func _glow(style: StyleBoxFlat, strength: float) -> void:
+	style.shadow_color = Color(ACCENT, strength)
+	style.shadow_size = 6
 
 
 ## 圆角面板：底色、描边色、圆角、内边距

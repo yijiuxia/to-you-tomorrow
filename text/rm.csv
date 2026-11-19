@@ -118,6 +118,39 @@ RM-09-06,{girl},{girl}
 RM-09-07,终端,Terminal
 RM-09-08,方舟时间,Ark Time
 RM-09-09,第 {week} / {last} 周,Week {week} / {last}
+RM-09-10,本周计划,This Week
+RM-09-11,成长记录,Growth Log
+RM-09-12,记忆日志,Memories
+RM-09-13,方舟总览,Ark Overview
+RM-09-14,能源 {value}%,Power {value}%
+RM-09-15,水资源 {value}%,Water {value}%
+RM-09-16,本周成长计划,This Week's Plan
+RM-09-17,本周目标,This Week's Goal
+RM-09-18,{girl}想做：{intent},{girl} wants to: {intent}
+RM-09-19,还没有想做的事，聊聊天也许就有了。,No plans yet. Maybe a chat will spark one.
+RM-09-20,周一,Mon
+RM-09-21,周二,Tue
+RM-09-22,周三,Wed
+RM-09-23,周四,Thu
+RM-09-24,周五,Fri
+RM-09-25,周六,Sat
+RM-09-26,周日,Sun
+RM-09-27,已安排,Planned
+RM-09-28,放松一天,Day off
+RM-09-29,点"结束本周"后按这张课表上课，第二天早上看结果。,"Classes follow this plan after you end the week. Results arrive the next morning."
+RM-09-30,调整计划,Adjust Plan
+RM-09-31,状态,Status
+RM-09-32,舱门,Door
+RM-09-33,她记得的事,What she remembers
+RM-09-34,还没有记住什么。,Nothing remembered yet.
+RM-09-35,第 {week} 周：{text},Week {week}: {text}
+RM-09-36,很好,Great
+RM-09-37,平稳,Steady
+RM-09-38,偏低,Low
+RM-09-39,收起,Hide
+RM-09-40,方舟各处,Around the Ark
+RM-09-41,{name}：第 {week} 周开放,{name}: opens week {week}
+RM-09-42,{name}：可以去,{name}: open
 # RM-07 地下居民区（第 7 周；世界观没定，先用临时文字）
 RM-07-01,地下居民区,Underground Settlement
 RM-07-02,跟着幸存者去地下,Follow the survivor underground
