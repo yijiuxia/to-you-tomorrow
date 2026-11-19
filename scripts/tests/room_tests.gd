@@ -115,6 +115,15 @@ func test_room_view_clicks() -> void:
 	_eq(lamp_light.visible, RoomRules.is_on("lamp"), "台灯的光跟着开关")
 	view.click("plant")
 	_eq(view.info_text(), Text.t("RM-02-04"), "点植物看说明和灯罩按钮")
+	# 真模型里的玻璃罩跟着开关走
+	var glass := view.viewport.find_child("EcoDome_Glass_Wall", true, false) as Node3D
+	_ok(glass != null, "真模型里找得到玻璃罩")
+	if glass != null:
+		RoomRules.toggle("plant")
+		view.refresh()
+		_eq(glass.visible, RoomRules.is_on("plant"), "玻璃罩跟着开关")
+		RoomRules.toggle("plant")
+		view.refresh()
 	view.queue_free()
 	await _frames(1)
 

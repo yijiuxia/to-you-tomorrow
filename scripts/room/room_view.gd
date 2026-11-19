@@ -16,6 +16,12 @@ const SHADE_GROW := 1.6     # 灯罩比植物大多少
 const HIDDEN_ALPHA := 0.25  # 书收起来后变淡，还能点回来
 const LAMP_RANGE := 3.0
 const MAIN_LIGHT_RANGE := 30.0
+const STARFIELD_TEX := "res://assets/textures/room/T_Starfield.jpg"
+const EARTH_TEX := "res://assets/textures/room/T_Earth_Surface.jpg"
+const BACKDROP_DISTANCE := 40.0    # 窗外星空离房间多远（米）
+const BACKDROP_SIZE := Vector2(160, 90)
+const EARTH_RADIUS := 40.0
+const EARTH_CENTER := Vector3(80, -46, 0)  # 地球放在窗外偏下，从窗口看到一段弧线
 
 var scene_id := "cabin"
 var viewport := SubViewport.new()
@@ -35,6 +41,10 @@ var _info_title: Label
 var _info_text: Label
 var _info_buttons: HBoxContainer
 var _exclaim: Label3D
+var _model: Node3D           # 真模型（没有时是方块墙）
+var _starfield: MeshInstance3D
+var _earth: MeshInstance3D
+var _hover_label: Label      # 看不见的点击框没法发光，鼠标指上去时在左上角显示名字
 
 
 func _ready() -> void:
@@ -48,13 +58,19 @@ func _ready() -> void:
 	viewport.handle_input_locally = false
 	add_child(viewport)
 	_build_environment()
-	_build_shell()
+	if str(_place.get("model", "")).is_empty():
+		_build_shell()
+	else:
+		_load_model()
 	for row in RoomRules.objects_in(scene_id):
 		_make_object(row)
 	_rail_x = (float(_place["rail_from"]) + float(_place["rail_to"])) / 2.0  # 从过道中间开始
 	_place_camera()
 	viewport.add_child(camera)
 	_build_info_panel()
+	_hover_label = UiKit.short_label(self, "")
+	_hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hover_label.position = Vector2(12, 32)
 	if scene_id == "cabin":
 		_build_music()
 	refresh()
@@ -117,6 +133,53 @@ func _build_shell() -> void:
 	_box(Vector3(w / 2, h / 2, 0), Vector3(WALL_THICKNESS, h, d), wall.darkened(0.08))
 
 
+## 真模型：房间整个是一个 glb，再在窗外放星空和地球
+func _load_model() -> void:
+	var scene: PackedScene = load(str(_place["model"]))
+	_model = scene.instantiate()
+	viewport.add_child(_model)
+	_main_light.omni_range = float(_place["width"]) * 2.0
+	_main_light.position = Vector3(0, float(_place["height"]) - 0.4, 0)
+	_build_backdrop()
+
+
+func _build_backdrop() -> void:
+	_starfield = MeshInstance3D.new()
+	var quad := QuadMesh.new()
+	quad.size = BACKDROP_SIZE
+	_starfield.mesh = quad
+	var sky := StandardMaterial3D.new()
+	sky.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sky.albedo_texture = load(STARFIELD_TEX)
+	_starfield.material_override = sky
+	_starfield.position = Vector3(BACKDROP_DISTANCE, 0, 0)
+	_starfield.rotation_degrees = Vector3(0, -90, 0)  # 面朝房间
+	viewport.add_child(_starfield)
+	_earth = MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = EARTH_RADIUS
+	sphere.height = EARTH_RADIUS * 2.0
+	_earth.mesh = sphere
+	var ground := StandardMaterial3D.new()
+	ground.albedo_texture = load(EARTH_TEX)
+	ground.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_earth.material_override = ground
+	_earth.position = EARTH_CENTER
+	viewport.add_child(_earth)
+
+
+## 在真模型里按名字找零件（开关灯罩、收书时要藏起来的那些）
+func _model_nodes(row: Dictionary) -> Array[Node3D]:
+	var result: Array[Node3D] = []
+	if _model == null:
+		return result
+	for node_name in str(row.get("nodes", "")).split(";", false):
+		var node := _model.find_child(node_name.strip_edges(), true, false) as Node3D
+		if node != null:
+			result.append(node)
+	return result
+
+
 func _box(pos: Vector3, box_size: Vector3, color: Color) -> MeshInstance3D:
 	var mesh := MeshInstance3D.new()
 	var box := BoxMesh.new()
@@ -144,12 +207,20 @@ func _make_object(row: Dictionary) -> void:
 	body.set_meta("row", row)
 	var mesh := MeshInstance3D.new()
 	mesh.name = "Mesh"
-	var box := BoxMesh.new()
-	box.size = box_size
-	mesh.mesh = box
+	if row["kind"] == "talk":
+		# 她的占位人形用胶囊，比方块像人；以后换少女模型
+		var capsule := CapsuleMesh.new()
+		capsule.radius = box_size.x / 2.0
+		capsule.height = box_size.y
+		mesh.mesh = capsule
+	else:
+		var box := BoxMesh.new()
+		box.size = box_size
+		mesh.mesh = box
 	var mat := _material(color)
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mesh.material_override = mat
+	mesh.visible = not color_text.is_empty()  # 颜色空着：盖在真模型上的看不见的点击框
 	body.add_child(mesh)
 	var shape := CollisionShape3D.new()
 	var box_shape := BoxShape3D.new()
@@ -178,7 +249,7 @@ func _make_object(row: Dictionary) -> void:
 				lamp.position = Vector3(0, box_size.y, 0)
 				body.add_child(lamp)
 				body.set_meta("light", lamp)
-		"cover":
+		"cover" when _model_nodes(row).is_empty():
 			var shade := MeshInstance3D.new()
 			shade.name = "Shade"
 			var shade_box := BoxMesh.new()
@@ -200,6 +271,8 @@ func _make_object(row: Dictionary) -> void:
 
 
 func _set_glow(body: StaticBody3D, on: bool) -> void:
+	var row: Dictionary = body.get_meta("row")
+	_hover_label.text = Text.t(row["name_key"]) if on else ""
 	var mat: StandardMaterial3D = (body.get_node("Mesh") as MeshInstance3D).material_override
 	if on:
 		mat.emission_enabled = true
@@ -228,10 +301,23 @@ func refresh() -> void:
 				mat.emission = mat.albedo_color
 				mat.emission_energy_multiplier = 1.0
 			"cover":
-				(body.get_node("Shade") as Node3D).visible = on
+				if body.has_node("Shade"):
+					(body.get_node("Shade") as Node3D).visible = on
+				for node in _model_nodes(row):
+					node.visible = on
 			"hide":
 				mat.albedo_color.a = 1.0 if on else HIDDEN_ALPHA
+				for node in _model_nodes(row):
+					node.visible = on
 			"window":
+				if _starfield != null:
+					var view := RoomRules.current_option("view")
+					var sky: StandardMaterial3D = _starfield.material_override
+					sky.albedo_color = Color(view.get("color", "#ffffff"))
+					# 方舟走廊：灰墙，不要星星
+					sky.albedo_texture = load(STARFIELD_TEX) if int(view.get("earth", 0)) == 1 or view.get("id", "") == "view_stars" else null
+					_earth.visible = int(view.get("earth", 0)) == 1
+					continue
 				mat.albedo_color = Color(RoomRules.current_option("view").get("color", "#101830"))
 				mat.emission_enabled = true
 				mat.emission = mat.albedo_color
@@ -316,6 +402,15 @@ func _rail_length() -> float:
 
 
 func _place_camera() -> void:
+	var cam_x := str(_place.get("cam_x", ""))
+	if not cam_x.is_empty():
+		# 真模型：镜头对齐 blend 里的主镜头
+		camera.keep_aspect = Camera3D.KEEP_WIDTH
+		camera.fov = float(_place["cam_fov"])
+		_home = Transform3D(Basis(Vector3.UP, deg_to_rad(float(_place["cam_yaw"]))), Vector3(float(cam_x), float(_place["cam_y"]), float(_place["cam_z"])))
+		if not _looking:
+			camera.transform = _home
+		return
 	var pos := Vector3(_rail_x, float(_place["cam_y"]), float(_place["cam_z"]))
 	var look := Vector3(_rail_x, float(_place["cam_y"]) - 0.5, -float(_place["depth"]) / 2)
 	_home = Transform3D(Basis(), pos).looking_at(look, Vector3.UP)

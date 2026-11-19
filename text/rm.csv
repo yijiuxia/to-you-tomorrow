@@ -13,7 +13,8 @@ RM-01-09,顶灯,Ceiling Light
 RM-01-10,ARK-01 模型,ARK-01 Model
 RM-01-11,平板,Tablet
 RM-01-12,舱门,Door
-RM-01-13,窗户,Window
+RM-01-13,观景窗,Viewing Window
+RM-01-14,全息地球仪,Holo Globe
 # RM-02 房间物件说明
 RM-02-01,一本翻旧了的《地球植物图鉴》，书角写着：等我长大，要亲手种一棵。,"A worn copy of ""Plants of Earth"". In the corner: when I grow up, I'll plant one myself."
 RM-02-02,书架上是方舟学校发的课本：机械、生态、通信，还有一本没有封面的旧童话。,"Textbooks from the Ark school: mechanics, ecology, comms. And an old fairy tale with no cover."
@@ -33,6 +34,7 @@ RM-02-15,和她聊天,Talk to her
 RM-02-16,关闭,Close
 RM-02-17,点房间里的东西可以互动，右键退出近看。,Click things in the room. Right-click to step back.
 RM-02-18,她有话想说,She wants to say something
+RM-02-19,一个小小的全息地球仪，转得很慢。她说等小镇修好了，要把它标成绿色。,"A small holo globe, spinning slowly. She says she'll mark the town green once it's fixed."
 # RM-03 平板
 RM-03-01,平板,Tablet
 RM-03-02,窗外景色,Window View
