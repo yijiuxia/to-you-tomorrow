@@ -158,7 +158,9 @@ func _set_first_week_plan() -> void:
 
 ## 进课表再悬停一次：这时模型已加载完，画面不再卡
 func _hover_course_again() -> void:
-	_click(Text.t("UI-01-03"))
+	_click(Text.t("UI-01-03"))  # 11.19：主界面"课程"先滑出本周计划，"调整计划"才进课表
+	await _frames()
+	_click(Text.t("RT-09-30"))
 	await _frames()
 	await _hover_shot("OptionButton", _first_course_name(), "hover_course2")
 	_click(Text.t("UI-04-05"))
@@ -181,7 +183,7 @@ func _finish_settlement() -> void:
 
 ## 把本周的轮数全部聊完，最后再点一次聊天，确认她只回一句
 func _try_chat() -> void:
-	_click(Text.t("UI-01-02"))
+	_open_chat()
 	await _frames()
 	var input: LineEdit = _find_all(_main.current, "LineEdit")[0]
 	var total: int = WeekSystem.chat_rounds_left()
@@ -204,7 +206,7 @@ func _try_chat() -> void:
 ", log_box.get_parsed_text(), "----")
 	_click(Text.t("UI-09-05"))
 	await _frames()
-	_click(Text.t("UI-01-02"))
+	_open_chat()
 	await _frames()
 	var again: RichTextLabel = _find_all(_main.current, "RichTextLabel")[0]
 	_check(again.get_parsed_text().contains(Text.t("FB-03-01")), "轮数用完后她只回一句")
@@ -411,6 +413,12 @@ func _press_key(key: Key) -> void:
 
 func _seconds(duration: float) -> void:
 	await get_tree().create_timer(duration).timeout
+
+
+## 11.19：主界面没有自由聊天按钮，点她，再点她旁边冒出来的"聊天"
+func _open_chat() -> void:
+	_main.current.room.click("girl")
+	_click(Text.t("RT-09-43"))
 
 
 func _click(text: String) -> void:

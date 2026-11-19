@@ -147,8 +147,16 @@ func test_hub_room() -> void:
 	_ok(hub.room != null, "主界面有房间")
 	var chat := [false]
 	hub.chat_pressed.connect(func() -> void: chat[0] = true)
+	_ok(not hub.center.visible, "课表面板默认收起")
 	hub.room.click("girl")
-	_ok(chat[0], "主界面点她进聊天")
+	_ok(hub.talk_button.visible and not chat[0], "点她先冒出聊天按钮")
+	hub.talk_button.pressed.emit()
+	_ok(chat[0], "点聊天进聊天")
+	hub.show_tab("plan")
+	_ok(hub.center.visible, "点课程滑出本周计划")
+	hub.show_tab("plan")
+	await get_tree().create_timer(0.4).timeout
+	_ok(not hub.center.visible, "再点一次收起")
 	hub.room.click("tablet")
 	_ok(hub.tablet != null and hub.tablet.visible, "平板打开")
 	_eq(hub.tablet.journal_shown(), Text.t("RT-04-60"), "第 1 周平板里还没有周记")

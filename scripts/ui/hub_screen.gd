@@ -3,7 +3,8 @@ extends Control
 ## 3D 房间铺满整个画面，界面是浮在上面的玻璃面板——
 ## 顶栏（方舟生活 + 四个页签 + 资源 + 设置）、左上人物卡、左边当前状态、
 ## 中间偏右的大面板（本周计划 / 成长记录 / 记忆日志 / 方舟总览，跟着页签换）、
-## 右边竖排菜单（状态、课程、自由聊天、地球建造）、左下她说的话、底部（结束本周）、右下方舟时间。
+## 右边竖排菜单（状态、课程、地球建造）、左下她说的话、底部（结束本周）、右下方舟时间。
+## yi 11.19 定：状态和课表面板默认收起，点按钮滑出、再点收起；主界面没有自由聊天按钮，点她才冒出"聊天"。
 ## yi 定：平板和舱门不做按钮，只能点房间里的平板和门。
 ## 头像 yi 定不做。图标是 assets/ui/icons 里的简单线条图标，以后可以换美术画的。
 
@@ -31,6 +32,10 @@ const COURSE_ICONS := {"skill": "book", "confidence": "star", "curiosity": "bulb
 const TABS: Array[String] = ["plan", "growth", "memory", "overview"]
 const TAB_KEYS := {"plan": "RT-09-10", "growth": "RT-09-11", "memory": "RT-09-12", "overview": "RT-09-13"}
 const MEMORY_SHOWN := 8
+const SLIDE_TIME := 0.22          # 面板滑出 / 收起要多久（秒）
+const SLIDE_DISTANCE := 40.0      # 滑多远（像素）
+const TALK_OFFSET := Vector3(0.35, 0.6, 0)  # "聊天"出现在她头顶右边一点
+const TALK_SHOW_SEC := 4.0        # 不点的话几秒后消失
 
 const EndWeekDialog := preload("res://scripts/ui/end_week_dialog.gd")
 
@@ -43,6 +48,11 @@ var _confirm: EndWeekDialog
 var _center_box: VBoxContainer
 var _tab_buttons := {}
 var _status_column: VBoxContainer
+var _status_panel: PanelContainer   # "当前状态"：点右边"状态"才滑出来（yi 11.19 定）
+var _status_button: Button
+var _plan_button: Button
+var talk_button: Button             # 点她以后在她旁边冒出来的"聊天"（yi 定：主界面不放自由聊天按钮）
+var _tweens := {}
 
 
 func _ready() -> void:
@@ -50,7 +60,7 @@ func _ready() -> void:
 	room.scene_id = "cabin"
 	room.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(room)
-	room.talk_requested.connect(func() -> void: chat_pressed.emit())
+	room.talk_requested.connect(_show_talk_button)
 	room.tablet_requested.connect(open_tablet)
 	room.door_requested.connect(open_elevator)
 
@@ -61,7 +71,11 @@ func _ready() -> void:
 	_build_bubble()
 	_build_bottom()
 	_build_time()
-	show_tab("plan")
+	_build_talk_button()
+	# 课表和状态默认收起，点按钮才滑出来
+	center.visible = false
+	_status_panel.visible = false
+	_highlight_tabs("")
 
 	_confirm = EndWeekDialog.new()
 	_confirm.confirmed.connect(func() -> void: end_week_confirmed.emit())
@@ -78,9 +92,10 @@ func _build_top_bar() -> void:
 	bar.custom_minimum_size.y = TOP_HEIGHT
 	bar.add_theme_stylebox_override("panel", _panel_style(6))
 	var row := _row(bar, 14)
-	_icon(row, "home", ICON_SIZE + 4)
+	_icon(row, "home", ICON_SIZE + 4).modulate = GlassTheme.TEXT
 	_label(row, Text.t("RT-09-01"), TITLE_FONT)
 	var help := _icon(row, "help", ICON_SMALL)
+	help.modulate = GlassTheme.TEXT_DIM
 	help.tooltip_text = Text.t("RT-02-17")
 	help.mouse_filter = Control.MOUSE_FILTER_STOP
 	_gap(row, 18)
@@ -136,6 +151,7 @@ func _build_left_column() -> void:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _panel_style(9))
 	_status_column.add_child(panel)
+	_status_panel = panel
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 7)
 	panel.add_child(box)
@@ -214,13 +230,15 @@ func _build_center() -> void:
 
 ## 切页签：再点一下当前页签就收起面板，看得到后面的房间
 func show_tab(id: String) -> void:
-	if id == current_tab and center.visible and _center_box.get_child_count() > 0:
-		center.visible = false
+	if id == current_tab and center.visible:
+		_slide(center, false, SLIDE_DISTANCE)
 		_highlight_tabs("")
+		_mark(_plan_button, false)
 		return
 	current_tab = id
-	center.visible = true
+	_slide(center, true, SLIDE_DISTANCE)
 	_highlight_tabs(id)
+	_mark(_plan_button, id == "plan")
 	for child in _center_box.get_children():
 		_center_box.remove_child(child)
 		child.queue_free()
@@ -245,7 +263,7 @@ func _highlight_tabs(id: String) -> void:
 			style.content_margin_left = 14
 			style.content_margin_right = 14
 			button.add_theme_stylebox_override("normal", style)
-			button.add_theme_color_override("font_color", Color.WHITE)
+			button.add_theme_color_override("font_color", GlassTheme.TEXT)
 		else:
 			var idle := GlassTheme.box(Color(0, 0, 0, 0), Color(0, 0, 0, 0), 4, 0)
 			idle.content_margin_left = 14
@@ -361,11 +379,9 @@ func _build_right_menu() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
 	panel.add_child(box)
-	var status := _menu_button(box, "pulse", Text.t("RT-09-31"), func() -> void: _status_column.visible = not _status_column.visible)
-	status.add_theme_stylebox_override("normal", GlassTheme.selected_box(10))
-	var schedule_button := _menu_button(box, "book", Text.t("UI-01-03"), func() -> void: schedule_pressed.emit())
-	schedule_button.disabled = GameState.week >= int(DataDB.balance("last_week"))
-	_menu_button(box, "chat", Text.t("UI-01-02"), func() -> void: chat_pressed.emit())
+	_status_button = _menu_button(box, "pulse", Text.t("RT-09-31"), toggle_status)
+	# 课程：滑出"本周成长计划"，里面的"调整计划"才进课表
+	_plan_button = _menu_button(box, "book", Text.t("UI-01-03"), func() -> void: show_tab("plan"))
 	var town_button := _menu_button(box, "globe", Text.t("UI-01-01"), func() -> void: town_pressed.emit())
 	town_button.disabled = not WeekSystem.is_earth_open()
 
@@ -447,6 +463,82 @@ func open_elevator() -> void:
 		elevator.place_chosen.connect(func(id: String) -> void: place_pressed.emit(id))
 		add_child(elevator)
 	elevator.visible = true
+
+
+# ---------- 面板滑出 / 收起 ----------
+
+func toggle_status() -> void:
+	var opening := not _status_panel.visible
+	_slide(_status_panel, opening, -SLIDE_DISTANCE)
+	_mark(_status_button, opening)
+
+
+## 打开：从旁边滑进来并淡入；收起：滑回去淡出，然后藏起来。from_x 是从哪边滑（正数从右边）
+## 用 position 做动画会被容器摆回去，所以只对不在容器里的面板滑位置，在容器里的只淡入淡出
+func _slide(panel: Control, opening: bool, from_x: float) -> void:
+	if _tweens.has(panel):
+		(_tweens[panel] as Tween).kill()
+	if not is_inside_tree():
+		panel.visible = opening
+		panel.modulate.a = 1.0
+		return
+	var movable := not (panel.get_parent() is Container)
+	if not panel.has_meta("home"):
+		panel.set_meta("home", panel.position)
+	var home: Vector2 = panel.get_meta("home")
+	var shift := Vector2(from_x, 0)
+	if opening:
+		panel.visible = true
+		panel.modulate.a = 0.0
+		if movable:
+			panel.position = home + shift
+	var tween := create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(panel, "modulate:a", 1.0 if opening else 0.0, SLIDE_TIME)
+	if movable:
+		tween.tween_property(panel, "position", home if opening else home + shift, SLIDE_TIME)
+	if not opening:
+		tween.chain().tween_callback(func() -> void:
+			panel.visible = false
+			if movable:
+				panel.position = home)
+	_tweens[panel] = tween
+
+
+## 打开着的按钮亮起来
+func _mark(button: Button, on: bool) -> void:
+	if button == null:
+		return
+	if on:
+		button.add_theme_stylebox_override("normal", GlassTheme.selected_box(10))
+	else:
+		button.remove_theme_stylebox_override("normal")
+
+
+# ---------- 点她以后冒出来的"聊天" ----------
+
+func _build_talk_button() -> void:
+	talk_button = _flat_button(self, Text.t("RT-09-43"), "chat", func() -> void:
+		talk_button.visible = false
+		chat_pressed.emit())
+	talk_button.add_theme_stylebox_override("normal", GlassTheme.selected_box(8))
+	talk_button.visible = false
+
+
+## 在她头顶旁边出现，过几秒自己消失
+func _show_talk_button() -> void:
+	var girl: Node3D = room.bodies.get("girl")
+	var spot := size / 2.0
+	if girl != null and room.camera.is_inside_tree():
+		spot = room.camera.unproject_position(girl.global_position + TALK_OFFSET)
+	talk_button.visible = true
+	talk_button.reset_size()
+	talk_button.position = spot - Vector2(talk_button.size.x / 2.0, talk_button.size.y)
+	if is_inside_tree():
+		talk_button.modulate.a = 0.0
+		create_tween().tween_property(talk_button, "modulate:a", 1.0, SLIDE_TIME)
+		get_tree().create_timer(TALK_SHOW_SEC).timeout.connect(func() -> void:
+			if is_instance_valid(talk_button):
+				talk_button.visible = false)
 
 
 # ---------- 小工具 ----------

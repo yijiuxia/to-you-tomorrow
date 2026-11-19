@@ -1,23 +1,24 @@
 class_name GlassTheme
 extends RefCounted
-## 玻璃面板样式（房间线程，按 yi 的参考图"方舟生活"的布局，颜色 yi 定为科技蓝）：半透明深蓝底、细蓝色描边、圆角。
+## 玻璃面板样式（房间线程，布局按 yi 的参考图"方舟生活"；颜色 yi 11.19 定 A 暖白磨砂）：
+## 半透明暖白底（和房间米白色的墙、家具一个色调）、深灰字、科技蓝只做点缀（进度条、选中、图标）。
 ## main.gd 把它设在根窗口上，所有画面（包括暂停菜单这种 CanvasLayer 里的）都会用上。
 ## 想改颜色只改这里的常量。
 
-const BG := Color(0.03, 0.07, 0.15, 0.84)         # 面板底色
-const BG_BUTTON := Color(0.06, 0.13, 0.26, 0.88)
-const BG_HOVER := Color(0.09, 0.2, 0.38, 0.92)
-const BG_PRESSED := Color(0.13, 0.4, 0.75, 0.95)
-const BORDER := Color(0.35, 0.65, 1.0, 0.5)     # 细描边
-const BORDER_HOVER := Color(0.5, 0.8, 1.0, 0.9)
-const ACCENT := Color(0.3, 0.7, 1.0)           # 强调色：进度条、选中的页签
-const TEXT := Color(0.9, 0.95, 1.0)
-const TEXT_DIM := Color(0.62, 0.72, 0.85)
-const TEXT_DISABLED := Color(0.5, 0.58, 0.6)
+const BG := Color(0.97, 0.95, 0.91, 0.80)         # 面板底色
+const BG_BUTTON := Color(1.0, 1.0, 1.0, 0.6)
+const BG_HOVER := Color(1.0, 1.0, 1.0, 0.85)
+const BG_PRESSED := Color(0.78, 0.86, 0.97, 0.95)
+const BORDER := Color(0.72, 0.66, 0.58, 0.55)     # 细描边
+const BORDER_HOVER := Color(0.35, 0.6, 0.95, 0.9)
+const ACCENT := Color(0.22, 0.52, 0.9)           # 强调色：进度条、选中的页签
+const TEXT := Color(0.18, 0.18, 0.2)
+const TEXT_DIM := Color(0.42, 0.41, 0.42)
+const TEXT_DISABLED := Color(0.6, 0.58, 0.56)
 const RADIUS := 10
 const BUTTON_RADIUS := 8
-const SCREEN_TOP := Color(0.04, 0.08, 0.17)        # 没有 3D 场景的画面用的背景渐变
-const SCREEN_BOTTOM := Color(0.01, 0.03, 0.08)
+const SCREEN_TOP := Color(0.94, 0.92, 0.88)        # 没有 3D 场景的画面用的背景渐变
+const SCREEN_BOTTOM := Color(0.85, 0.82, 0.77)
 
 
 static func make() -> Theme:
@@ -28,7 +29,7 @@ static func make() -> Theme:
 	theme.set_stylebox("panel", "PanelContainer", panel)
 	theme.set_stylebox("panel", "Panel", panel)
 	theme.set_stylebox("panel", "PopupPanel", panel)
-	theme.set_stylebox("panel", "TooltipPanel", box(Color(0.03, 0.09, 0.1, 0.95), BORDER, 6, 8))
+	theme.set_stylebox("panel", "TooltipPanel", box(Color(0.98, 0.97, 0.94, 0.97), BORDER, 6, 8))
 	theme.set_color("font_color", "TooltipLabel", TEXT)
 
 	for type: String in ["Button", "CheckBox", "OptionButton", "MenuButton"]:
@@ -52,11 +53,18 @@ static func make() -> Theme:
 		theme.set_stylebox("disabled", type, disabled)
 		theme.set_stylebox("focus", type, StyleBoxEmpty.new())
 		theme.set_color("font_color", type, TEXT)
-		theme.set_color("font_hover_color", type, Color.WHITE)
-		theme.set_color("font_pressed_color", type, Color.WHITE)
-		theme.set_color("font_hover_pressed_color", type, Color.WHITE)
+		theme.set_color("font_hover_color", type, ACCENT)
+		theme.set_color("font_pressed_color", type, TEXT)
+		theme.set_color("font_hover_pressed_color", type, TEXT)
 		theme.set_color("font_focus_color", type, TEXT)
 		theme.set_color("font_disabled_color", type, TEXT_DISABLED)
+		# 按钮上的图标跟字一个颜色（图标文件是白色线条）
+		theme.set_color("icon_normal_color", type, TEXT)
+		theme.set_color("icon_hover_color", type, ACCENT)
+		theme.set_color("icon_pressed_color", type, ACCENT)
+		theme.set_color("icon_hover_pressed_color", type, ACCENT)
+		theme.set_color("icon_focus_color", type, TEXT)
+		theme.set_color("icon_disabled_color", type, TEXT_DISABLED)
 
 	theme.set_color("font_color", "Label", TEXT)
 	# 标题下面的分隔线
@@ -68,9 +76,9 @@ static func make() -> Theme:
 	theme.set_color("default_color", "RichTextLabel", TEXT)
 
 	for type: String in ["LineEdit", "TextEdit"]:
-		var field := box(Color(0.02, 0.07, 0.08, 0.85), BORDER, 6, 8)
+		var field := box(Color(1.0, 1.0, 1.0, 0.85), BORDER, 6, 8)
 		theme.set_stylebox("normal", type, field)
-		theme.set_stylebox("focus", type, box(Color(0.02, 0.07, 0.08, 0.9), BORDER_HOVER, 6, 8))
+		theme.set_stylebox("focus", type, box(Color(1.0, 1.0, 1.0, 0.95), BORDER_HOVER, 6, 8))
 		theme.set_stylebox("read_only", type, field)
 		theme.set_color("font_color", type, TEXT)
 		theme.set_color("font_placeholder_color", type, TEXT_DIM)
@@ -95,7 +103,7 @@ static func make() -> Theme:
 	theme.set_stylebox("tab_unselected", "TabContainer", tab_idle)
 	theme.set_stylebox("tab_hovered", "TabContainer", tab_hover)
 	theme.set_stylebox("panel", "TabContainer", box(Color(0, 0, 0, 0.15), Color(0, 0, 0, 0), 6, 10))
-	theme.set_color("font_selected_color", "TabContainer", Color.WHITE)
+	theme.set_color("font_selected_color", "TabContainer", TEXT)
 	theme.set_color("font_unselected_color", "TabContainer", TEXT_DIM)
 	theme.set_color("font_hovered_color", "TabContainer", TEXT)
 
