@@ -18,10 +18,23 @@ const LAMP_RANGE := 3.0
 const MAIN_LIGHT_RANGE := 30.0
 const STARFIELD_TEX := "res://assets/textures/room/T_Starfield.jpg"
 const EARTH_TEX := "res://assets/textures/room/T_Earth_Surface.jpg"
-const BACKDROP_DISTANCE := 40.0    # 窗外星空离房间多远（米）
-const BACKDROP_SIZE := Vector2(160, 90)
-const EARTH_RADIUS := 40.0
-const EARTH_CENTER := Vector3(80, -46, 0)  # 地球放在窗外偏下，从窗口看到一段弧线
+const CLOUDS_TEX := "res://assets/textures/room/T_Earth_Clouds.png"
+const CLOUD_LIFT := 1.01           # 云层比地面高一点点
+const ATMOSPHERE_LIFT := 1.025
+const EARTH_TINT := Color(0.85, 0.92, 1.0)  # 贴图有点太艳，压一点
+const ATMOSPHERE_SHADER := """
+shader_type spatial;
+render_mode unshaded, blend_add, cull_back, depth_draw_never;
+void fragment() {
+	float rim = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 4.0);
+	ALBEDO = vec3(0.35, 0.6, 1.0) * rim * 1.6;
+}
+"""
+const GLASS_COLOR := Color(0.75, 0.88, 0.97)
+## 真模型里的玻璃零件：blend 里观景窗玻璃透明度是 0，导出后看不见，这里统一换成 Godot 的玻璃材质
+const GLASS_NODES: Array[String] = ["Window_Glass", "EcoDome_Glass_Wall", "EcoDome_Glass_Cap", "Jar_Terrarium_Glass", "Dress_B2_Canister_Glass"]
+const BACKDROP_DISTANCE := 6000.0   # 窗外星空离房间多远（米）：要在地球后面
+const BACKDROP_SIZE := Vector2(28000, 16000)
 
 var scene_id := "cabin"
 var viewport := SubViewport.new()
@@ -66,6 +79,7 @@ func _ready() -> void:
 		_make_object(row)
 	_rail_x = (float(_place["rail_from"]) + float(_place["rail_to"])) / 2.0  # 从过道中间开始
 	_place_camera()
+	camera.far = BACKDROP_DISTANCE * 1.5  # 要看得到很远的星空和地球
 	viewport.add_child(camera)
 	_build_info_panel()
 	_hover_label = UiKit.short_label(self, "")
@@ -141,6 +155,21 @@ func _load_model() -> void:
 	_main_light.omni_range = float(_place["width"]) * 2.0
 	_main_light.position = Vector3(0, float(_place["height"]) - 0.4, 0)
 	_build_backdrop()
+	_apply_glass()
+
+
+func _apply_glass() -> void:
+	var glass := StandardMaterial3D.new()
+	glass.albedo_color = Color(GLASS_COLOR, float(DataDB.balance("room_glass_alpha")))
+	glass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	glass.roughness = 0.03
+	glass.metallic_specular = 0.8  # 灯照上去有高光
+	glass.rim_enabled = true  # 斜着看时边缘更亮，像真玻璃
+	glass.cull_mode = BaseMaterial3D.CULL_DISABLED
+	for node_name in GLASS_NODES:
+		var mesh := _model.find_child(node_name, true, false) as MeshInstance3D
+		if mesh != null:
+			mesh.material_override = glass
 
 
 func _build_backdrop() -> void:
@@ -155,17 +184,49 @@ func _build_backdrop() -> void:
 	_starfield.position = Vector3(BACKDROP_DISTANCE, 0, 0)
 	_starfield.rotation_degrees = Vector3(0, -90, 0)  # 面朝房间
 	viewport.add_child(_starfield)
-	_earth = MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = EARTH_RADIUS
-	sphere.height = EARTH_RADIUS * 2.0
-	_earth.mesh = sphere
-	var ground := StandardMaterial3D.new()
-	ground.albedo_texture = load(EARTH_TEX)
-	ground.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_earth.material_override = ground
-	_earth.position = EARTH_CENTER
+	var radius := float(DataDB.balance("room_earth_radius"))
+	var center_parts := str(DataDB.balance("room_earth_center")).split(",")
+	_earth = _sphere(radius, load(EARTH_TEX), false)
+	_earth.position = Vector3(float(center_parts[0]), float(center_parts[1]), float(center_parts[2]))
+	_earth.rotation_degrees.y = float(DataDB.balance("room_earth_turn"))
 	viewport.add_child(_earth)
+	_earth.add_child(_sphere(radius * CLOUD_LIFT, load(CLOUDS_TEX), true))
+	_earth.add_child(_atmosphere(radius * ATMOSPHERE_LIFT))
+
+
+## 大气层：地球边缘一圈淡蓝色的光（越靠边越亮）
+func _atmosphere(radius: float) -> MeshInstance3D:
+	var node := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = radius
+	sphere.height = radius * 2.0
+	sphere.radial_segments = 128
+	sphere.rings = 64
+	node.mesh = sphere
+	var shader := Shader.new()
+	shader.code = ATMOSPHERE_SHADER
+	var mat := ShaderMaterial.new()
+	mat.shader = shader
+	node.material_override = mat
+	return node
+
+
+func _sphere(radius: float, texture: Texture2D, see_through: bool) -> MeshInstance3D:
+	var node := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = radius
+	sphere.height = radius * 2.0
+	sphere.radial_segments = 128
+	sphere.rings = 64
+	node.mesh = sphere
+	var mat := StandardMaterial3D.new()
+	mat.albedo_texture = texture
+	mat.albedo_color = EARTH_TINT
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	if see_through:
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	node.material_override = mat
+	return node
 
 
 ## 在真模型里按名字找零件（开关灯罩、收书时要藏起来的那些）

@@ -1,8 +1,8 @@
 id,group,name_key,color,value,earth,note
 # 平板里能换的东西（房间线程）。view 窗外景色（color 是窗户颜色）· light 室内灯光（color 是灯色）· music 室内音乐（value 是基音频率，0 表示不放）
 # view 的 color 是窗外星空的色调（白色是原样；方舟走廊是一面灰墙），earth 为 1 时窗外有地球
-view_stars,view,RM-03-08,#ffffff,0,0,
 view_earth,view,RM-03-09,#ffffff,0,1,
+view_stars,view,RM-03-08,#ffffff,0,0,
 view_corridor,view,RM-03-10,#a0a8b0,0,0,
 view_sunrise,view,RM-03-11,#ffb080,0,1,
 light_warm,light,RM-03-15,#fff0d8,0,0,

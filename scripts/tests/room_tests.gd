@@ -42,9 +42,9 @@ func test_toggles_and_options() -> void:
 	_eq(RoomRules.toggle("lamp"), false, "点一下关灯")
 	_ok(not RoomRules.is_on("lamp"), "关灯记下来了")
 	RoomRules.toggle("lamp")
-	_eq(RoomRules.current_option("view")["id"], "view_stars", "窗景默认第一个")
-	RoomRules.choose_option("view", "view_earth")
-	_eq(RoomRules.current_option("view")["id"], "view_earth", "换窗景")
+	_eq(RoomRules.current_option("view")["id"], "view_earth", "窗景默认是地球")
+	RoomRules.choose_option("view", "view_stars")
+	_eq(RoomRules.current_option("view")["id"], "view_stars", "换窗景")
 	_ok(RoomRules.toggle_label("cover", true) != RoomRules.toggle_label("cover", false), "灯罩按钮两种状态文字不同")
 
 

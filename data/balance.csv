@@ -132,3 +132,7 @@ room_look_distance,0.6,房间：近看时镜头离物件多远（米）
 room_walk_speed,3,场所里沿过道走的速度（米/秒）
 room_glow,0.35,鼠标指着能点的东西时发光多亮
 room_music_volume_db,-22,房间合成音乐的音量（分贝）
+room_earth_center,"1060,-880,-560",房间窗外地球球心的位置（x,y,z 米）；调它让地球从窗口右下露出弧线
+room_earth_radius,1000,窗外地球的半径（米）
+room_earth_turn,150,窗外地球转多少度（让窗口对着海洋）
+room_glass_alpha,0.05,房间玻璃有多不透明（0 完全透明，1 不透明）
