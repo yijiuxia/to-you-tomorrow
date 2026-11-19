@@ -23,10 +23,10 @@ const MATERIALS := [
 	["Shoes", "T_Girl_Shoes", "scissor"],
 	["Tops", "T_Girl_Tops", "scissor"],
 	["Sock", "T_Girl_Socks", "opaque"],
-	["Coat", "T_Girl_Coat", "coat"],
+	["Coat", "T_Girl_Coat", "scissor"],
 ]
-const MODEL_HEIGHT := 1.39  # 模型原本多高（米）
-const COAT_GROW := 0.014  # 外套往外撑多少米，盖住袖子里露出来的内衣（yi 11.19）
+const INNER_TOP := "Tops"   # 里面那件衣服的材质名
+const SLEEVE_BONES: Array[String] = ["UpperArm", "LowerArm", "Hand", "Index", "Middle", "Ring", "Little", "Thumb"]
 ## 坐姿：骨头名 → 绕哪根轴转多少度（大腿往前抬、小腿往下弯、胳膊放下来）
 const SIT_POSE := {
 	"J_Bip_L_UpperLeg": Vector3(-85, 0, 0),
@@ -257,22 +257,79 @@ func smile() -> void:
 
 
 func _apply_materials(mesh: MeshInstance3D) -> void:
-	# 模型自己的单位可能不是米（FBX 常是厘米），外套撑开的距离按模型高度换算
-	var unit := maxf(mesh.get_aabb().size.y, 0.001) / MODEL_HEIGHT
 	for i in mesh.get_surface_override_material_count():
 		var old := mesh.mesh.surface_get_material(i)
 		var mat_name := old.resource_name if old != null else ""
 		for entry: Array in MATERIALS:
 			if mat_name.contains(entry[0]):
-				var mat := _material(entry[1], entry[2])
-				if entry[2] == "coat":
-					mat.grow = true
-					mat.grow_amount = COAT_GROW * unit
-				if entry[0] == "Tops":
-					mat.grow = true
-					mat.grow_amount = -COAT_GROW * unit  # 里面的衣服往里缩一点，抬手时不从袖子里穿出来
-				mesh.set_surface_override_material(i, mat)
+				mesh.set_surface_override_material(i, _material(entry[1], entry[2]))
 				break
+	_hide_inner_sleeves(mesh)
+
+
+## yi 11.19：里面衣服（Tops）的袖子藏起来，抬手时不会从外套袖子里穿出来。
+## 做法：把 Tops 里主要跟着胳膊骨头动的三角形删掉（只改三角形列表，顶点和表情都不动），胸口那块保留。
+func _hide_inner_sleeves(node: MeshInstance3D) -> void:
+	var source := node.mesh as ArrayMesh
+	if source == null or node.skin == null:
+		return
+	var target := -1
+	for i in source.get_surface_count():
+		var mat := source.surface_get_material(i)
+		if mat != null and mat.resource_name.contains(INNER_TOP):
+			target = i
+	if target < 0:
+		return
+	var arm_binds := {}
+	for bind in node.skin.get_bind_count():
+		var bind_name := String(node.skin.get_bind_name(bind))
+		if bind_name.is_empty() and skeleton != null and node.skin.get_bind_bone(bind) >= 0:
+			bind_name = skeleton.get_bone_name(node.skin.get_bind_bone(bind))
+		for part in SLEEVE_BONES:
+			if bind_name.contains(part):
+				arm_binds[bind] = true
+	var rebuilt := ArrayMesh.new()
+	rebuilt.blend_shape_mode = source.blend_shape_mode
+	for shape in source.get_blend_shape_count():
+		rebuilt.add_blend_shape(source.get_blend_shape_name(shape))
+	for i in source.get_surface_count():
+		var arrays := source.surface_get_arrays(i)
+		if i == target:
+			arrays[Mesh.ARRAY_INDEX] = _drop_arm_triangles(arrays, arm_binds)
+		rebuilt.add_surface_from_arrays(source.surface_get_primitive_type(i), arrays, source.surface_get_blend_shape_arrays(i), {}, source.surface_get_format(i) & ~Mesh.ARRAY_FORMAT_INDEX | Mesh.ARRAY_FORMAT_INDEX)
+		rebuilt.surface_set_material(i, source.surface_get_material(i))
+		rebuilt.surface_set_name(i, source.surface_get_name(i))
+	var overrides: Array[Material] = []
+	for i in node.get_surface_override_material_count():
+		overrides.append(node.get_surface_override_material(i))
+	node.mesh = rebuilt
+	for i in overrides.size():
+		node.set_surface_override_material(i, overrides[i])
+
+
+## 一个顶点"主要跟着胳膊动"：权重最大的那根骨头是胳膊或手。三角形三个顶点有一个是，就删掉
+func _drop_arm_triangles(arrays: Array, arm_binds: Dictionary) -> PackedInt32Array:
+	var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
+	var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var per_vertex := bones.size() / maxi((arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size(), 1)
+	var on_arm := PackedByteArray()
+	on_arm.resize((arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size())
+	for v in on_arm.size():
+		var best := -1
+		var best_weight := -1.0
+		for k in per_vertex:
+			if weights[v * per_vertex + k] > best_weight:
+				best_weight = weights[v * per_vertex + k]
+				best = bones[v * per_vertex + k]
+		on_arm[v] = 1 if arm_binds.has(best) else 0
+	var kept := PackedInt32Array()
+	for t in range(0, indices.size(), 3):
+		if on_arm[indices[t]] == 0 and on_arm[indices[t + 1]] == 0 and on_arm[indices[t + 2]] == 0:
+			kept.append(indices[t])
+			kept.append(indices[t + 1])
+			kept.append(indices[t + 2])
+	return kept
 
 
 func _material(texture_name: String, mode: String) -> StandardMaterial3D:
@@ -284,7 +341,7 @@ func _material(texture_name: String, mode: String) -> StandardMaterial3D:
 		mat.normal_enabled = true
 		mat.normal_texture = load(normal_path)
 	match mode:
-		"scissor", "coat":
+		"scissor":
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 			mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 		"blend":
