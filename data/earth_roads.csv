@@ -1,0 +1,12 @@
+id,x,z,w,h,kind,note
+# 小镇的路（只是画面，不影响建造和走路）。kind：road 柏油路 / crosswalk 斑马线。坐标是格子，参考图 A5、B1
+a_ew,0,17,30,3,road,A 区横穿的大路（两头被"破路"废墟堵着）
+a_plaza,13,9,2,8,road,维修站广场往南接大路
+a_ns,19,20,2,9,road,A 区往大门去的路
+b_ns,19,30,2,26,road,B 区中间的主路（厂房和分拣棚之间）
+b_turn,13,56,8,2,road,B 区南头拐向断桥
+c_ns,13,68,4,6,road,过桥后通到温室
+c_ew,2,81,26,2,road,C 区旧街道
+cw_a,19,16,2,1,crosswalk,A 区路口斑马线
+cw_b,19,29,2,1,crosswalk,大门口斑马线
+cw_c,13,80,4,1,crosswalk,C 区路口斑马线

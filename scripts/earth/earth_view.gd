@@ -8,6 +8,7 @@ const GROUND_SHADER := preload("res://scripts/earth/ground.gdshader")
 const GROUND_TEXTURES := {
 	"tex_polluted": "res://assets/textures/earth/m_ground_polluted.png", "tex_cleared": "res://assets/textures/earth/m_ground_cleared.png",
 	"tex_grass": "res://assets/textures/earth/m_ground_grass.png", "tex_soil": "res://assets/textures/earth/m_soil.png",
+	"tex_road": "res://assets/textures/earth/m_asphalt_dirty.png",
 }
 ## 地面种类，和 ground.gdshader 里的编号一致
 const GROUND_POLLUTED := 0
@@ -15,6 +16,9 @@ const GROUND_LIGHT := 1
 const GROUND_CLEARED := 2
 const GROUND_GRASS := 3
 const GROUND_SOIL := 4
+const GROUND_ROAD := 5
+const GROUND_CROSSWALK := 6
+const ROAD_KINDS := {"road": GROUND_ROAD, "crosswalk": GROUND_CROSSWALK}
 const SEEDLING_TINT := Color(1.15, 1.2, 0.9)
 const HOLE_TINT := Color(0.45, 0.4, 0.35)
 const PLANT_COLOR := Color(0.25, 0.62, 0.25)
@@ -68,6 +72,7 @@ const WORKSHOP_COLOR := Color(0.42, 0.33, 0.28)
 const WORKSHOP_HEIGHT := 2.8
 const WORKSHOP_TYPE := "repair_station"
 const HANGAR_SCALE := 2.2  # 维修站机库画得比 3×2 格大，参考图 A1 里它是主角
+const DOME_SCALE := 1.5
 const LOCKED_TINT := Color(0.12, 0.12, 0.14)
 const LOCKED_STRENGTH := 0.55
 const RIVER_COLOR := Color(0.42, 0.35, 0.27)
@@ -113,12 +118,6 @@ const LUX3D_CLUES := {"hole": "hole", "item": "seed_capsule"}
 ## 远景：[模型, 东西位置(地图宽的倍数), 南北位置(地图长的倍数), 占地边长米, 朝向度]
 const LUX3D_SCENERY := [
 	["landing_pod", 1.12, 0.08, 6.0, 20.0],
-	["cable_reel", -0.06, 0.35, 2.5, 0.0],
-	["street_terminal", 1.04, 0.8, 1.6, -90.0],
-	["planter_green", -0.07, 0.84, 3.0, 0.0],
-	["planter_dry", -0.07, 0.88, 3.0, 0.0],
-	["van", 1.1, 0.75, 5.0, 75.0],
-	["tarp", -0.08, 0.22, 3.0, 0.0],
 	# 新布局（照参考图 A5/B1）：东边高架路、北面和西面残楼天际线（渡槽模型带了一大块地面，效果不好先不放）
 	["viaduct", 1.35, 0.15, 40.0, 90.0],
 	["ruin_big", -0.6, 0.3, 24.0, 90.0],
@@ -135,6 +134,7 @@ var astar := AStarGrid2D.new()  # 机器人走路用：废墟和建筑都是障�
 
 var _ground: MultiMeshInstance3D
 var _ground_textured := false
+var _road_cells := {}  # 格子 -> 地面种类（柏油路 / 斑马线），来自 earth_roads.csv
 var _ruin_nodes := {}      # 废墟 id -> 节点
 var _building_nodes := {}  # 建筑编号 -> { node, state }
 var _scrap_nodes := {}     # 废料 id -> 节点
@@ -157,6 +157,8 @@ func setup(earth_world: EarthWorld) -> void:
 	_build_ground()
 	_build_boundary()
 	_build_scenery()
+	_build_roads()
+	_build_decor()
 	astar.region = Rect2i(0, 0, world.grid_width, world.grid_height)
 	astar.cell_size = Vector2.ONE
 	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
@@ -372,6 +374,8 @@ func _update_ground() -> void:
 			elif world.holes.has(cell):
 				color = HOLE_COLOR
 				kind = GROUND_SOIL
+			if _road_cells.has(cell) and not world.plants.has(cell) and region != EarthWorld.RIVER:
+				kind = _road_cells[cell]
 			if _ground_textured:
 				# 贴图自己带颜色，这里只留"苗比草浅、坑比泥深"的一点区别，叠加色照旧
 				color = Color.WHITE
@@ -459,6 +463,28 @@ func _swap_to_model(node: Node3D, model_name: String, w: int, h: int, grow := 0.
 	node.add_child(model)
 
 
+## 路只是画面：记下哪些格子画成柏油路或斑马线，地面刷新时用
+func _build_roads() -> void:
+	for id: String in DataDB.table("earth_roads"):
+		var row := DataDB.row("earth_roads", id)
+		var kind: int = ROAD_KINDS.get(str(row["kind"]), GROUND_ROAD)
+		for z in range(int(row["z"]), int(row["z"]) + int(row["h"])):
+			for x in range(int(row["x"]), int(row["x"]) + int(row["w"])):
+				_road_cells[Vector2i(x, z)] = kind
+
+
+## 小镇摆件（路灯、警示锥、帐篷、吊车……）：只是画面，没有碰撞，位置在 earth_decor.csv
+func _build_decor() -> void:
+	for id: String in DataDB.table("earth_decor"):
+		var row := DataDB.row("earth_decor", id)
+		var model := Lux3DModels.make_spec(str(row["model"]), float(row["size"]))
+		if model == null:
+			continue
+		model.position = Vector3(float(row["x"]) * cell_size, 0.0, float(row["z"]) * cell_size)
+		model.rotation_degrees.y = float(row["rot"])
+		add_child(model)
+
+
 ## 地图外面的远景建筑：B 区的发电厂、厂房，A 区的分拣棚（只看不进）
 func _build_scenery() -> void:
 	var size := map_size()
@@ -510,7 +536,9 @@ func _sync_props() -> void:
 		var look: Array = PROP_LOOKS.get(look_key, [Color.MAGENTA, 1.0])
 		var rect := world.prop_rect(id)
 		var node := Node3D.new()
-		var model := Lux3DModels.make(LUX3D_PROPS.get(look_key, ""), Vector2(rect.size) * cell_size * 0.96) if LUX3D_PROPS.has(look_key) else null
+		# 温室穹顶画得比 5×5 格大一圈（参考图 C1 里它是 C 区的主角），碰撞还是按格子
+		var grow: float = DOME_SCALE if str(row["kind"]) == "greenhouse" else 0.96
+		var model := Lux3DModels.make(LUX3D_PROPS.get(look_key, ""), Vector2(rect.size) * cell_size * grow) if LUX3D_PROPS.has(look_key) else null
 		if model != null:
 			node.add_child(model)
 		elif float(look[1]) > 0.0:

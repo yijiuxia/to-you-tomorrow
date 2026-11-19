@@ -4,6 +4,7 @@ extends RefCounted
 ## 有模型就按占地大小缩放后摆上；没有就返回 null，调用方继续用方块。
 
 const DIR := "res://assets/models/lux3d/"
+const KIT_DIR := "res://assets/models/decor/"  # 场景建模线程 kit 里挑出来用的小摆件（kit 文件夹不进仓库）
 
 static var _cache := {}
 
@@ -16,7 +17,10 @@ static func make(model_name: String, footprint: Vector2, max_height := 0.0) -> N
 	var scene: PackedScene = _cache[path]
 	if scene == null:
 		return null
-	var model := scene.instantiate() as Node3D
+	return _fit(scene.instantiate() as Node3D, footprint, max_height)
+
+
+static func _fit(model: Node3D, footprint: Vector2, max_height: float) -> Node3D:
 	var box := _bounds(model, Transform3D.IDENTITY)
 	if box.size.x <= 0.0 or box.size.z <= 0.0:
 		return null
@@ -55,3 +59,35 @@ static func _bounds(node: Node, parent_xform: Transform3D) -> AABB:
 		result = sub if not has else result.merge(sub)
 		has = true
 	return result
+
+
+## 摆件用：spec 是 "lux3d:名字" 或 "kit:名字"；size 是最长边几米，0 表示用模型原尺寸
+static func make_spec(spec: String, size: float) -> Node3D:
+	var parts := spec.split(":")
+	if parts.size() != 2:
+		return null
+	var path: String = KIT_DIR + parts[1] + ".glb" if parts[0] == "kit" else DIR + parts[1] + ".glb"
+	if not ResourceLoader.exists(path):
+		return null
+	if not _cache.has(path):
+		_cache[path] = load(path)
+	var model := (_cache[path] as PackedScene).instantiate() as Node3D
+	var holder := Node3D.new()
+	holder.add_child(model)
+	var box := _bounds(model, Transform3D.IDENTITY)
+	var longest := maxf(box.size.x, maxf(box.size.y, box.size.z))
+	# 摆件按"三个方向里最长的一边"缩放：路灯是高、管材堆是长，都能对上真实尺寸
+	var s := size / longest if size > 0.0 and longest > 0.0 else 1.0
+	var center := box.get_center()
+	model.scale *= s
+	model.position = Vector3(-center.x * s, -box.position.y * s, -center.z * s)
+	return holder
+
+
+static func make_path(path: String, footprint: Vector2) -> Node3D:
+	if not _cache.has(path):
+		_cache[path] = load(path) if ResourceLoader.exists(path) else null
+	var scene: PackedScene = _cache[path]
+	if scene == null:
+		return null
+	return _fit(scene.instantiate() as Node3D, footprint, 0.0)

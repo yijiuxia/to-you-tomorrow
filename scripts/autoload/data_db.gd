@@ -4,7 +4,7 @@ extends Node
 ## 表格第一列是 id；以 # 开头的行会被跳过，可以当注释用。
 
 const DATA_DIR := "res://data/"
-const TABLES := ["courses", "girl_stats", "buildings", "attitude_effects", "balance", "chat_keywords", "trait_texts", "earth_ruins", "earth_zones", "earth_regions", "earth_props", "earth_specials", "earth_clues", "plants", "girl_proposals", "girl_goals", "earth_events", "memory_patterns", "memory_flags", "chat_actions", "chat_moods", "chat_stages", "chat_idle", "earth_tutorial", "chat_story_lines", "room_objects", "places", "room_options", "tech"]  # 最后 4 张是房间线程加的
+const TABLES := ["courses", "girl_stats", "buildings", "attitude_effects", "balance", "chat_keywords", "trait_texts", "earth_ruins", "earth_zones", "earth_regions", "earth_props", "earth_specials", "earth_clues", "plants", "girl_proposals", "girl_goals", "earth_events", "memory_patterns", "memory_flags", "chat_actions", "chat_moods", "chat_stages", "chat_idle", "earth_tutorial", "chat_story_lines", "room_objects", "places", "room_options", "tech", "earth_roads", "earth_decor"]  # "tech" 之前 4 张是房间线程加的；最后 2 张是美术线程加的（小镇的路和摆件）
 
 var _tables := {}  # 表名 -> { id -> { 列名: 值 } }
 

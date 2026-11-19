@@ -11,6 +11,14 @@ const SHOTS := [
 	["5_a_evening", "evening", Vector3(46, 22, -14), Vector3(18, 0, 22)],
 	["6_a_night", "night", Vector3(46, 22, -14), Vector3(18, 0, 22)],
 	["7_ark_close", "day", Vector3(20, 4, 4), Vector3(12, 1, 14)],
+	# 贴地视角（和 ARK-01 第三人称差不多高），对照参考图 A1、A5、B1、C1
+	["8_ground_a_hangar", "day", Vector3(28, 3, 26), Vector3(14, 2, 6)],
+	["9_ground_a_road", "day", Vector3(2, 2.5, 36), Vector3(40, 1, 36)],
+	["10_ground_gate", "day", Vector3(40, 2.5, 50), Vector3(30, 2, 60)],
+	["11_ground_b_road", "day", Vector3(40, 3, 62), Vector3(40, 2, 110)],
+	["12_ground_river", "day", Vector3(36, 3, 108), Vector3(28, 1, 130)],
+	["13_ground_c_street", "day", Vector3(4, 2.5, 164), Vector3(56, 1, 164)],
+	["14_ground_c_dome", "day", Vector3(30, 3, 140), Vector3(26, 3, 152)],
 ]
 
 var _dir := "user://earth_shots"

@@ -1,0 +1,80 @@
+id,model,x,z,size,rot,note
+# 小镇摆件（只是画面，没有碰撞）。model：lux3d/ 或 kit/ 下的模型名；x、z 是格子坐标（可带小数）；size 是最长边几米（kit 白模原尺寸不准，都写上）；rot 是朝向（度）
+crane_a,lux3d:crane,9.5,1.2,9,200,维修站旁的吊车（参考图 A2）
+tent_a1,kit:kit_canopy_ruin,12.5,2.5,5,0,生活区破帐篷（参考图 A4）
+tent_a2,kit:kit_canopy_ruin,15.5,3,5,15,
+crate_a1,kit:kit_crate_m,12,5.5,1.4,10,
+crate_a2,kit:kit_crate_s,13,5.8,1.0,40,
+crate_a3,kit:kit_crate_l,16.5,5.2,2.0,0,
+cone_a1,kit:kit_traffic_cone,12.3,9.2,0.75,0,广场警示锥
+cone_a2,kit:kit_traffic_cone,15.7,9.4,0.75,0,
+cone_a3,kit:kit_traffic_cone,18.6,16.2,0.75,0,
+cone_a4,kit:kit_traffic_cone,21.4,16.4,0.75,0,
+lamp_a1,kit:kit_street_lamp_ruin,18.7,21,5.5,0,A 区路灯
+lamp_a2,kit:kit_street_lamp_ruin,21.3,25,5.5,180,
+lamp_a3,kit:kit_street_lamp_ruin,6,16.6,5.5,0,
+lamp_a4,kit:kit_street_lamp_ruin,12,20.4,5.5,180,
+rail_a1,kit:kit_railing,18.6,23,2.2,90,
+rail_a2,kit:kit_railing,18.6,26,2.2,90,
+bollard_g1,kit:kit_bollard,9.6,28.4,1.1,0,大门两边的护柱
+bollard_g2,kit:kit_bollard,20.4,28.4,1.1,0,
+flag_g1,kit:kit_flag,9.2,30.6,4.5,0,
+flag_g2,kit:kit_flag,20.8,30.6,4.5,0,
+cabinet_a,kit:kit_power_cabinet,24.6,26.4,2.0,-90,旧电源旁的配电柜
+pipes_b1,kit:kit_pipe_stack,18.4,47.5,4.0,90,B 区管材堆
+pipes_b2,kit:kit_pipe_stack,9.5,48,4.0,0,
+crate_b1,kit:kit_crate_l,21.5,46.5,2.0,0,
+crate_b2,kit:kit_crate_m,22.4,47.6,1.4,25,
+lamp_b1,kit:kit_street_lamp_ruin,18.7,34,5.5,0,B 区路灯
+lamp_b2,kit:kit_street_lamp_ruin,21.3,42,5.5,180,
+lamp_b3,kit:kit_street_lamp_ruin,18.7,50,5.5,0,
+cone_b1,kit:kit_traffic_cone,18.5,55.6,0.75,0,
+cabinet_b,kit:kit_power_cabinet,11.2,36.5,2.0,0,
+rail_r1,kit:kit_railing,12.6,59.6,2.2,0,断桥两头的栏杆
+rail_r2,kit:kit_railing,17.4,59.6,2.2,0,
+rail_r3,kit:kit_railing,12.6,68.4,2.2,0,
+rail_r4,kit:kit_railing,17.4,68.4,2.2,0,
+lamp_c1,kit:kit_street_lamp_ruin,4,80.6,5.5,0,C 区旧街道路灯
+lamp_c2,kit:kit_street_lamp_ruin,12,83.4,5.5,180,
+lamp_c3,kit:kit_street_lamp_ruin,20,80.6,5.5,0,
+lamp_c4,kit:kit_street_lamp_ruin,27,83.4,5.5,180,
+terminal_c,lux3d:street_terminal,9,80.4,1.6,0,
+planter_c1,lux3d:planter_dry,23,80.2,2.4,0,
+planter_c2,lux3d:planter_dry,25.5,80.2,2.4,0,
+pot_c,lux3d:hanging_pot,17.5,72,1.2,0,温室门口的吊挂花盆
+gh_term,lux3d:gh_terminal,16.8,79,1.4,180,温室屏幕终端
+van_c,lux3d:van,26,84.2,5,100,街边废弃面包车
+cable_b,lux3d:cable_reel,17,38,2.2,0,
+canal_s0,lux3d:canal_wall,1.5,60.4,6,0,干河道南岸挡墙
+canal_s1,lux3d:canal_wall,4.5,60.4,6,0,
+canal_s2,lux3d:canal_wall,7.5,60.4,6,0,
+canal_s3,lux3d:canal_wall,10.5,60.4,6,0,
+canal_s4,lux3d:canal_wall,19.5,60.4,6,0,
+canal_s5,lux3d:canal_wall,22.5,60.4,6,0,
+canal_s6,lux3d:canal_wall,25.5,60.4,6,0,
+canal_s7,lux3d:canal_wall,28.5,60.4,6,0,
+canal_n0,lux3d:canal_wall,1.5,67.6,6,180,干河道北岸挡墙
+canal_n1,lux3d:canal_wall,4.5,67.6,6,180,
+canal_n2,lux3d:canal_wall,7.5,67.6,6,180,
+canal_n3,lux3d:canal_wall,10.5,67.6,6,180,
+canal_n4,lux3d:canal_wall,19.5,67.6,6,180,
+canal_n5,lux3d:canal_wall,22.5,67.6,6,180,
+canal_n6,lux3d:canal_wall,25.5,67.6,6,180,
+canal_n7,lux3d:canal_wall,28.5,67.6,6,180,
+crate_a4,kit:kit_crate_m,17.2,5.8,1.4,60,
+crate_a5,kit:kit_crate_s,11.5,6.2,1,0,
+cone_a5,kit:kit_traffic_cone,9.5,16.3,0.75,0,
+cone_a6,kit:kit_traffic_cone,24.5,20.4,0.75,0,
+lamp_a5,kit:kit_street_lamp_ruin,26,16.6,5.5,0,
+cabinet_a2,kit:kit_power_cabinet,2,8,2,90,
+pipes_a,kit:kit_pipe_stack,25.5,9.5,4,0,
+tarp_a,lux3d:tarp,4,13.5,3,20,车间旁盖着布的货堆
+crate_b3,kit:kit_crate_l,5,41,2,0,
+crate_b4,kit:kit_crate_m,6.3,41.2,1.4,30,
+cone_b2,kit:kit_traffic_cone,21.5,55.6,0.75,0,
+cone_b3,kit:kit_traffic_cone,19.5,40.2,0.75,0,
+planter_c3,lux3d:planter_dry,5,77.5,2.4,90,
+planter_c4,lux3d:planter_dry,20.5,78.5,2.4,0,（世界观：只有她种的是真绿，所以这里放枯的）
+crate_c1,kit:kit_crate_m,8.5,79.5,1.4,0,
+cone_c1,kit:kit_traffic_cone,12.6,79.6,0.75,0,
+cone_c2,kit:kit_traffic_cone,17.4,79.6,0.75,0,
