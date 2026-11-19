@@ -60,8 +60,10 @@ const POINT_FOREARM := "J_Bip_L_LowerArm"
 const POINT_HAND := "J_Bip_L_Hand"
 const POINT_SHOULDER := "J_Bip_L_Shoulder"
 const POINT_CHEST := "J_Bip_C_UpperChest"
-const SHOULDER_SHARE := 0.35   # 肩膀跟着转几成
+const SHOULDER_SHARE := 0.15   # 肩膀跟着转几成
 const CHEST_SHARE := 0.08      # 上身跟着转几成（很小，只是带一下）
+const ELBOW_POLE := Vector3(0.25, -1, 0)      # 手肘往哪边弯：往下、稍微往外
+const POINT_TOUCH_OFFSET := Vector3(-0.09, 0.03, -0.03)  # 指尖落点：屏幕靠她这一侧（离得近，手肘才能弯下来）
 const POINT_INDEX_ROOT := "J_Bip_L_Index1"
 const POINT_INDEX_TIP := "J_Bip_L_Index3"
 ## 指的时候握拳、只伸食指（yi 11.19）：这些手指关节往里弯
@@ -207,19 +209,35 @@ func _point() -> void:
 	var forearm := skeleton.find_bone(POINT_FOREARM)
 	if arm < 0 or forearm < 0:
 		return
-	# 肩膀和上身跟着往平板那边带一点，再抬整条胳膊指向平板（yi：手肘改回原来的样子）
+	# yi 11.19：指尖要正好点在屏幕上，手肘自然朝下。
+	# 做法（两段胳膊）：先定指尖落点，再按大臂、小臂（含手）的长度反推手肘位置，手肘放在"往下"的那一侧。
 	_turn_toward(POINT_CHEST, POINT_SHOULDER, point_target, CHEST_SHARE)
 	_turn_toward(POINT_SHOULDER, POINT_ARM, point_target, SHOULDER_SHARE)
-	# 小臂伸直（回到静止时相对大臂的朝向），肘部留一点弯
-	var straight := skeleton.get_bone_rest(forearm).basis.get_rotation_quaternion()
-	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight * POINT_STRAIGHTEN))
-	# 大臂转向平板：从"现在胳膊的方向"转到"肩膀指向平板的方向"
-	_turn_toward(POINT_ARM, POINT_FOREARM, point_target, 1.0)
-	var room_target := point_target
-	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
-	# yi：手腕不要往外翻。不再单独转手腕，手保持原来动作里的朝向，小臂已经对着平板
 	_relax_wrist()
+	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
 	_make_fist(THUMB_BONES, THUMB_AXIS, THUMB_ANGLE)
+	var tip := skeleton.find_bone(POINT_INDEX_TIP)
+	if tip < 0:
+		return
+	var shoulder := _bone_world(arm)
+	var elbow := _bone_world(forearm)
+	var finger := _bone_world(tip)
+	var upper_len := shoulder.distance_to(elbow)
+	var lower_len := elbow.distance_to(finger)  # 小臂 + 手 + 食指
+	var goal := point_target + POINT_TOUCH_OFFSET
+	var to_goal := goal - shoulder
+	var reach := clampf(to_goal.length(), absf(upper_len - lower_len) + 0.001, upper_len + lower_len - 0.001)
+	var dir := to_goal.normalized()
+	var along := (upper_len * upper_len + reach * reach - lower_len * lower_len) / (2.0 * reach)
+	var side := sqrt(maxf(upper_len * upper_len - along * along, 0.0))
+	var pole := (ELBOW_POLE - dir * ELBOW_POLE.dot(dir)).normalized()
+	var elbow_goal := shoulder + dir * along + pole * side
+	_turn_toward(POINT_ARM, POINT_FOREARM, elbow_goal, 1.0)
+	_turn_toward(POINT_FOREARM, POINT_INDEX_TIP, goal, 1.0)
+
+
+func _bone_world(bone: int) -> Vector3:
+	return skeleton.global_transform * skeleton.get_bone_global_pose(bone).origin
 
 
 ## 把一根骨头往目标方向转一部分：它到子骨头的方向，朝"它到目标的方向"转 share 成
