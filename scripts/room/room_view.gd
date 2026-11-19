@@ -190,11 +190,31 @@ func _load_model() -> void:
 	_build_backdrop()
 	_apply_glass()
 	_turn_off_fake_lights()
+	_grow_vines()
 
 
 ## blend 里左边柜子的拉手用了发光的琥珀色材质（WB_Amber_Light），游戏里看着像灯；yi 定：不发光、改成白色
 const NOT_LIGHTS: Array[String] = ["WB_Amber_Light"]
 const HANDLE_COLOR := Color(0.95, 0.95, 0.93)
+
+
+## 垂藤：房间模型里的垂藤是贴片（Card_Vine_*），换成程序长出来的立体藤蔓（yi 11.19）
+func _grow_vines() -> void:
+	var index := 0
+	var cards := _model.find_children("Card_Vine*", "MeshInstance3D", true, false)
+	cards.append_array(_model.find_children("Dress_Vine*", "MeshInstance3D", true, false))
+	for node in cards:
+		var card := node as MeshInstance3D
+		var box := card.global_transform * card.get_aabb()
+		var vine := VineCurtain.new()
+		vine.width = maxf(box.size.x, box.size.z)
+		vine.length = box.size.y
+		vine.axis = Vector3.RIGHT if box.size.x >= box.size.z else Vector3.BACK
+		vine.seed_value = index + 1
+		vine.position = Vector3(box.get_center().x, box.end.y, box.get_center().z)
+		viewport.add_child(vine)
+		card.visible = false
+		index += 1
 
 
 func _turn_off_fake_lights() -> void:
