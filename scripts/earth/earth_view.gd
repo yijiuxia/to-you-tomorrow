@@ -339,6 +339,11 @@ func _sync_scraps() -> void:
 		if not _scrap_nodes.has(scrap["id"]):
 			var node := _box_mesh(Vector3.ONE * SCRAP_SIZE, SCRAP_COLOR)
 			node.position = cell_center(scrap["cell"]) + Vector3.UP * SCRAP_SIZE / 2.0
+			var model := Lux3DModels.make("scrap", Vector2.ONE * SCRAP_SIZE * 2.0)
+			if model != null:
+				node.mesh = null
+				model.position = Vector3.DOWN * SCRAP_SIZE / 2.0
+				node.add_child(model)
 			add_child(node)
 			_scrap_nodes[scrap["id"]] = node
 	for id: String in _scrap_nodes.keys():

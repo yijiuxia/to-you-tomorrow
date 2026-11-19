@@ -34,6 +34,12 @@ func setup(earth_view: EarthView, start_cell: Vector2i) -> void:
 	_body.mesh = mesh
 	_body.position = Vector3.UP * BODY_SIZE.y / 2.0
 	add_child(_body)
+	# 有 Lux3D 施工机器人模型就挂在方块下面跟着上下晃，方块本身藏起来
+	var model := Lux3DModels.make("builder", Vector2(BODY_SIZE.x, BODY_SIZE.z), BODY_SIZE.y)
+	if model != null:
+		_body.mesh = null
+		model.position = Vector3.DOWN * BODY_SIZE.y / 2.0
+		_body.add_child(model)
 	position = view.cell_center(start_cell)
 
 

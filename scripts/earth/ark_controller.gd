@@ -307,6 +307,12 @@ func _build_visual() -> void:
 	var screen := _box(Vector3(BODY_SIZE.x * 0.7, BODY_SIZE.y * 0.4, 0.1), SCREEN_COLOR)
 	screen.position = Vector3(0.0, BODY_SIZE.y * 0.7, BODY_SIZE.z / 2.0 + 0.05)
 	_visual.add_child(screen)
+	# 有 Lux3D 的 ARK-01 模型就换上，方块藏起来（碰撞不在这里，不受影响）
+	var model := Lux3DModels.make("ark01", Vector2(BODY_SIZE.x, BODY_SIZE.z), BODY_SIZE.y)
+	if model != null:
+		body.visible = false
+		screen.visible = false
+		_visual.add_child(model)
 
 
 func _build_camera() -> void:
