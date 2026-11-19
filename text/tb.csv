@@ -73,7 +73,7 @@ TT-00-01,科技树,Tech Tree
 TT-00-02,技能达到要求后自动解锁。,Unlocks automatically when skills meet the requirement.
 TT-00-03,需要：{need}（当前 {now}）,Needs: {need} (now {now})
 TT-00-04,科技解锁：{name},Tech unlocked: {name}
-TT-00-06,又能多建一样东西了！,One more thing I can build!
+TT-00-06,又能多建一样东西了！,We can build something new!
 TT-01-01,回收站,Recycler
 TT-01-02,拆解废墟，回收金属。,Breaks down ruins and recovers metal.
 TT-02-01,修复旧车间,Restore the Old Workshop

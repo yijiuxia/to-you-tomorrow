@@ -1,10 +1,10 @@
 keys,zh,en
-OP-01-01,一百五十年前，人类启动全球生态修复工程，试图清除百余年工业积累的污染。,"150 years ago, humanity launched a global ecological restoration project to clear a century of industrial pollution."
-OP-01-02,人类将一批胚胎、种子与休眠者送上环绕地球的方舟，等待地面恢复。,"Humanity sent embryos, seeds and sleepers up to an ark orbiting the Earth, to wait for the ground to recover."
-OP-01-03,八年前，按照方舟的计划，第一个孩子出生了。,"Eight years ago, following the ark's plan, the first child was born."
-OP-01-04,你负责养育她。,You are responsible for raising her.
+OP-01-01,一百五十年前，人类启动全球生态修复工程，试图清除百余年工业积累的污染。,"One hundred and fifty years ago, humanity launched a global ecological restoration project to clear away more than a century of accumulated industrial pollution."
+OP-01-02,人类将一批胚胎、种子与休眠者送上环绕地球的方舟，等待地面恢复。,"Humanity sent embryos, seeds and sleepers aboard an Ark in orbit around the Earth, to wait for the surface to recover."
+OP-01-03,八年前，按照方舟的计划，第一个孩子出生了。,"Eight years ago, in accordance with the Ark's plan, the first child was born."
+OP-01-04,你负责养育她。,You were assigned to raise her.
 OP-01-05,她出生那天，你为她取了名字：{girl},"On the day she was born, you gave her a name: {girl}"
 OP-01-06,{girl}学会说话以后，一直叫你：{player},"Ever since {girl} learned to talk, she has called you: {player}"
-OP-01-07,工程失控。修复性状扩散至几乎所有植物，地表植被由此富集毒素，人类无法在地面长期生存。,"The project went out of control. The restoration trait spread to almost every plant; surface vegetation began to concentrate toxins, and humans could no longer live on the ground for long."
+OP-01-07,工程失控。修复性状扩散至几乎所有植物，地表植被由此富集毒素，人类无法在地面长期生存。,"The project spun out of control. The engineered remediation traits spread to nearly every plant species. Surface vegetation began accumulating toxins, and the surface could no longer sustain human life for long."
 OP-00-01,"致明日的你 / To You, Tomorrow","To You, Tomorrow"
-OP-00-02,按任意键开始,Press any key to start
+OP-00-02,按任意键开始,Press any key to begin

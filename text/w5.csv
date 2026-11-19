@@ -1,36 +1,36 @@
 keys,zh,en
-W5-00-01,建一座净水站，给绿地稳定供水,Build a water purifier to give the green patch steady water
+W5-00-01,建一座净水站，给绿地稳定供水,Build a water purifier to give the green patch a stable water supply
 W5-00-02,调查奇怪的痕迹（0 / 3）,Investigate the strange traces (0 / 3)
 W5-01-02,早，{player}。工业区开了，今天能做的事好多！,"Morning, {player}. The industrial zone is open, there's so much to do today!"
-W5-01-03,早……门还没开呢，这周一定要打开它,Morning... the gate still isn't open. We have to open it this week.
-W5-02-01,雨水罐又见底了。绿地那边的苗，叶子都有点黄。,The rain tank is empty again. The seedlings by the green patch are turning a bit yellow.
-W5-02-02,工业区里有现成的管子和水泵，我们可以建一座净水站。,There are pipes and pumps in the industrial zone. We could build a water purifier.
-W5-02-03,净水站：需要 机械 40、生态 40；金属 5、电子元件 3、工作单位 3；需要通电。建好后，用水管把水送到种植区。,"Water purifier: needs Mechanics 40, Ecology 40; Metal 5, Electronics 3, 3 work units; needs power. Then pipe water to the farm plots."
-W5-02-04,旧电源只够大门用……净水站得先有发电机才行,The old power unit is only enough for the gate... we need a generator before the purifier.
+W5-01-03,早……门还没开呢，这周一定要打开它,Morning… the gate's still not open. We have to get it open this week.
+W5-02-01,雨水罐又见底了。绿地那边的苗，叶子都有点黄。,The rain tank's empty again. The seedlings over in the green patch are turning a bit yellow.
+W5-02-02,工业区里有现成的管子和水泵，我们可以建一座净水站。,There are pipes and pumps in the industrial zone we can use. We could build a water purifier.
+W5-02-03,净水站：需要 机械 40、生态 40；金属 5、电子元件 3、工作单位 3；需要通电。建好后，用水管把水送到种植区。,"Water Purifier: requires Mechanics 40, Ecology 40; Metal 5, Electronics 3, 3 work units; requires power. Once built, use water pipes to carry water to the Planting Plot."
+W5-02-04,旧电源只够大门用……净水站得先有发电机才行,The old power unit's only enough for the gate… We'll need a generator before we can build the purifier.
 W5-03-01,仓库：电子元件 −2、金属 −1（原因不明）,"Storage: Electronics −2, Metal −1 (cause unknown)"
-W5-03-03,诶？我记得堆了更多的……,Huh? I remember the pile being bigger...
-W5-03-04,支线：调查奇怪的痕迹（1 / 3）,Side quest: investigate the strange traces (1 / 3)
-W5-04-01,扫描仪：检测到土壤被翻动，3 株植物缺失,"Scanner: soil disturbed, 3 plants missing"
-W5-04-03,我种的苗……少了好几株。,My seedlings... several are gone.
-W5-04-04,支线：调查奇怪的痕迹（2 / 3）,Side quest: investigate the strange traces (2 / 3)
-W5-05-01,扫描仪：检测到未知痕迹,Scanner: unknown traces detected
-W5-05-02,这是……一串标记？一直往北边去了。,This is... a trail of markers? It goes all the way north.
-W5-05-04,材料、苗，还有这个……这是隐藏任务吧！以前从来没有过！,"Materials, seedlings, and now this... It's a hidden quest! There's never been one before!"
-W5-05-05,支线：调查奇怪的痕迹（3 / 3）· 线索指向：北边,Side quest: investigate the strange traces (3 / 3) · Leads point north
-W5-05-06,扫描仪：未知物品（已损耗）,Scanner: unknown item (worn out)
-W5-05-07,奖励道具？……坏的。隐藏任务的道具也会坏吗？,A reward item? ...It's broken. Can hidden quest items break too?
-W5-06-01,净水站产水：比预计少 30%（原因不明）,Purifier output: 30% lower than expected (cause unknown)
-W5-06-02,电网：检测到不明耗电,Power grid: unknown power draw detected
-W5-08-01,"小时候说要找的""稳定的水源""……终于有了。","The ""steady water source"" I wanted when I was little... we finally have it."
-W5-08-02,目标完成：找到稳定的水源（第 3 周留下的目标）,Goal complete: find a steady water source (from week 3)
+W5-03-03,诶？我记得堆了更多的……,Huh? I'm sure there was a bigger pile than this…
+W5-03-04,支线：调查奇怪的痕迹（1 / 3）,Side quest: Investigate the strange traces (1 / 3)
+W5-04-01,扫描仪：检测到土壤被翻动，3 株植物缺失,Scanner: Disturbed soil detected. 3 plants missing.
+W5-04-03,我种的苗……少了好几株。,The seedlings I planted… several of them are gone.
+W5-04-04,支线：调查奇怪的痕迹（2 / 3）,Side quest: Investigate the strange traces (2 / 3)
+W5-05-01,扫描仪：检测到未知痕迹,Scanner: Unknown traces detected
+W5-05-02,这是……一串标记？一直往北边去了。,What's this… a trail of markers? It goes all the way north.
+W5-05-04,材料、苗，还有这个……这是隐藏任务吧！以前从来没有过！,"The materials, the seedlings, and now this… It's a hidden quest! There's never been one before!"
+W5-05-05,支线：调查奇怪的痕迹（3 / 3）· 线索指向：北边,Side quest: Investigate the strange traces (3 / 3) · Clues point: North
+W5-05-06,扫描仪：未知物品（已损耗）,Scanner: Unknown item (worn)
+W5-05-07,奖励道具？……坏的。隐藏任务的道具也会坏吗？,A reward item? …It's broken. Can hidden quest items even break?
+W5-06-01,净水站产水：比预计少 30%（原因不明）,Water purifier output: 30% lower than expected (cause unknown)
+W5-06-02,电网：检测到不明耗电,Power grid: Unidentified power draw detected
+W5-08-01,"小时候说要找的""稳定的水源""……终于有了。","That ""stable water source"" I wanted to find when I was little… we finally have it."
+W5-08-02,目标完成：找到稳定的水源（第 3 周留下的目标）,Goal complete: Find a stable water source
 W5-09-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
-W5-10-01,传感器警报：北边厂房检测到未知活动。,Sensor alert: unknown activity detected in the northern factories.
-W5-10-02,第 5 周结算,Week 5 summary
-W5-11-01,标记到这里就没了。,The markers stop here.
-W5-11-02,对面……是温室区。,Across there... is the greenhouse area.
-W5-11-03,通信信号：不稳定,Comms signal: unstable
-W5-11-04,又是信号。上次在大门那里也这样……,The signal again. It was like this at the gate too...
-W5-11-05,桥断了，过不去。可是隐藏任务的终点，一定就在对面！,"The bridge is broken, we can't cross. But the end of the hidden quest must be over there!"
-W5-11-06,下周我们把桥修好，过去看看！,Next week let's fix the bridge and go over!
-W5-11-07,新区域（未开放）：C 温室与旧居民区,New area (locked): C Greenhouses and Old Residential Area
+W5-10-01,传感器警报：北边厂房检测到未知活动。,Sensor alert: Unknown activity detected in the northern factory buildings
+W5-10-02,第 5 周结算,Week 5 Summary
+W5-11-01,标记到这里就没了。,The markers end here.
+W5-11-02,对面……是温室区。,On the other side… that's the greenhouse district.
+W5-11-03,通信信号：不稳定,Signal: Unstable
+W5-11-04,又是信号。上次在大门那里也这样……,The signal again. It was like this at the gate last time too…
+W5-11-05,桥断了，过不去。可是隐藏任务的终点，一定就在对面！,The bridge is broken. We can't get across. But the end of the hidden quest has to be over there!
+W5-11-06,下周我们把桥修好，过去看看！,Let's fix the bridge next week and go see!
+W5-11-07,新区域（未开放）：C 温室与旧居民区,New area (locked): C Greenhouse & Old Residential District
 W5-11-08,第 6 周,Week 6

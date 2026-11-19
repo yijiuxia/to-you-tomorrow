@@ -1,48 +1,48 @@
 keys,zh,en
-W3-02-01,快快快，去看看广场！,"Quick, quick, let's go see the square!"
-W3-02-02,说好了，这周要把它修好！,We promised. We're fixing it this week!
-W3-02-05,我上过机械课啦，我会修！,I've had mechanics class. I can fix it!
-W3-02-07,唔……我还不会修这个。那我多上几节机械课！,Hmm... I can't fix this yet. I'll take more mechanics classes!
-W3-03-02,扫描仪：检测到生物信号（未发现变异特征）,Scanner: biological signal detected (no mutation found)
-W3-03-03,……绿色的？,...Is that green?
+W3-02-01,快快快，去看看广场！,"Hurry, hurry, let's go see the plaza!"
+W3-02-02,说好了，这周要把它修好！,"We promised, we're fixing it this week!"
+W3-02-05,我上过机械课啦，我会修！,"I took Mechanics class, so I know how to fix it!"
+W3-02-07,唔……我还不会修这个。那我多上几节机械课！,Hmm… I don't know how to fix this yet. I'll take more Mechanics classes then!
+W3-03-02,扫描仪：检测到生物信号（未发现变异特征）,Scanner: Biological signal detected (no mutation markers found)
+W3-03-03,……绿色的？,…Is that green?
 W3-03-04,{player}！小镇里长叶子了！,{player}! There are leaves growing in the town!
-W3-03-06,哇……是叶子！,Wow... it's a leaf!
+W3-03-06,哇……是叶子！,Wow… it's a leaf!
 W3-03-07,{player}你说对了，真的有！,"{player}, you were right. There really is!"
-W3-03-08,还没种呢，它自己就长出来啦！,"We haven't even planted anything, and it grew by itself!"
-W3-03-09,我看见它啦！你好呀！,I can see it! Hello there!
-W3-03-10,我们把这里设成保护区吧！不然机器人打扫的时候，会把它也扫掉的。,Let's make this a protected area! Otherwise the robots will sweep it away when they clean up.
-W3-03-14,叶子卷起来了……是不是渴了？,The leaves are curling up... Is it thirsty?
+W3-03-08,还没种呢，它自己就长出来啦！,"We didn't even plant it yet, and it grew all by itself!"
+W3-03-09,我看见它啦！你好呀！,I see it! Hello there!
+W3-03-10,我们把这里设成保护区吧！不然机器人打扫的时候，会把它也扫掉的。,Let's make this a protected zone! Otherwise the robots might sweep it away when they clean up.
+W3-03-14,叶子卷起来了……是不是渴了？,The leaves are curled up… Is it thirsty?
 W3-03-16,它喝水了！,It's drinking!
-W3-03-17,可是土好干，我们不能天天来浇呀。,But the soil is so dry. We can't come water it every day.
-W3-03-18,新目标：找到稳定的水源,New goal: find a steady water source
-W3-03-19,小叶子能长出来，说明这里的土能种东西了！,"If a little leaf can grow here, this soil can grow things now!"
-W3-03-20,种植区已解锁。种子来自维修站地下仓库的储备。,Farm plots unlocked. The seeds come from the reserve in the repair station's underground storage.
+W3-03-17,可是土好干，我们不能天天来浇呀。,"But the dirt is super dry, and we can't come water it every day."
+W3-03-18,新目标：找到稳定的水源,New goal: Find a stable water source
+W3-03-19,小叶子能长出来，说明这里的土能种东西了！,"If the little leaf can grow here, that means we can grow stuff in this dirt!"
+W3-03-20,种植区已解锁。种子来自维修站地下仓库的储备。,Planting Plot unlocked. Seeds come from the reserves in the repair station's underground storage.
 W3-04-01,维修站里面我们还没进去过呢！{ark}，去看看嘛！,"We've never been inside the repair station! {ark}, let's go look!"
-W3-04-02,可选目标：进维修站里面看看,Optional goal: look inside the repair station
-W3-04-03,扫描仪：检测到密封容器,Scanner: sealed container detected
-W3-04-04,旧时代应急种子罐（密封）：内有多种种子，部分可能仍能发芽,Old-era emergency seed jar (sealed): holds many kinds of seeds; some may still sprout
-W3-04-05,又有种子！这些是我们没有的！,More seeds! These are ones we don't have!
-W3-04-06,获得旧种子罐：新增 2 种可种植物。种子会不会发芽，和生态技能、水、土有关。,"Got the old seed jar: 2 new plants available. Whether seeds sprout depends on ecology skill, water and soil."
+W3-04-02,可选目标：进维修站里面看看,Optional goal: Look inside the repair station
+W3-04-03,扫描仪：检测到密封容器,Scanner: Sealed container detected
+W3-04-04,旧时代应急种子罐（密封）：内有多种种子，部分可能仍能发芽,Old-era emergency seed canister (sealed): Contains various seeds. Some may still germinate.
+W3-04-05,又有种子！这些是我们没有的！,More seeds! We don't have these ones!
+W3-04-06,获得旧种子罐：新增 2 种可种植物。种子会不会发芽，和生态技能、水、土有关。,"Obtained old seed canister: 2 new plant types available. Whether seeds germinate depends on Ecology skill, water and soil."
 W3-04-08,种子！可以种树吗？,Seeds! Can we plant trees?
-W3-04-09,……可是外面全是石头，土是灰的，种下去能长出来吗？先收好！,...But it's all rocks out there and the soil is grey. Would anything grow? Let's keep them safe for now!
-W3-04-10,已获得：旧种子罐（种植区暂未开放）,Obtained: old seed jar (farm plots not open yet)
-W3-05-01,叶子是 ARK-01 找到的！你立大功了！,ARK-01 found the leaf! You did great!
-W3-05-02,一直叫你 ARK-01 好奇怪哦……我要给你起个名字！,Calling you ARK-01 all the time is weird... I'm going to give you a name!
+W3-04-09,……可是外面全是石头，土是灰的，种下去能长出来吗？先收好！,"…But it's all rocks out there, and the dirt is gray. Would anything even grow? I'll keep them safe for now!"
+W3-04-10,已获得：旧种子罐（种植区暂未开放）,Obtained: Old seed canister (Planting Plot not yet available)
+W3-05-01,叶子是 ARK-01 找到的！你立大功了！,ARK-01 found the leaf! You did a great job!
+W3-05-02,一直叫你 ARK-01 好奇怪哦……我要给你起个名字！,Calling you ARK-01 all the time is kinda weird… I'm gonna give you a name!
 W3-05-04,"就叫你""阿克""吧！ARK，阿克！","I'll call you ""Arky""! ARK, Arky!"
 W3-05-05,ARK-01 现在叫：{ark},ARK-01 is now called: {ark}
 W3-03-05,好小呀……可是它是真的绿色的。,"It's so tiny... but it's really, truly green."
 W3-01-02,{player}，早上好！,"Good morning, {player}!"
-W3-02-03,点击维修站里的机器人，可以查看修复需要什么。,Click the robot in the repair station to see what the repair needs.
-W3-02-04,修复施工机器人：需要 金属 4、电子元件 2、工作单位 3、机械 10。修好后每周工作单位 +3。,"Repair construction robot: needs Metal 4, Electronics 2, 3 work units, Mechanics 10. Afterwards, +3 work units per week."
+W3-02-03,点击维修站里的机器人，可以查看修复需要什么。,Click the robot in the repair station to see what is needed to repair it.
+W3-02-04,修复施工机器人：需要 金属 4、电子元件 2、工作单位 3、机械 10。修好后每周工作单位 +3。,"Repair construction robot: requires Metal 4, Electronics 2, 3 work units, Mechanics 10. Once repaired: +3 work units per week."
 W3-02-06,机械 {value} / 10,Mechanics {value} / 10
-W3-03-01,（第一次切到第三人称或第一次扫到东西时）ARK-01 带着扫描仪，靠近特别的东西时会自动提醒你。,ARK-01 carries a scanner and will alert you when it gets close to something special.
-W3-03-11,"按 V 回到俯视，选中植物所在的这块地，点""设为保护区""。","Press V for top view, select the tile with the plant, and click Set as Protected Area."
-W3-03-12,保护区里的东西，施工机器人不会清理，也不能在上面建造。以后发现别的植物，也可以这样保护起来。,"Robots won't clear anything in a protected area, and nothing can be built there. You can protect other plants you find the same way."
-W3-03-13,按 V 回到第三人称。,Press V to go back to third person.
-W3-03-15,Tab 选择喷洒头，对准植物按住 E：浇水。不消耗工作单位。,"Press Tab, pick the sprayer, aim at the plant and hold E to water it. No work units needed."
-W3-06-01,"按 V 回到俯视，选中维修站，点""修复""。","Press V for top view, select the repair station and click Repair."
-W3-06-02,修好它，就多一个帮手啦！,Fix it and we'll have one more helper!
+W3-03-01,（第一次切到第三人称或第一次扫到东西时）ARK-01 带着扫描仪，靠近特别的东西时会自动提醒你。,ARK-01 carries a scanner and will alert you automatically when it nears something unusual.
+W3-03-11,"按 V 回到俯视，选中植物所在的这块地，点""设为保护区""。","Press V to return to top-down view, select the plot where the plant is, and click ""Mark as Protected""."
+W3-03-12,保护区里的东西，施工机器人不会清理，也不能在上面建造。以后发现别的植物，也可以这样保护起来。,"Construction robots will not clear anything in a protected zone, and nothing can be built there. Other plants you find later can be protected the same way."
+W3-03-13,按 V 回到第三人称。,Press V to return to third-person view.
+W3-03-15,Tab 选择喷洒头，对准植物按住 E：浇水。不消耗工作单位。,"Press Tab to select the Sprayer, aim at the plant and hold E to water it. This does not consume work units."
+W3-06-01,"按 V 回到俯视，选中维修站，点""修复""。","Press V to return to top-down view, select the repair station, and click ""Repair""."
+W3-06-02,修好它，就多一个帮手啦！,"If we fix it, we'll have one more helper!"
 W3-07-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
-W3-07-03,小叶子要好好的哦。,"Little leaf, stay well, okay?"
-W3-08-01,结束本周？没用完的工作单位不会保留。,End the week? Unused work units won't carry over.
-W3-08-03,这周好开心！,This week was so fun!
+W3-07-03,小叶子要好好的哦。,"Stay healthy, little leaf."
+W3-08-01,结束本周？没用完的工作单位不会保留。,End this week? Unused work units will not carry over.
+W3-08-03,这周好开心！,This week was so much fun!

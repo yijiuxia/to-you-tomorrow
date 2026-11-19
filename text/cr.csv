@@ -1,26 +1,26 @@
 keys,zh,en
-CR-NAME-01,机械课,
-CR-NAME-02,生态课,
-CR-NAME-03,通信课,
-CR-NAME-04,体能训练,
-CR-NAME-05,独立实验,
-CR-NAME-06,档案阅读,
-CR-NAME-07,方舟探索,
-CR-NAME-08,照料植物,
-CR-NAME-09,ARK-01 保养,
-CR-NAME-10,陪伴时光,
-CR-NAME-11,休息,
-CR-DESC-01,学怎么拆、怎么修、怎么装,
-CR-DESC-02,学土壤、水和植物,
-CR-DESC-03,学信号、线路和怎么连上东西,
-CR-DESC-04,在方舟的训练舱里跑跑跳跳,
-CR-DESC-05,不看说明，自己动手试一个东西,
-CR-DESC-06,读旧地球的资料,
-CR-DESC-07,去方舟上没去过的地方逛逛,
-CR-DESC-08,照顾方舟培育舱里的植物,
+CR-NAME-01,机械课,Mechanics
+CR-NAME-02,生态课,Ecology
+CR-NAME-03,通信课,Communications
+CR-NAME-04,体能训练,Physical Training
+CR-NAME-05,独立实验,Independent Experiment
+CR-NAME-06,档案阅读,Archive Reading
+CR-NAME-07,方舟探索,Ark Exploration
+CR-NAME-08,照料植物,Plant Care
+CR-NAME-09,ARK-01 保养,ARK-01 Maintenance
+CR-NAME-10,陪伴时光,Time Together
+CR-NAME-11,休息,Rest
+CR-DESC-01,学怎么拆、怎么修、怎么装,"Learn disassembly, repair and assembly."
+CR-DESC-02,学土壤、水和植物,"Learn about soil, water and plants."
+CR-DESC-03,学信号、线路和怎么连上东西,"Learn about signals, wiring and remote links."
+CR-DESC-04,在方舟的训练舱里跑跑跳跳,Exercise in the Ark's training area.
+CR-DESC-05,不看说明，自己动手试一个东西,"Complete an experiment by hand, without instructions."
+CR-DESC-06,读旧地球的资料,Read records from old Earth.
+CR-DESC-07,去方舟上没去过的地方逛逛,Visit parts of the Ark she has not been to.
+CR-DESC-08,照顾方舟培育舱里的植物,Tend the plants in the Ark's greenhouse.
 CR-DESC-09,给 ARK-01 做检查、上油,
-CR-DESC-10,和你一起做点什么,
-CR-DESC-11,什么都不做,
+CR-DESC-10,和你一起做点什么,Do something together with you.
+CR-DESC-11,什么都不做,Do nothing at all.
 CR-RES-01,（临时）{girl}拆开又装好了一个小马达。,
 CR-RES-02,（临时）{girl}认真记下了土壤的颜色。,
 CR-RES-03,（临时）{girl}第一次把信号调清楚了。,
