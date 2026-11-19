@@ -160,6 +160,22 @@ func _load_model() -> void:
 	_main_light.position = Vector3(0, float(_place["height"]) - 0.4, 0)
 	_build_backdrop()
 	_apply_glass()
+	_turn_off_fake_lights()
+
+
+## blend 里左边柜子的拉手用了发光材质（WB_Amber_Light），游戏里看着像灯，yi 说不是灯，关掉发光
+const NOT_LIGHTS: Array[String] = ["WB_Amber_Light"]
+
+
+func _turn_off_fake_lights() -> void:
+	for node in _model.find_children("*", "MeshInstance3D", true, false):
+		var mesh := node as MeshInstance3D
+		for i in mesh.mesh.get_surface_count():
+			var mat := mesh.mesh.surface_get_material(i) as BaseMaterial3D
+			if mat != null and NOT_LIGHTS.has(mat.resource_name):
+				var plain := mat.duplicate() as BaseMaterial3D
+				plain.emission_enabled = false
+				mesh.set_surface_override_material(i, plain)
 
 
 func _apply_glass() -> void:

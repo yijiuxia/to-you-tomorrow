@@ -23,8 +23,10 @@ const MATERIALS := [
 	["Shoes", "T_Girl_Shoes", "scissor"],
 	["Tops", "T_Girl_Tops", "scissor"],
 	["Sock", "T_Girl_Socks", "opaque"],
-	["Coat", "T_Girl_Coat", "scissor"],
+	["Coat", "T_Girl_Coat", "coat"],
 ]
+const MODEL_HEIGHT := 1.39  # 模型原本多高（米）
+const COAT_GROW := 0.006  # 外套往外撑多少米，盖住袖子里露出来的内衣（yi 11.19）
 ## 坐姿：骨头名 → 绕哪根轴转多少度（大腿往前抬、小腿往下弯、胳膊放下来）
 const SIT_POSE := {
 	"J_Bip_L_UpperLeg": Vector3(-85, 0, 0),
@@ -102,7 +104,8 @@ func _process(delta: float) -> void:
 	_time += delta
 	if _source != null:
 		_retarget()
-		_point()
+		if int(DataDB.balance("room_girl_point", 0)) == 1:
+			_point()
 	elif _chest >= 0:
 		var breath := 1.0 + sin(_time * BREATH_SPEED) * BREATH_DEPTH
 		skeleton.set_bone_pose_scale(_chest, Vector3(breath, breath, breath))
@@ -234,12 +237,18 @@ func smile() -> void:
 
 
 func _apply_materials(mesh: MeshInstance3D) -> void:
+	# 模型自己的单位可能不是米（FBX 常是厘米），外套撑开的距离按模型高度换算
+	var unit := maxf(mesh.get_aabb().size.y, 0.001) / MODEL_HEIGHT
 	for i in mesh.get_surface_override_material_count():
 		var old := mesh.mesh.surface_get_material(i)
 		var mat_name := old.resource_name if old != null else ""
 		for entry: Array in MATERIALS:
 			if mat_name.contains(entry[0]):
-				mesh.set_surface_override_material(i, _material(entry[1], entry[2]))
+				var mat := _material(entry[1], entry[2])
+				if entry[2] == "coat":
+					mat.grow = true
+					mat.grow_amount = COAT_GROW * unit
+				mesh.set_surface_override_material(i, mat)
 				break
 
 
@@ -252,7 +261,7 @@ func _material(texture_name: String, mode: String) -> StandardMaterial3D:
 		mat.normal_enabled = true
 		mat.normal_texture = load(normal_path)
 	match mode:
-		"scissor":
+		"scissor", "coat":
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 			mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 		"blend":
