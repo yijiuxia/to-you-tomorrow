@@ -298,7 +298,13 @@ func _sync_ruins() -> void:
 			var height := BIG_RUIN_HEIGHT if big else SMALL_RUIN_HEIGHT
 			var node := _solid_block(int(ruin["w"]), int(ruin["h"]), height, RUIN_BIG_COLOR if big else RUIN_SMALL_COLOR)
 			node.position = rect_center(int(ruin["x"]), int(ruin["z"]), int(ruin["w"]), int(ruin["h"]))
-			_swap_to_model(node, "ruin_big" if big else "ruin_small", int(ruin["w"]), int(ruin["h"]))
+			# 默认：大废墟是碎石堆、小废墟是废料；表里 model 列可以指定（如塌了一半的旧房子用 ruin_big）
+			var model_name := str(DataDB.row("earth_ruins", id).get("model", ""))
+			if model_name.is_empty():
+				model_name = "rubble" if big else "scrap"
+			if not ResourceLoader.exists(Lux3DModels.DIR + model_name + ".glb"):
+				model_name = "ruin_small" if big else "scrap"
+			_swap_to_model(node, model_name, int(ruin["w"]), int(ruin["h"]))
 			add_child(node)
 			_ruin_nodes[id] = node
 
