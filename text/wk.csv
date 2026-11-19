@@ -23,9 +23,9 @@ WK-08-26,我在小镇里发现了不是机器人留下的脚印。,I found footp
 WK-08-27,工业区的大门打开了。,The gate to the industrial zone opened.
 WK-08-06,、,", "
 WK-07-01,你还在为上次的事生气（{player}上次{reason}）。话很少，可以不正面回答，只说“哼”或者转开话题；{player}好好哄你，你才慢慢消气。,"You're still upset about last time ({player} {reason}). You say very little, may dodge the question with a ""hmph"" or change the subject, and only soften if {player} makes it up to you."
-WK-07-02,你很困，一直打哈欠，想早点结束。,"You're very sleepy, keep yawning and want to wrap up soon."
+WK-07-02,你很困，一直打哈欠，想早点结束。,"You are very sleepy, keep yawning, and want to wrap up early."
 WK-07-03,你心情低落，不太想说话，声音小小的。,New journal entry
-WK-07-04,你不太信任{player}，回答敷衍，不说心里话。,You don't quite trust {player}; your answers are curt and you keep your feelings to yourself.
+WK-07-04,你不太信任{player}，回答敷衍，不说心里话。,"You don't fully trust {player}. Your answers are curt, and you keep your real feelings to yourself."
 WK-07-05,你今天心情特别好，话比平时多，想分享很多事。,"You're in a great mood today, chattier than usual, with lots to share."
 WK-07-06,你心情平静。,You feel calm.
 WK-07-11,（{player}刚才在敷衍你，你有点失落。）,({player} just brushed you off; you feel a bit let down.)

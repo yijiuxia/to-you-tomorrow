@@ -1,7 +1,7 @@
 keys,zh,en
 W5-00-01,建一座净水站，给绿地稳定供水,Build a water purifier to give the green patch a stable water supply
 W5-00-02,调查奇怪的痕迹（0 / 3）,Investigate the strange traces (0 / 3)
-W5-01-02,早，{player}。工业区开了，今天能做的事好多！,"Morning, {player}. The industrial zone is open, there's so much to do today!"
+W5-01-02,早，{player}。工业区开了，今天能做的事好多！,"Morning, {player}. The industrial zone's open. There's so much we can do today!"
 W5-01-03,早……门还没开呢，这周一定要打开它,Morning… the gate's still not open. We have to get it open this week.
 W5-02-01,雨水罐又见底了。绿地那边的苗，叶子都有点黄。,The rain tank's empty again. The seedlings over in the green patch are turning a bit yellow.
 W5-02-02,工业区里有现成的管子和水泵，我们可以建一座净水站。,There are pipes and pumps in the industrial zone we can use. We could build a water purifier.
@@ -23,7 +23,7 @@ W5-06-01,净水站产水：比预计少 30%（原因不明）,Water purifier out
 W5-06-02,电网：检测到不明耗电,Power grid: Unidentified power draw detected
 W5-08-01,"小时候说要找的""稳定的水源""……终于有了。","That ""stable water source"" I wanted to find when I was little… we finally have it."
 W5-08-02,目标完成：找到稳定的水源（第 3 周留下的目标）,Goal complete: Find a stable water source
-W5-09-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
+W5-09-01,本周还剩 {units} 个工作单位。,{units} work units remain this week.
 W5-10-01,传感器警报：北边厂房检测到未知活动。,Sensor alert: Unknown activity detected in the northern factory buildings
 W5-10-02,第 5 周结算,Week 5 Summary
 W5-11-01,标记到这里就没了。,The markers end here.

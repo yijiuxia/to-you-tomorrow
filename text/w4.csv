@@ -9,7 +9,7 @@ W4-03-02,我想自己去修门边那台旧电源，省下的材料可以多建�
 W4-04-01,按 V 切到第三人称，走到大门旁的旧备用电源。,Press V to switch to third-person view and walk to the old backup power unit by the gate.
 W4-04-02,Tab 选择装配头，对准电源按住 E：特殊施工。这是只有{girl}能在现场完成的修理，修得好不好取决于她的机械技能。,"Press Tab to select the Assembler, aim at the power unit and hold E: Special Build. Only {girl} can carry out this repair on site, and how well it goes depends on her Mechanics skill."
 W4-04-04,旧备用电源：修复完成，本周结束时接通,Old backup power unit: repair complete. Will be connected at the end of the week.
-W4-05-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
+W4-05-01,本周还剩 {units} 个工作单位。,{units} work units remain this week.
 W4-05-02,嗯。,Mm.
 W4-05-03,水源不足（雨水罐只够一小片）。,Insufficient water (the rain tank only covers a small patch)
 W4-07-01,开了……,It's open…

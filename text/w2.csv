@@ -7,13 +7,13 @@ W2-02-06,"施工机器人每周能干的活有限，用""工作单位""表示。
 W2-02-07,"施工不会马上完成，点""结束本周""时统一结算。","Construction is not instant. All work is completed when you press ""End Week""."
 W2-02-08,本周目标：清理维修站前的广场,This week's goal: Clear the plaza in front of the repair station
 W2-03-02,WASD 移动镜头，滚轮缩放，按住右键旋转。,"WASD to move the camera, mouse wheel to zoom, hold right-click to rotate."
-W2-03-03,右上角是本周剩下的工作单位：{units}。,The work units left this week are shown at the top right: {units}.
+W2-03-03,右上角是本周剩下的工作单位：{units}。,The top-right corner shows this week's remaining work units: {units}.
 W2-04-01,按 V 切换到第三人称，操控 ARK-01。,Press V to switch to third-person view and control ARK-01.
 W2-04-03,WASD 移动，空格越过障碍，E 交互。,"WASD to move, Space to climb over obstacles, E to interact."
 W2-04-04,Tab 打开工具轮盘，选择切割头。,Press Tab to open the tool wheel and select the Cutter.
 W2-05-01,"按 V 回到俯视。选中广场上的废墟，点""清理""。","Press V to return to top-down view. Select the ruins in the plaza and click ""Clear""."
 W2-05-04,"施工会一直进行到本周结束，点""结束本周""时完成。","Construction continues until the end of the week and is completed when you press ""End Week""."
-W2-06-01,本周还剩 {units} 个工作单位。可以继续安排施工，也可以四处看看，或者直接结束本周。,"You have {units} work units left this week. Keep building, look around, or end the week."
+W2-06-01,本周还剩 {units} 个工作单位。可以继续安排施工，也可以四处看看，或者直接结束本周。,"{units} work units remain this week. You can assign more construction, look around, or end the week."
 W2-01-01,{player}，早上好！,"Good morning, {player}!"
 W2-01-02,你猜怎么着？方舟给我发了一个新游戏！叫《重建计划》！,Guess what? The Ark gave me a new game! It's called Project Rebuild!
 W2-01-03,主界面多了一个按钮：小镇,A new button has appeared on the main screen: Town
@@ -29,7 +29,7 @@ W2-04-08,一块一块拆好慢呀……整个广场要拆到什么时候嘛？,T
 W2-05-02,清理广场废墟：需要 2 个工作单位，获得 金属 +8、电子元件 +2。,"Clear plaza ruins: requires 2 work units. Yields Metal +8, Electronics +2."
 W2-05-03,小块的我们自己拆，大块的给机器人。这叫分工！,"We take apart the small stuff, and the robots do the big stuff. That's called teamwork!"
 W2-06-03,嗯嗯，就这样！,"Yep, like that!"
-W2-07-01,下周小镇目标：修好维修站里的第 3 台施工机器人（需要 机械 10）,Next week's town goal: repair the 3rd construction robot in the repair station (needs Mechanics 10)
+W2-07-01,下周小镇目标：修好维修站里的第 3 台施工机器人（需要 机械 10）,Next week's town goal: Repair the third construction robot in the repair station (requires Mechanics 10)
 W2-07-02,门里面趴着的那个机器人，下周我们把它修好吧！,"That robot lying inside the door, let's fix it next week!"
 W2-07-03,结束本周？没用完的工作单位不会保留。,End this week? Unused work units will not carry over.
 W2-08-01,{player}，你看我画的！,"{player}, look what I drew!"
@@ -39,15 +39,15 @@ W2-08-04,我也要录一个，给明天的我！,"I'm gonna record one too, for 
 W2-08-05,● 录音中,● Recording
 W2-08-06,明天的我，你好！我是今天的我。,"Hi, tomorrow me! This is today me."
 W2-08-07,今天我和{player}把广场打扫干净了。,Today {player} and I cleaned up the plaza.
-W2-08-08,今天我和{player}去看了小镇，有好多好多石头。,Today {player} and I went to see the town. There were so many rocks.
+W2-08-08,今天我和{player}去看了小镇，有好多好多石头。,Today {player} and I went to see the town. There were lots and lots of rocks.
 W2-08-09,游戏里的小镇，我会把它修好的。真的地球，等我长大了也要修好！,"I'm gonna fix the town in the game. And when I grow up, I'm gonna fix the real Earth too!"
 W2-08-10,{player}，你也说一句嘛！,"{player}, you say something too!"
-W2-08-15,哈哈，{player}好啰嗦！,"Haha, {player} nags so much!"
+W2-08-15,哈哈，{player}好啰嗦！,"Haha, {player}, you're such a worrywart!"
 W2-08-16,嘿嘿，那我以后画更多！,"Hehe, then I'll draw lots more!"
 W2-08-17,嗯！拉钩！,Yeah! Pinky promise!
 W2-08-19,录进去啦！明天的我会听到的！,Got it recorded! Tomorrow me is gonna hear it!
 W2-08-12,以后我每年都录一段！,I'm gonna record one every year!
-W2-08-13,……晚安，{player}。,"...Good night, {player}."
+W2-08-13,……晚安，{player}。,"…Good night, {player}."
 W2-08-14,第 3 周,Week 3
 W2-08-91,明天的你，也要好好吃饭。,"Tomorrow you, make sure you eat properly."
 W2-08-92,你画得真好看。,Your drawing is really good.

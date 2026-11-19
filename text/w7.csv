@@ -2,7 +2,7 @@ keys,zh,en
 # 第 7 周两条线（文案 10_第7周_遇到线.md = W7A，11_第7周_没遇到线.md = W7B）。编号 -9x 是选项文字。
 W7A-00-01,修复 ARK-01 的音频收发器，和他说上话,Repair ARK-01's audio transceiver and talk to him
 W7A-00-02,和他一起修复旧温室,Restore the old greenhouse with him
-W7A-01-02,早，{player}。我一晚上都在想，他今天还会来吗？,"Morning, {player}. I was thinking all night... will he come today?"
+W7A-01-02,早，{player}。我一晚上都在想，他今天还会来吗？,"Morning, {player}. I was up all night wondering… will he come back today?"
 W7A-01-03,提示：便桥不稳，建议加固（金属 3、工作单位 1）。,"Note: The temporary bridge is unstable. Reinforcement recommended (Metal 3, 1 work unit)."
 W7A-02-01,盖板是他撬开的……要不是他，我都不知道{ark}身上还有这个。,"He's the one who pried the panel open… If it weren't for him, I'd never have known {ark} had this."
 W7A-02-02,修复音频收发器：需要 通信 55；电子元件 3、工作单位 2,"Repair audio transceiver: requires Comms 55; Electronics 3, 2 work units"
@@ -24,15 +24,15 @@ W7A-04-02,他们来帮忙：本周工作单位 +2,They're helping out: +2 work u
 W7A-04-03,新种子：他们给的 3 种植物（种植区可用）,New seeds: 3 plant types from them (available for the Planting Plot)
 W7A-04-04,他们知道哪些植物能在这里长……这些，我们的仓库里都没有。,They know which plants can grow here… We don't have any of these in our storage.
 W7A-04-06,它们还活着……,They're still alive…
-W7A-05-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
-W7A-06-01,{player}，我一直在想，信号为什么会断。,"{player}, I keep wondering why the signal cuts out."
+W7A-05-01,本周还剩 {units} 个工作单位。,{units} work units remain this week.
+W7A-06-01,{player}，我一直在想，信号为什么会断。,"{player}, I keep thinking about why the signal cuts out."
 W7A-06-02,我查了{ark}的画面是从哪传过来的。天线、中继卫星……最后是地面上的一个点。,"I traced where {ark}'s feed comes from. The antenna, a relay satellite… and in the end, a point on the ground."
 W7A-06-03,"信号来源：地面 · 地表区块 G-417 · 坐标 (412, 087)","Signal source: Ground · Surface sector G-417 · (412, 087)"
 W7A-06-04,我又调了方舟的对地观测记录，看那个点。,Then I pulled up the Ark's Earth observation records for that point.
 W7A-06-05,……是小镇。没有颜色的小镇。,"…It's the town. The town, without any color."
 W7A-06-06,可是……也可能只是做得很逼真，对吧？,"But… it could just be really realistic, right?"
 W7A-06-07,我想问你一件事。你们在下面……会看天吗？,Can I ask you something? Down there… do you ever look at the sky?
-W7A-06-08,{player}，我知道小镇在哪了。方舟再过一会儿，就会从那片天上飞过去。,"{player}, I know where the town is now. In a little while, the ark will fly over that sky."
+W7A-06-08,{player}，我知道小镇在哪了。方舟再过一会儿，就会从那片天上飞过去。,"{player}, I know where the town is now. In a little while, the Ark will pass over that patch of sky."
 W7A-06-09,"方舟导航：预计经过地表区块 G-417 · 坐标 (412, 087) 上空：00:03:12","Ark navigation: Estimated time to pass over Surface sector G-417 · (412, 087): 00:03:12"
 W7A-06-10,我想让方舟的一块太阳能板转个角度，把光反射到那里。要是他看见了……就说明，是真的。,I want to tilt one of the Ark's solar panels so it reflects sunlight down there. If he sees it… then it's real.
 W7A-06-11,这个要你批准。,I need your approval for this.
@@ -44,7 +44,7 @@ W7A-06-18,一。,One.
 W7A-06-19,……他看到的那颗星星，是我们。,…The star he sees… is us.
 W7A-06-20,小镇是真的。,The town is real.
 W7B-00-01,找到留下脚印的人,Find whoever left the footprints
-W7B-01-02,早，{player}。今天去温室那边再看看吧？,"Morning, {player}. Let's go look at the greenhouse again today?"
+W7B-01-02,早，{player}。今天去温室那边再看看吧？,"Morning, {player}. Want to go check out the greenhouse again today?"
 W7B-02-01,《重建计划》进入第二阶段。根据方舟协议，有关地面的决定须由人类在知情的前提下作出。请向{girl}说明情况。,"Project Rebuild has entered Phase Two. Under the Ark Protocol, decisions concerning the surface must be made by humans with full knowledge of the facts. Please inform {girl} of the situation."
 W7B-02-05,……你在开玩笑吧？,"…You're joking, right?"
 W7B-02-06,……我要自己看。,…I want to see for myself.

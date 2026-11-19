@@ -5,7 +5,7 @@ UI-01-03,课程,Schedule
 UI-01-04,结束本周,End Week
 UI-01-05,第 {week} 周 · {girl} {age} 岁,
 UI-01-06,{girl}想：{intent},
-UI-01-07,（这里以后是{girl}的 3D 模型）,
+UI-01-07,（这里以后是{girl}的 3D 模型）,({girl}'s 3D model will go here)
 UI-02-01,体力,What is her name?
 UI-02-02,体力上限,What does she call you?
 UI-02-03,心情,Names can be up to 12 characters.
@@ -24,9 +24,9 @@ UI-02-22,心情太差时{girl}可能不想上课。,
 UI-02-23,决定{girl}能修什么、建什么机器。,
 UI-02-24,决定{girl}能种什么、能不能改良土壤。,
 UI-02-25,决定{girl}能不能修好通信设备。,
-UI-03-01,有点胆小,
-UI-03-02,遇事会先看看你,
-UI-03-03,什么都想自己试试,
+UI-03-01,有点胆小,A little timid
+UI-03-02,遇事会先看看你,Looks to you first when something happens
+UI-03-03,什么都想自己试试,Wants to try everything herself
 UI-03-04,拿主意前总要问你,
 UI-03-05,有时会自己拿主意,
 UI-03-06,敢自己拿主意,
@@ -44,14 +44,14 @@ UI-03-17,会照顾身边的东西,Trust
 UI-03-18,很在意别人的感受,
 UI-03-19,有话不太跟你说,
 UI-03-20,愿意跟你聊,
-UI-03-21,很依赖你,
-UI-04-01,课表 · 第 {week} 周,
+UI-03-21,很依赖你,Relies on you a great deal
+UI-04-01,课表 · 第 {week} 周,Schedule · Week {week}
 UI-04-02,安排 7 天的课。点结束本周时，按当前的课表上课。,"Plan lessons for the 7 days of next week. After you press ""Confirm"", next week will follow this schedule."
-UI-04-03,沿用上周,
+UI-04-03,沿用上周,Same as Last Week
 UI-04-04,全部休息,Mon   Tue   Wed   Thu   Fri   Sat   Sun
 UI-04-05,保存,Same as This Week
 UI-04-06,照这个课表，{girl}{day}就会累倒。,Clear
-UI-04-08,确认本周计划,
+UI-04-08,确认本周计划,Confirm This Week's Plan
 UI-04-11,周一,
 UI-04-12,周二,
 UI-04-13,周三,
@@ -65,19 +65,19 @@ UI-05-03,接下来的课表：已修改,Not Yet
 UI-05-04,确认,
 UI-05-05,再看看,
 UI-05-06,这是最后一周，结束后进入结局。,
-UI-06-01,继续,
-UI-07-01,第 {week} 周结算,
-UI-07-02,{girl}的变化：,
-UI-07-03,体力 +{value}（每周恢复）,
-UI-07-04,这周{girl}没有明显变化。,
-UI-07-05,{name}：{old} → {new},
+UI-06-01,继续,Continue
+UI-07-01,第 {week} 周结算,Week {week} Summary
+UI-07-02,{girl}的变化：,Changes in {girl}:
+UI-07-03,体力 +{value}（每周恢复）,Stamina +{value} (weekly recovery)
+UI-07-04,这周{girl}没有明显变化。,{girl} showed no notable changes this week.
+UI-07-05,{name}：{old} → {new},{name}: {old} → {new}
 UI-07-06,{name} {delta},Stamina +20 (weekly recovery)
 UI-08-01,小镇（第 2 步才做，先留个位置）,Back
-UI-08-02,返回,
-UI-09-01,聊天 · 还能聊 {rounds} 轮,
-UI-09-02,对{girl}说点什么……,
-UI-09-03,发送,
-UI-09-04,{girl}正在想……,
+UI-08-02,返回,Back
+UI-09-01,聊天 · 还能聊 {rounds} 轮,Chat · {rounds} chats left
+UI-09-02,对{girl}说点什么……,Say something to {girl}…
+UI-09-03,发送,Send
+UI-09-04,{girl}正在想……,{girl} is thinking…
 UI-09-05,离开,Story conversations do not use up this week's chats.
 UI-09-06,{girl}：{text},
 UI-09-07,你：{text},
@@ -155,7 +155,7 @@ UI-18-06,这块太大了，要回俯视让机器人清理,Too big. Go back to to
 UI-18-07,（测试）技能和材料已加满,(Test) Skills and materials maxed
 UI-19-01,废墟,Ruins
 UI-19-02,小废料,Small scrap
-UI-07-07,施工完成：{names},Finished: {names}
+UI-07-07,施工完成：{names},Construction complete: {names}
 UI-07-08,获得：金属 +{metal}，电子元件 +{electronics},"Gained: Metal +{metal}, Electronics +{electronics}"
 UI-07-09,维修站区域：{recovery},Repair Station Area: {recovery}
 UI-17-13,第 {week} 周,Week {week}
@@ -306,7 +306,7 @@ UI-54-07,那株植物开过花，结了种子。种植区已解锁。,That littl
 UI-17-15,知道了,Got it
 UI-00-08,中文 / English,中文 / English
 UI-11-01,自动存档,Autosave
-UI-11-02,第 {week} 周 · {girl} · {age} 岁 · {time},Week {week} · {girl} · age {age} · {time}
+UI-11-02,第 {week} 周 · {girl} · {age} 岁 · {time},Week {week} · {girl} · Age {age} · {time}
 UI-11-03,覆盖这个存档？,Overwrite this save?
 UI-11-04,手动存档 1,Manual Save 1
 UI-11-05,手动存档 2,Manual Save 2

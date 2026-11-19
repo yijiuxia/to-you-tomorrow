@@ -10,11 +10,11 @@ TJ-02-10,七年后,Seven years later
 TJ-03-01,这些年,These Years
 TJ-03-02,{girl}：8 岁 → 15 岁,{girl}: Age 8 → 15
 TJ-03-03,技能：{list},Skills: {list}
-TJ-03-04,性格和信任：{list},Personality and trust: {list}
-TJ-03-05,小镇：废墟清理 [旧]% → 60% · 水源 0% → 20% · 植被 [旧]% → 10%（估值，可调）,Town: ruins cleared [old]% → 60% · water 0% → 20% · plants [old]% → 10%
+TJ-03-04,性格和信任：{list},Personality and Trust: {list}
+TJ-03-05,小镇：废墟清理 60% · 水源 20% · 植被 10%,Town: Ruins Cleared 60% · Water 20% · Vegetation 10%
 TJ-03-06,那株植物：长成了一小片绿地,The plant: grew into a small patch of green
 TJ-03-07,施工机器人：3 台，每周工作单位 9,"Construction robots: 3, 9 work units per week"
 TJ-03-08,第 3 台施工机器人已修复（这些年，{girl}学会了修它）,"Third construction robot repaired (over the years, {girl} learned how to fix it)"
 TJ-03-10,继续,Continue
-TJ-04-01,{player}，早。这周上什么课？,"Morning, {player}. What classes this week?"
+TJ-04-01,{player}，早。这周上什么课？,"Morning, {player}. What lessons do we have this week?"
 TJ-03-91,{name} {old} → {new},{name} {old} → {new}

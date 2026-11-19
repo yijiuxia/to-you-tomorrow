@@ -29,7 +29,7 @@ TB-05-03,地表水：浅层受污染；雨水污染较轻,Surface water: Shallow
 TB-05-04,人类在地表无防护停留：不建议,Unprotected human presence on the surface: Not advised
 TB-05-05,已确认的人类聚居点：无,Confirmed human settlements: None
 TB-05-06,方舟轨道高度：约 1500 千米,"Ark orbital altitude: approx. 1,500 km"
-TB-05-07,方舟运行：第 {year} 年,Ark in service: year {year}
+TB-05-07,方舟运行：第 {year} 年,Ark in operation: Year {year}
 TB-05-08,已确认的人类聚居点：1,Confirmed human settlements: 1
 TB-05-09,已确认的人类聚居点：未确认（发现地面活动痕迹）,Confirmed human settlements: Unconfirmed (signs of surface activity detected)
 TB-06-01,周记 · 第 {week} 周,Journal · Week {week}
@@ -38,17 +38,17 @@ TB-06-11,我第一次自己排课。机械课好难，可是我没有哭。,"I m
 TB-06-12,温室里的番茄苗。我每天跟它说早安。,The tomato seedling in the greenhouse. I say good morning to it every day.
 TB-06-13,早上灯会变黄，晚上灯会变蓝。我知道那不是真的天，可是我喜欢。,"In the morning the lights turn yellow, and at night they turn blue. I know it's not the real sky, but I like it."
 TB-06-14,我看了实时画面，地球是灰色的。可是我还是觉得，有一棵绿色的树躲起来了。,I looked at the live feed. Earth is gray. But I still think there's a green tree hiding somewhere.
-TB-06-15,{player}说我今天做得很好。我要记下来。,{player} said I did great today. I'm writing it down.
+TB-06-15,{player}说我今天做得很好。我要记下来。,{player} said I did really good today. I'm writing it down.
 TB-06-21,我会开机器人了！在游戏里。,I can drive a robot now! In the game.
 TB-06-22,ARK-01 走路摇摇晃晃的，还没有名字。我要想一个好听的。,"ARK-01 wobbles when it walks, and it doesn't have a name yet. I'm gonna think of a good one."
 TB-06-23,我画了维修站修好的样子，还录了话给明天的我。不告诉别人说了什么。,"I drew the repair station all fixed up, and I recorded a message for tomorrow me. It's a secret what I said."
 TB-06-24,游戏里的小镇也是灰灰的。做游戏的人肯定也看过窗外。,The town in the game is all gray too. The people who made the game must've looked out the window too.
-TB-06-25,{player}陪我把一整片地都清干净了。,{player} helped me clear a whole patch of ground.
+TB-06-25,{player}陪我把一整片地都清干净了。,{player} helped me clean up a whole big area.
 TB-06-31,我给它起名字了，叫{ark}！,I gave it a name! It's {ark}!
 TB-06-32,{ark}，还有第三台机器人。它躺了好久，现在能站起来了。,"{ark}, and the third robot too. It was lying down for so long, and now it can stand up."
 TB-06-33,种植区开了。我要种好多好多东西。,The planting plot is open. I'm gonna grow lots and lots of stuff.
 TB-06-34,小叶子是绿色的！跟方舟温室里的一样绿！,The little leaf is green! Just as green as the ones in the Ark greenhouse!
-TB-06-35,{player}说我照顾得很好。小叶子也是{player}的。,{player} said I took good care of it. The little leaf belongs to {player} too.
+TB-06-35,{player}说我照顾得很好。小叶子也是{player}的。,{player} said I took really good care of it. The little leaf is {player}'s too.
 TB-06-41,这周第一次由我来定方案。说出来之前，我紧张得把平板按亮了三次。,"This week was the first time I got to decide the plan. Before I said it, I was so nervous I turned my tablet on three times."
 TB-06-42,工业区大门打开的时候，{ark}被灰盖了一身。我在屏幕这边也跟着用力。,"When the industrial zone gate opened, {ark} got covered in dust. I was straining right along with it on my side of the screen."
 TB-06-43,课排得很满，但我不想少上一节。,"My schedule is packed, but I don't want to skip a single lesson."
@@ -63,7 +63,7 @@ TB-06-61,在温室门口，我差点没敢进去。,"At the greenhouse door, I a
 TB-06-62,那个人。他不像 NPC。,That person. He doesn't seem like an NPC.
 TB-06-63,这几天，我吃饭的时候都在想他。,"These past few days, I keep thinking about him at every meal."
 TB-06-64,我又开了实时画面，看了很久。,I opened the live feed again and looked for a long time.
-TB-06-65,{player}一直在。这就够了。,{player} is always here. That's enough.
+TB-06-65,{player}一直在。这就够了。,{player}'s always here. That's enough.
 TB-06-71,温室没进去。下次我想自己决定。,We didn't go into the greenhouse. Next time I want to decide for myself.
 TB-06-72,{ark}在温室门外站了很久，像是在等什么。,"{ark} stood outside the greenhouse for a long time, like it was waiting for something."
 TB-06-73,这周过得很慢。,This week went by slowly.
@@ -71,8 +71,8 @@ TB-06-74,做这个游戏的人，为什么要做得这么大？,Why would whoeve
 TB-06-75,{player}，你说温室里到底有什么？,"{player}, what do you think is really inside the greenhouse?"
 TT-00-01,科技树,Tech Tree
 TT-00-02,技能达到要求后自动解锁。,Unlocks automatically once skill requirements are met.
-TT-00-03,需要：{need}（当前 {now}）,Needs: {need} (now {now})
-TT-00-04,科技解锁：{name},Tech unlocked: {name}
+TT-00-03,需要：{need}（当前 {now}）,Requires: {need} (current: {now})
+TT-00-04,科技解锁：{name},Technology unlocked: {name}
 TT-00-06,又能多建一样东西了！,We can build something new!
 TT-01-01,回收站,Recycler
 TT-01-02,拆解废墟，回收金属。,Breaks down ruins and recovers metal.
@@ -110,16 +110,16 @@ RM-05-03,"一盆从方舟温室移来的薄荷。{girl}说它和游戏里那片�
 RM-06-01,房间灯：开 / 关,Room light: On / Off
 RM-07-01,方舟模型。她小时候最喜欢的玩具。,A model of the Ark. Her favorite toy as a child.
 RM-07-02,ARK-01 模型，用方舟机械室的边角料拼的，胳膊能动。,"A model of ARK-01, built from scraps from the Ark's machine room. The arms move."
-RM-08-01,观景窗 · {view},Viewing Window · {view}
+RM-08-01,观景窗 · {view},Viewport · {view}
 PL-00-01,前往：,Go to:
 PL-00-02,生活舱,Living Module
 PL-00-03,机械室,Machine Room
 PL-00-04,温室,Greenhouse
 PL-00-05,通讯室,Comms Room
 PL-00-06,人类保护区,Human Preserve
-PL-00-07,正在前往 {place}……,Heading to {place}...
+PL-00-07,正在前往 {place}……,Heading to {place}…
 PL-01-01,机械室：方舟的维修车间。负责舱体、管道和设备的日常维修。,"Machine Room: The Ark's repair workshop, responsible for routine maintenance of the hull, piping and equipment."
 PL-02-01,方舟温室：种子库的一部分在这里培育，用于研究和舱内供给。,Ark Greenhouse: Part of the seed bank is cultivated here for research and onboard supply.
 PL-03-01,通讯室：负责方舟与中继卫星、地面设备之间的通信。,"Comms Room: Handles communications between the Ark, relay satellites and ground equipment."
-PL-04-01,人类保护区：休眠舱 {pods} 个在运行；胚胎库保存中。,Human Preserve: {pods} sleep pods running; embryo bank in storage.
+PL-04-01,人类保护区：休眠舱 {pods} 个在运行；胚胎库保存中。,Human Preserve: {pods} sleep pods in operation; embryo bank in storage.
 PL-04-02,请勿离开过道。,Please stay on the walkway.

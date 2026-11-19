@@ -5,9 +5,9 @@ W3-02-05,我上过机械课啦，我会修！,"I took Mechanics class, so I know
 W3-02-07,唔……我还不会修这个。那我多上几节机械课！,Hmm… I don't know how to fix this yet. I'll take more Mechanics classes then!
 W3-03-02,扫描仪：检测到生物信号（未发现变异特征）,Scanner: Biological signal detected (no mutation markers found)
 W3-03-03,……绿色的？,…Is that green?
-W3-03-04,{player}！小镇里长叶子了！,{player}! There are leaves growing in the town!
+W3-03-04,{player}！小镇里长叶子了！,{player}! There's a leaf growing in the town!
 W3-03-06,哇……是叶子！,Wow… it's a leaf!
-W3-03-07,{player}你说对了，真的有！,"{player}, you were right. There really is!"
+W3-03-07,{player}你说对了，真的有！,"{player}, you were right, there really is one!"
 W3-03-08,还没种呢，它自己就长出来啦！,"We didn't even plant it yet, and it grew all by itself!"
 W3-03-09,我看见它啦！你好呀！,I see it! Hello there!
 W3-03-10,我们把这里设成保护区吧！不然机器人打扫的时候，会把它也扫掉的。,Let's make this a protected zone! Otherwise the robots might sweep it away when they clean up.
@@ -17,7 +17,7 @@ W3-03-17,可是土好干，我们不能天天来浇呀。,"But the dirt is super
 W3-03-18,新目标：找到稳定的水源,New goal: Find a stable water source
 W3-03-19,小叶子能长出来，说明这里的土能种东西了！,"If the little leaf can grow here, that means we can grow stuff in this dirt!"
 W3-03-20,种植区已解锁。种子来自维修站地下仓库的储备。,Planting Plot unlocked. Seeds come from the reserves in the repair station's underground storage.
-W3-04-01,维修站里面我们还没进去过呢！{ark}，去看看嘛！,"We've never been inside the repair station! {ark}, let's go look!"
+W3-04-01,维修站里面我们还没进去过呢！{ark}，去看看嘛！,"We haven't been inside the repair station yet! {ark}, let's go look!"
 W3-04-02,可选目标：进维修站里面看看,Optional goal: Look inside the repair station
 W3-04-03,扫描仪：检测到密封容器,Scanner: Sealed container detected
 W3-04-04,旧时代应急种子罐（密封）：内有多种种子，部分可能仍能发芽,Old-era emergency seed canister (sealed): Contains various seeds. Some may still germinate.
@@ -29,7 +29,7 @@ W3-04-10,已获得：旧种子罐（种植区暂未开放）,Obtained: Old seed 
 W3-05-01,叶子是 ARK-01 找到的！你立大功了！,ARK-01 found the leaf! You did a great job!
 W3-05-02,一直叫你 ARK-01 好奇怪哦……我要给你起个名字！,Calling you ARK-01 all the time is kinda weird… I'm gonna give you a name!
 W3-05-04,"就叫你""阿克""吧！ARK，阿克！","I'll call you ""Arky""! ARK, Arky!"
-W3-05-05,ARK-01 现在叫：{ark},ARK-01 is now called: {ark}
+W3-05-05,ARK-01 现在叫：{ark},ARK-01 is now named: {ark}
 W3-03-05,好小呀……可是它是真的绿色的。,"It's so tiny... but it's really, truly green."
 W3-01-02,{player}，早上好！,"Good morning, {player}!"
 W3-02-03,点击维修站里的机器人，可以查看修复需要什么。,Click the robot in the repair station to see what is needed to repair it.
@@ -42,7 +42,7 @@ W3-03-13,按 V 回到第三人称。,Press V to return to third-person view.
 W3-03-15,Tab 选择喷洒头，对准植物按住 E：浇水。不消耗工作单位。,"Press Tab to select the Sprayer, aim at the plant and hold E to water it. This does not consume work units."
 W3-06-01,"按 V 回到俯视，选中维修站，点""修复""。","Press V to return to top-down view, select the repair station, and click ""Repair""."
 W3-06-02,修好它，就多一个帮手啦！,"If we fix it, we'll have one more helper!"
-W3-07-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
+W3-07-01,本周还剩 {units} 个工作单位。,{units} work units remain this week.
 W3-07-03,小叶子要好好的哦。,"Stay healthy, little leaf."
 W3-08-01,结束本周？没用完的工作单位不会保留。,End this week? Unused work units will not carry over.
 W3-08-03,这周好开心！,This week was so much fun!

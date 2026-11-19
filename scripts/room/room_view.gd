@@ -16,7 +16,6 @@ const SHADE_GROW := 1.6     # 灯罩比植物大多少
 const HIDDEN_ALPHA := 0.25  # 书收起来后变淡，还能点回来
 const LAMP_RANGE := 3.0
 const MAIN_LIGHT_RANGE := 30.0
-const GIRL_SIT_DROP := -0.25   # 坐下时整个人往下放多少（米），让屁股落在椅子上
 const STARFIELD_TEX := "res://assets/textures/room/T_Starfield.jpg"
 const EARTH_TEX := "res://assets/textures/room/T_Earth_Surface.jpg"
 const CLOUDS_TEX := "res://assets/textures/room/T_Earth_Clouds.png"
@@ -329,7 +328,10 @@ func _make_object(row: Dictionary) -> void:
 		# 有她的模型就用模型，胶囊藏起来只当点击框
 		mesh.visible = false
 		girl = GirlModel.new()
-		girl.position = Vector3(0, -float(row["y"]) + GIRL_SIT_DROP, 0)
+		# 大小和坐下时往下放多少都在 balance.csv（yi：按参考图比例放大）
+		var girl_scale := float(DataDB.balance("room_girl_scale", 1.0))
+		girl.scale = Vector3.ONE * girl_scale
+		girl.position = Vector3(0, -float(row["y"]) + float(DataDB.balance("room_girl_drop", -0.25)), 0)
 		body.add_child(girl)
 	if row["kind"] == "talk":
 		_exclaim = Label3D.new()
