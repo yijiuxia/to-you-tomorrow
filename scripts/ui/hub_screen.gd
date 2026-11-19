@@ -30,7 +30,7 @@ const TITLE_FONT := 15
 const STATUS_STATS := {"mood": "smile", "curiosity": "bulb", "stamina": "battery", "empathy": "hands", "confidence": "star"}
 const SKILL_STATS := {"mechanics": "wrench", "ecology": "leaf", "comms": "signal"}
 const COURSE_ICONS := {"skill": "book", "confidence": "star", "curiosity": "bulb", "empathy": "hands", "trust": "heart", "rest": "moon"}
-const TABS: Array[String] = ["plan", "growth", "memory", "overview"]
+const TABS: Array[String] = ["growth", "memory", "overview"]  # yi 11.19：去掉顶栏"本周计划"，本周计划只从右边"课程"打开
 const TAB_KEYS := {"plan": "RT-09-10", "growth": "RT-09-11", "memory": "RT-09-12", "overview": "RT-09-13"}
 const MEMORY_SHOWN := 8
 const SLIDE_TIME := 0.22          # 面板滑出 / 收起要多久（秒）
@@ -71,7 +71,6 @@ func _ready() -> void:
 	_build_center()
 	_build_right_menu()
 	_build_bubble()
-	_build_bottom()
 	_build_talk_button()
 	# 课表和状态默认收起，点按钮才滑出来
 	center.visible = false
@@ -386,6 +385,11 @@ func _build_right_menu() -> void:
 	_plan_button = _menu_button(box, "book", Text.t("UI-01-03"), func() -> void: show_tab("plan"))
 	var town_button := _menu_button(box, "globe", Text.t("UI-01-01"), func() -> void: town_pressed.emit())
 	town_button.disabled = not WeekSystem.is_earth_open()
+	# yi 11.19：结束本周（第 7 周还有去地下）和右边的按钮放在一起
+	if RoomRules.can_go_underground():
+		_menu_button(box, "down", Text.t("RT-07-02"), func() -> void: place_pressed.emit("underground"))
+	var end_button := _menu_button(box, "moon", Text.t("UI-01-04"), func() -> void: _confirm.ask())
+	end_button.add_theme_stylebox_override("normal", GlassTheme.selected_box(10))
 
 
 func _menu_button(parent: Control, icon_name: String, text: String, on_pressed: Callable) -> Button:
