@@ -78,6 +78,8 @@ const LUX3D_SCENERY := [
 	["street_terminal", 1.04, 0.8, 1.6, -90.0],
 	["planter_green", -0.07, 0.84, 3.0, 0.0],
 	["planter_dry", -0.07, 0.88, 3.0, 0.0],
+	["van", 1.1, 0.75, 5.0, 75.0],
+	["tarp", -0.08, 0.22, 3.0, 0.0],
 ]
 
 var world: EarthWorld
