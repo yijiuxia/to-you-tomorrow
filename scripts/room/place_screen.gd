@@ -7,6 +7,7 @@ signal finished
 
 var place_id := "machine"
 var view: RoomView
+const CARD_WIDTH := 460.0
 
 
 func _ready() -> void:
@@ -18,14 +19,24 @@ func _ready() -> void:
 	var box := UiKit.page(self)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	(box.get_parent() as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
-	UiKit.title(box, Text.t(row["name_key"]))
-	UiKit.label(box, Text.f(row["desc_key"], {"pods": int(DataDB.balance("room_preserve_pods"))}))
+	# 说明文字放在一块浅色玻璃面板上：场所里换成了 Lux3D 模型，背景暗，直接写字看不清
+	var card := PanelContainer.new()
+	card.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	card.custom_minimum_size.x = CARD_WIDTH
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(card)
+	var text := VBoxContainer.new()
+	card.add_child(text)
+	UiKit.title(text, Text.t(row["name_key"]))
+	UiKit.label(text, Text.f(row["desc_key"], {"pods": int(DataDB.balance("room_preserve_pods"))}))
 	if place_id == "preserve":
-		UiKit.label(box, Text.t("PL-04-02"))  # 请勿离开过道
-	UiKit.label(box, Text.t("RT-05-09"))
+		UiKit.label(text, Text.t("PL-04-02"))  # 请勿离开过道
+	UiKit.label(text, Text.t("RT-05-09"))
 	if place_id == "underground":
 		GameState.flags[RoomRules.FLAG_UNDERGROUND] = true
-		UiKit.label(box, Text.t("RT-07-09"))
+		UiKit.label(text, Text.t("RT-07-09"))
+	for child in text.get_children():
+		(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var filler := UiKit.spacer(box)
 	filler.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var buttons := UiKit.row(box)

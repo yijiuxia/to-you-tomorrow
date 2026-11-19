@@ -76,6 +76,7 @@ func _ready() -> void:
 		_build_shell()
 	else:
 		_load_model()
+	_load_showpiece()
 	for row in RoomRules.objects_in(scene_id):
 		_make_object(row)
 	_rail_x = (float(_place["rail_from"]) + float(_place["rail_to"])) / 2.0  # 从过道中间开始
@@ -149,6 +150,34 @@ func _build_shell() -> void:
 	_box(Vector3(0, h / 2, -d / 2), Vector3(w, h, WALL_THICKNESS), wall)
 	_box(Vector3(-w / 2, h / 2, 0), Vector3(WALL_THICKNESS, h, d), wall.darkened(0.08))
 	_box(Vector3(w / 2, h / 2, 0), Vector3(WALL_THICKNESS, h, d), wall.darkened(0.08))
+
+
+## 场所里的 Lux3D 模型：缩放到房间宽度的一部分，放在地上、靠里（美术线程 11.19 生成）
+func _load_showpiece() -> void:
+	var path := str(_place.get("showpiece", ""))
+	if path.is_empty() or not ResourceLoader.exists(path):
+		return
+	var piece: Node3D = (load(path) as PackedScene).instantiate()
+	viewport.add_child(piece)
+	var box := _bounds(piece)
+	if box.size.x <= 0.0:
+		return
+	var fit := float(DataDB.balance("room_showpiece_fit", 0.6))
+	var k := minf(float(_place["width"]) * fit / box.size.x, float(_place["height"]) * 0.9 / maxf(box.size.y, 0.001))
+	piece.scale = Vector3.ONE * k
+	var center := box.get_center() * k
+	piece.position = Vector3(-center.x, -box.position.y * k, -float(_place["depth"]) / 4.0 - center.z)
+
+
+func _bounds(node: Node3D) -> AABB:
+	var result := AABB()
+	var first := true
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mesh := child as MeshInstance3D
+		var box := mesh.global_transform * mesh.get_aabb()
+		result = box if first else result.merge(box)
+		first = false
+	return result
 
 
 ## 真模型：房间整个是一个 glb，再在窗外放星空和地球
@@ -304,6 +333,8 @@ func _make_object(row: Dictionary) -> void:
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mesh.material_override = mat
 	mesh.visible = not color_text.is_empty()  # 颜色空着：盖在真模型上的看不见的点击框
+	if not str(_place.get("showpiece", "")).is_empty():
+		mesh.visible = false  # 场所有 Lux3D 模型时，原来的方块只当看不见的点击框，免得穿插
 	body.add_child(mesh)
 	var shape := CollisionShape3D.new()
 	var box_shape := BoxShape3D.new()
