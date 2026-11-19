@@ -37,3 +37,147 @@ CR-STATUS-REFUSED,（临时）{girl}说今天不想上课，躲进被子里不�
 CR-STATUS-TIRED,（临时）{girl}太累了，一直走神，只学会了一点点。,
 CR-EVENT-01,（临时小事件）上课时发生了一点小意外，{girl}冲你吐了吐舌头。,
 CR-LINE,{day} · {course}：{result},
+CR-mechanics-8-低-1,她把一个旧马达拆开又装回去，多出来一颗螺丝。,She took an old motor apart and put it back together. There was one screw left over.
+CR-mechanics-8-低-2,她分不清哪把是十字螺丝刀，最后全试了一遍。,"She couldn't tell which one was the Phillips screwdriver, so she tried them all."
+CR-mechanics-8-中-1,她学会了用扳手，满屋子找东西拧。,She learned to use a wrench and went around the room looking for things to tighten.
+CR-mechanics-8-中-2,她修好了床头那盏一闪一闪的小灯，开关了二十次。,"She fixed the flickering lamp by her bed, then switched it on and off twenty times."
+CR-mechanics-8-高-1,她画了一张马达的图纸，每个零件都标了名字。,She drew a diagram of a motor and labeled every part.
+CR-mechanics-8-高-2,她拆开坏掉的计时器，找到了断掉的那根线。,She opened up a broken timer and found the snapped wire.
+CR-ecology-8-低-1,她把仙人掌浇得太多，土都泡软了。,She overwatered the cactus until the soil turned to mush.
+CR-ecology-8-低-2,她问你，为什么叶子不能是蓝色的。,She asked you why leaves can't be blue.
+CR-ecology-8-中-1,她在显微镜里看到会动的小东西，喊你快来看。,She saw tiny things wriggling under the microscope and called you over to look.
+CR-ecology-8-中-2,她记住了三种耐旱植物的名字，念了一整天。,She memorized the names of three drought-tolerant plants and recited them all day.
+CR-ecology-8-高-1,她看叶子的颜色，就猜出这盆草缺水了。,She could tell from the color of the leaves that the plant needed water.
+CR-ecology-8-高-2,她自己做了一张表，记下每盆植物多久浇一次水。,She made her own chart of how often each plant needs watering.
+CR-comms-8-低-1,她对着对讲机喊了半天，才发现没开电源。,She shouted into the walkie-talkie for ages before realizing it wasn't switched on.
+CR-comms-8-低-2,她把天线拧成了麻花。,She twisted the antenna into a pretzel.
+CR-comms-8-中-1,她学会了用灯光打信号，对着窗外闪了好久。,She learned to signal with a flashlight and blinked it at the window for a long time.
+CR-comms-8-中-2,她第一次自己调好频道，听到一片沙沙声。,She tuned a channel by herself for the first time and heard a wash of static.
+CR-comms-8-高-1,"她把摩斯电码背了下来，用敲桌子跟你""说话""。","She memorized Morse code and ""talked"" to you by tapping on the desk."
+CR-comms-8-高-2,她从沙沙声里分辨出一段规律的信号，激动得跳起来。,She picked out a regular pattern in the static and jumped up in excitement.
+CR-fitness-8-低-1,她跑了两圈就坐在地上，说腿不是自己的了。,After two laps she sat on the floor and said her legs didn't belong to her anymore.
+CR-fitness-8-低-2,她不敢从跳箱上跳下来，最后是爬下来的。,"She was too scared to jump off the vaulting box, so she climbed down."
+CR-fitness-8-中-1,她在走廊里跑了五圈，最后一圈是走完的。,She ran five laps of the corridor. She walked the last one.
+CR-fitness-8-中-2,她爬上了储物架，然后不敢下来了。,"She climbed up the storage rack, then was too scared to come down."
+CR-fitness-8-高-1,她给自己定了个目标：跑十圈，一圈都没少。,She set herself a goal of ten laps and didn't skip a single one.
+CR-fitness-8-高-2,她从跳箱上跳下来，落地还摆了个姿势。,She jumped off the vaulting box and struck a pose on landing.
+CR-experiment-8-低-1,她做到一半就停下来，问你下一步该怎么办。,She stopped halfway and asked you what to do next.
+CR-experiment-8-低-2,她怕弄坏材料，一下午什么都没敢动。,"Afraid of ruining the materials, she didn't dare touch anything all afternoon."
+CR-experiment-8-中-1,她做了个小风扇，转了三秒就冒烟了。,"She built a little fan. It spun for three seconds, then started smoking."
+CR-experiment-8-中-2,她做的净水瓶滤出半杯水，骄傲地喝了一口。,"Her water-filter bottle produced half a cup of water, and she proudly took a sip."
+CR-experiment-8-高-1,她失败了四次，第五次终于让小车跑了起来。,"She failed four times, and on the fifth try her little car finally ran."
+CR-experiment-8-高-2,她没看说明书，自己想出了另一种接法。,"Without reading the manual, she figured out a different way to wire it."
+CR-archives-8-低-1,她翻了几页图鉴就睡着了，口水流在恐龙上。,"She flipped through a few pages of the encyclopedia and fell asleep, drooling on a dinosaur."
+CR-archives-8-低-2,她只看图，不看字。,"She only looked at the pictures, not the words."
+CR-archives-8-中-1,她读了旧地球的鸟类图鉴，问你有没有见过真的鸟。,She read a field guide to old Earth's birds and asked if you'd ever seen a real one.
+CR-archives-8-中-2,"她读到""下雨""，想知道雨打在脸上是什么感觉。","She read about ""rain"" and wondered what it feels like on your face."
+CR-archives-8-高-1,她读到一座住满人的城市，问那些人后来去哪了。,She read about a city full of people and asked where they all went.
+CR-archives-8-高-2,她把不认识的词都抄下来，一个一个查。,She copied down every word she didn't know and looked them up one by one.
+CR-ark_tour-8-低-1,她只在生活舱门口转了一圈就回来了。,She just walked around outside the living module and came right back.
+CR-ark_tour-8-低-2,走廊的灯太暗，她拉着门框不肯往前走。,"The corridor lights were too dim, and she clung to the doorframe, refusing to go further."
+CR-ark_tour-8-中-1,她在观景窗前看了很久的地球。,She watched the Earth from the viewport for a long time.
+CR-ark_tour-8-中-2,她找到一间放满旧工具的储藏室，抱回来一把锤子。,She found a storeroom full of old tools and came back hugging a hammer.
+CR-ark_tour-8-高-1,她沿着一条没去过的走廊，走到了人类保护区的过道口。,She followed a corridor she'd never been down and reached the entrance to the Human Preserve.
+CR-ark_tour-8-高-2,她画了一张方舟的地图，还给每条走廊起了名字。,She drew a map of the Ark and gave every corridor a name.
+CR-plant_care-8-低-1,她浇完水就跑了，忘了把喷壶放回去。,She ran off after watering and forgot to put the watering can back.
+CR-plant_care-8-低-2,她嫌番茄苗长得太慢，戳了戳它。,"Annoyed that the tomato seedling was growing too slowly, she poked it."
+CR-plant_care-8-中-1,她给桌上的薄荷换了盆，弄得满手是土。,She repotted the mint on her desk and got dirt all over her hands.
+CR-plant_care-8-中-2,她跟番茄苗说了一下午的话。,She spent the whole afternoon talking to the tomato seedling.
+CR-plant_care-8-高-1,一片叶子黄了，她难过了好久，把它夹进了书里。,"One leaf turned yellow. She was sad for a long time, and pressed it in a book."
+CR-plant_care-8-高-2,她把最亮的那块地方让给了最小的那盆苗。,She gave the sunniest spot to the smallest seedling.
+CR-ark01_care-8-低-1,她把检查清单一口气点完，没仔细看。,She ticked through the whole checklist in one go without really looking.
+CR-ark01_care-8-低-2,她嫌 [阿克] 的履带太脏，不想碰。,She thought [阿克]'s treads were too dirty to touch.
+CR-ark01_care-8-中-1,"她远程检查了 [阿克] 的履带，说它""有点累了""。","She checked [阿克]'s treads remotely and said it looked ""a bit tired."""
+CR-ark01_care-8-中-2,她给 [阿克] 的屏幕画了一个新表情。,She drew a new face for [阿克]'s screen.
+CR-ark01_care-8-高-1,她发现 [阿克] 有个关节响，记下来说下次一定修。,She noticed one of [阿克]'s joints was creaking and made a note to fix it next time.
+CR-ark01_care-8-高-2,"她给 [阿克] 写了一张""保养日记""，还画了插图。","She wrote a ""maintenance diary"" for [阿克], complete with illustrations."
+CR-together-8-低-1,她一个人拼图，你问要不要帮忙，她摇了摇头。,"She did a puzzle by herself. When you offered to help, she shook her head."
+CR-together-8-低-2,"她讲故事讲到一半，说""算了，不好听""。","She stopped halfway through a story and said, ""Never mind, it's not good."""
+CR-together-8-中-1,你们一起拼完了一幅星图。她负责拼，你负责告诉她哪块放哪。,You finished a star-map puzzle together. She placed the pieces; you told her where they went.
+CR-together-8-中-2,她教你玩她自己发明的游戏，规则改了三次。,She taught you a game she invented and changed the rules three times.
+CR-together-8-高-1,她给你讲了一个自己编的故事，结局是你们一起去了地球。,"She told you a story she made up. In the end, the two of you went to Earth together."
+CR-together-8-高-2,她把今天的事从早到晚讲了一遍，一件都没落下。,"She told you everything that happened today, from morning to night, without leaving anything out."
+CR-rest-8-低-1,她缩在床上，一下午没怎么说话。,She curled up in bed and barely spoke all afternoon.
+CR-rest-8-低-2,"她盯着天花板发呆，你叫她，她""嗯""了一声。","She stared blankly at the ceiling. When you called her, she just said ""Mm."""
+CR-rest-8-中-1,她睡了个午觉，醒来心情很好。,She took a nap and woke up in a good mood.
+CR-rest-8-中-2,她窝在床上看了一下午动画。,She snuggled up in bed and watched cartoons all afternoon.
+CR-rest-8-高-1,她在床上打滚，唱了一首跑调的歌。,She rolled around on the bed singing an off-key song.
+CR-rest-8-高-2,她睡醒以后，给桌上的薄荷也开了补光灯。,"After waking up, she turned on the grow light for the mint on her desk too."
+CR-tired-8-1,她上课时一直打哈欠，没记住多少。,She kept yawning through the lesson and didn't remember much.
+CR-tired-8-2,她趴在桌上，笔在纸上画了一条长长的线。,"She slumped over the desk, her pen trailing a long line across the paper."
+CR-sick-8-1,她发烧了，今天只能躺着。你一直开着她床边的小灯。,She has a fever and has to stay in bed today. You kept the lamp by her bed on the whole time.
+CR-sick-8-2,她病了，迷迷糊糊地喊你的名字，你一直应着。,She was sick and called your name in a daze. You answered every time.
+CR-refuse-8-1,她说今天不想上课，躲进被子里不出来。,She said she didn't want lessons today and hid under the covers.
+CR-refuse-8-2,"她把课本推到一边：""今天不要。""","She pushed her textbook aside. ""Not today."""
+CR-mechanics-15-低-1,她对着电路图看了一节课，还是没找到问题在哪。,She stared at the circuit diagram the whole lesson and still couldn't find the problem.
+CR-mechanics-15-低-2,她焊歪了两个接头，气得把焊枪放下了。,She botched two solder joints and put down the iron in frustration.
+CR-mechanics-15-中-1,她把旧发电机的线圈重新绕了一遍，能转了。,"She rewound the coil of an old generator, and it turned again."
+CR-mechanics-15-中-2,她给自己做了一个工具架，每把扳手都有固定的位置。,She built herself a tool rack with a set place for every wrench.
+CR-mechanics-15-高-1,她只听声音，就判断出是哪个轴承坏了。,She could tell which bearing had failed just by the sound.
+CR-mechanics-15-高-2,她改装了一台旧水泵，效率比原来高了一截。,She modified an old water pump and made it noticeably more efficient.
+CR-ecology-15-低-1,她把两种土壤样本弄混了，只好重新取。,She mixed up two soil samples and had to collect them again.
+CR-ecology-15-低-2,她背了一节课的植物名，第二天忘了一半。,She spent the lesson memorizing plant names and forgot half of them the next day.
+CR-ecology-15-中-1,她测了一份土壤样本，写下了里面缺什么。,She tested a soil sample and noted what it was lacking.
+CR-ecology-15-中-2,她做了一个小温室模型，里面的湿度刚刚好。,She built a small model greenhouse with the humidity just right.
+CR-ecology-15-高-1,她设计了一套轮种方案，说小镇的地一年能种三茬。,She designed a crop rotation plan and said the town's land could yield three harvests a year.
+CR-ecology-15-高-2,她从叶片的斑点判断出是哪种病，配好了药。,She identified the disease from the spots on a leaf and prepared a treatment.
+CR-comms-15-低-1,她调了一节课的频率，只收到自己的回声。,She spent the lesson adjusting frequencies and only picked up her own echo.
+CR-comms-15-低-2,她搞错了信号的格式，发出去的全是乱码。,"She got the signal format wrong, and everything she sent came out garbled."
+CR-comms-15-中-1,她修好了一台旧收音机，里面传出一段很久以前的音乐。,"She repaired an old radio, and music from long ago came out of it."
+CR-comms-15-中-2,她学会了计算信号经过中继卫星要多久。,She learned to calculate how long a signal takes to pass through a relay satellite.
+CR-comms-15-高-1,她自己设计了一种更省电的信号格式。,"She designed her own, more power-efficient signal format."
+CR-comms-15-高-2,她能从一段杂音里，把三个不同的信号分开。,She could separate three different signals out of a burst of noise.
+CR-fitness-15-低-1,她跑到一半就停下来，说今天状态不好。,She stopped halfway through her run and said she wasn't feeling it today.
+CR-fitness-15-低-2,她看着攀爬墙，最后选了旁边那条简单的路线。,She looked at the climbing wall and ended up choosing the easy route beside it.
+CR-fitness-15-中-1,她把跑步的成绩记在墙上，比上周快了几秒。,She wrote her running time on the wall. A few seconds faster than last week.
+CR-fitness-15-中-2,她爬到攀爬墙的顶上，往下看了一眼，又稳稳地下来了。,"She climbed to the top of the wall, glanced down, and came back down steadily."
+CR-fitness-15-高-1,她选了最难的路线，一次就爬上去了。,She picked the hardest route and made it up on her first try.
+CR-fitness-15-高-2,"她给自己加了负重，跑完还说""再来一组""。","She added weights, and after her run said, ""One more set."""
+CR-experiment-15-低-1,她把实验步骤抄了三遍，还是不敢开始。,She copied out the procedure three times and still didn't dare to start.
+CR-experiment-15-低-2,实验失败了，她把记录本合上，说不想做了。,The experiment failed. She closed her notebook and said she was done.
+CR-experiment-15-中-1,她做了一个小型净水装置，滤出来的水能喝。,"She built a small water purifier, and the filtered water was drinkable."
+CR-experiment-15-中-2,她改了实验的方法，结果和书上写的不一样，她又做了一次确认。,"She changed the method, got a result different from the textbook, and ran it again to confirm."
+CR-experiment-15-高-1,她做了一个书上没有的实验，还写了一份完整的报告。,She ran an experiment that isn't in any textbook and wrote a full report on it.
+CR-experiment-15-高-2,"她把失败的数据也留了下来，说""这个也有用""。","She kept the data from her failed attempts too. ""This is useful as well,"" she said."
+CR-archives-15-低-1,她翻了几页，说这些旧东西跟现在没关系。,She flipped through a few pages and said this old stuff has nothing to do with now.
+CR-archives-15-低-2,她读着读着就去看窗外了。,"Partway through reading, she drifted off to look out the window."
+CR-archives-15-中-1,她读了旧城市的规划图，对着小镇的地图比了半天。,She studied old city plans and spent ages comparing them with the town map.
+CR-archives-15-中-2,她查到一种早就灭绝的鸟，把它的叫声放了好几遍。,She looked up a long-extinct bird and played its call over and over.
+CR-archives-15-高-1,她发现两份档案里的日期对不上，把它们都标了出来。,She noticed the dates in two records didn't match and flagged them both.
+CR-archives-15-高-2,她读到地下避难所的建造记录，问你那些避难所后来怎么样了。,She read construction records for underground shelters and asked you what became of them.
+CR-ark_tour-15-低-1,她去了几个常去的地方，没什么新发现。,She went to a few of her usual spots and found nothing new.
+CR-ark_tour-15-低-2,她说方舟早就逛遍了，没什么好看的。,She said she'd seen the whole Ark already and there was nothing left to see.
+CR-ark_tour-15-中-1,她在一间旧实验室里找到一本手写的笔记。,She found a handwritten notebook in an old lab.
+CR-ark_tour-15-中-2,她把小时候画的方舟地图找出来，补上了新发现的几条走廊。,She dug out the Ark map she drew as a kid and added the corridors she'd since discovered.
+CR-ark_tour-15-高-1,她在人类保护区的过道里站了很久，一个一个读休眠舱上的铭牌。,"She stood in the Human Preserve corridor for a long time, reading the nameplates on the sleep pods one by one."
+CR-ark_tour-15-高-2,她在一间旧储藏室里找到一只拆下来的机械臂，型号和 [阿克] 身上的一样。,"In an old storeroom she found a detached robotic arm, the same model as [阿克]'s."
+CR-plant_care-15-低-1,她按清单浇完水，一句话也没说。,She watered everything on the list without saying a word.
+CR-plant_care-15-低-2,她说植物又不会说话，照着做就行了。,"She said plants can't talk anyway, so just follow the routine."
+CR-plant_care-15-中-1,她把小镇那株植物的照片设成了屏幕背景。,She set a photo of the plant in the town as her screen background.
+CR-plant_care-15-中-2,她给生活舱的每盆植物都挂了名牌。,She put a name tag on every plant in the living module.
+CR-plant_care-15-高-1,一盆苗快不行了，她守了一晚上，第二天它又挺起来了。,"A seedling was dying. She watched over it all night, and the next day it stood up again."
+CR-plant_care-15-高-2,"她说小镇的植物和这里的不一样，""它们是自己活下来的""。","She said the plants in the town are different from the ones here. ""They survived on their own."""
+CR-ark01_care-15-低-1,她快速跑完了 [阿克] 的检查程序，没看细节。,She rushed through [阿克]'s diagnostic routine without checking the details.
+CR-ark01_care-15-低-2,她说 [阿克] 只是一台机器，坏了就换零件。,"She said [阿克] is just a machine. If something breaks, swap the part."
+CR-ark01_care-15-中-1,她给 [阿克] 换了一节新的履带，试了好几圈。,She replaced a section of [阿克]'s tread and test-drove it for several laps.
+CR-ark01_care-15-中-2,她把 [阿克] 这些年的维修记录整理成了一份文档。,She compiled [阿克]'s repair history over the years into a single document.
+CR-ark01_care-15-高-1,她翻出小时候给 [阿克] 画的屏幕表情，又装了回去。,She dug up the screen face she drew for [阿克] as a kid and installed it again.
+CR-ark01_care-15-高-2,她说 [阿克] 陪她这么多年，比谁都辛苦。,She said [阿克] has been with her all these years and has worked harder than anyone.
+CR-together-15-低-1,"她戴着耳机做自己的事，偶尔""嗯""一声回应你。","She did her own thing with headphones on, now and then answering you with a ""mm."""
+CR-together-15-低-2,"她说""我自己可以""，然后一个人待了一下午。","She said ""I can manage on my own,"" and spent the afternoon alone."
+CR-together-15-中-1,你们一起整理了她小时候的画，她笑着说那时候画得好丑。,You sorted through her childhood drawings together. She laughed and said they were so ugly.
+CR-together-15-中-2,她拉你一起看了一部旧地球的电影，看完讨论了很久。,"She got you to watch an old Earth movie with her, and you talked about it for a long time after."
+CR-together-15-高-1,她跟你说了一件一直没说出口的心事。,She told you something she'd been keeping to herself for a long time.
+CR-together-15-高-2,她靠在窗边跟你聊到很晚，说以后的事，也说小时候的事。,"She leaned by the window and talked with you late into the night, about the future and about when she was little."
+CR-rest-15-低-1,她把自己关在房间里，说想一个人待着。,She shut herself in her room and said she wanted to be alone.
+CR-rest-15-低-2,她什么都没做，就那样坐了一下午。,"She did nothing at all, just sat there all afternoon."
+CR-rest-15-中-1,她睡了个懒觉，起来做了一顿早饭。,"She slept in, then got up and made herself breakfast."
+CR-rest-15-中-2,她窝在床上看了一整天的书。,She curled up in bed and read all day.
+CR-rest-15-高-1,她一边哼歌一边收拾房间，把东西全都换了个位置。,She hummed while tidying her room and rearranged everything.
+CR-rest-15-高-2,她泡了一杯热饮，在观景窗前坐了一下午，心情很好。,She made a hot drink and spent a happy afternoon sitting by the viewport.
+CR-tired-15-1,她撑着上完了课，笔记写得歪歪扭扭。,"She pushed through the lesson, her notes a crooked scrawl."
+CR-tired-15-2,她说自己没事，可是一道题看了十分钟。,"She said she was fine, but stared at a single problem for ten minutes."
+CR-sick-15-1,她病倒了，烧得说不出话。你整夜开着床边的小灯。,"She fell ill, too feverish to speak. You kept the bedside lamp on all night."
+CR-sick-15-2,她病了，还想爬起来去看小镇，被你劝回了床上。,She was sick but still tried to get up and check on the town. You talked her back into bed.
+CR-refuse-15-1,她说今天不想上课，关上了房门。,She said she didn't want lessons today and shut her door.
+CR-refuse-15-2,"她坐在课桌前，一页都没翻。""今天就算了吧。""","She sat at her desk without turning a single page. ""Let's just skip today."""

@@ -58,6 +58,7 @@ static func run_week(plan: Array[String], stats: Dictionary, rng: RandomNumberGe
 			streak_course = ""
 
 		results.append({
+			"text_key": result_text_key(course, status, stats, GameState.age, day),
 			"day": day,
 			"planned": plan[day],
 			"course": course,
@@ -67,6 +68,23 @@ static func run_week(plan: Array[String], stats: Dictionary, rng: RandomNumberGe
 			"collapsed": int(stats["stamina"]) <= 0,
 		})
 	return results
+
+
+## 当天结算前确定文案档位；轮换同档句子，不消耗玩法随机数。
+static func result_text_key(course: String, status: String, stats: Dictionary, age: int, day: int) -> String:
+	var text_age := int(DataDB.balance("teen_age")) if age >= int(DataDB.balance("teen_age")) else int(DataDB.balance("child_age"))
+	var variant := posmod(day + GameState.week, 2) + 1
+	var special := {STATUS_SICK: "sick", STATUS_REFUSED: "refuse", STATUS_TIRED: "tired"}
+	if special.has(status):
+		return "CR-%s-%d-%d" % [special[status], text_age, variant]
+	var row := DataDB.row("courses", course)
+	var value := int(stats.get(str(row.get("result_stat", "")), 0))
+	var tier := "中"
+	if value <= int(DataDB.balance("trait_low")):
+		tier = "低"
+	elif value >= int(DataDB.balance("trait_high")):
+		tier = "高"
+	return "CR-%s-%d-%s-%d" % [course, text_age, tier, variant]
 
 
 ## 第几天会累倒（体力降到 0）；不会累倒返回 -1。用于课表提示。

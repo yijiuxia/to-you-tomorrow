@@ -41,16 +41,8 @@ func _add_girl_lines(morning: Label, results: Array[Dictionary]) -> void:
 
 func _line_text(result: Dictionary) -> String:
 	var row := DataDB.row("courses", result["course"])
-	var text := Text.t(row["result_key"])
-	match result["status"]:
-		CourseSystem.STATUS_SICK:
-			text = Text.t("CR-STATUS-SICK")
-		CourseSystem.STATUS_REFUSED:
-			text = Text.t("CR-STATUS-REFUSED")
-		CourseSystem.STATUS_TIRED:
-			text = Text.t("CR-STATUS-TIRED")
-	if result["event"]:
-		text += " " + Text.t("CR-EVENT-01")
+	var text := Text.t(result["text_key"])
+	# 小事件已由 _add_girl_lines 显示，不再附加临时占位句。
 	return Text.f("CR-LINE", {"day": Schedule.day_name(result["day"]), "course": Text.t(row["name_key"]), "result": text})
 
 

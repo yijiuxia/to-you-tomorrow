@@ -11,6 +11,7 @@ var _count := 0
 
 
 func _ready() -> void:
+	test_course_result_languages()
 	test_course_effects()
 	test_tired_halves_gains()
 	test_collapse_means_sick_next_day()
@@ -31,6 +32,36 @@ func _ready() -> void:
 	test_reply_options_are_cleaned()
 	print("测试 %d 项，失败 %d 项" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
+
+
+func test_course_result_languages() -> void:
+	var count := 0
+	for key: String in Text.all_keys():
+		if key.begins_with("CR-mechanics-") or (key.begins_with("CR-") and key.split("-")[1] in ["ecology", "comms", "fitness", "experiment", "archives", "ark_tour", "plant_care", "ark01_care", "together", "rest", "tired", "sick", "refuse"]):
+			count += 1
+			_eq(Text.has_language(key, "zh"), true, key + " 中文存在")
+			_eq(Text.has_language(key, "en"), true, key + " 英文存在")
+	_eq(count, 144, "课程结果完整接入144句")
+	var previous := Text.language
+	Text.language = "zh"
+	_eq(Text.t("CR-mechanics-8-低-1"), "她把一个旧马达拆开又装回去，多出来一颗螺丝。", "中文列未串到英文")
+	Text.language = "en"
+	_eq(Text.t("CR-mechanics-8-低-1"), "She took an old motor apart and put it back together. There was one screw left over.", "英文列未回退到中文")
+	Text.language = previous
+	for age in [8, 15]:
+		for course: String in DataDB.table("courses"):
+			for level in [30, 31, 59, 60]:
+				var stats := _stats()
+				stats[str(DataDB.row("courses", course)["result_stat"])] = level
+				for day in [0, 1]:
+					var key := CourseSystem.result_text_key(course, "normal", stats, age, day)
+					var tier := "低" if level <= 30 else ("高" if level >= 60 else "中")
+					_eq(key.begins_with("CR-%s-%d-%s-" % [course, age, tier]), true, "结算档位边界")
+					_eq(Text.has_language(key, "zh") and Text.has_language(key, "en"), true, "所有课程档位双语存在")
+		for status in ["sick", "refused", "tired"]:
+			for day in [0, 1]:
+				var key := CourseSystem.result_text_key("rest", status, _stats(), age, day)
+				_eq(Text.has_language(key, "zh") and Text.has_language(key, "en"), true, "异常状态双语存在")
 
 
 func test_course_effects() -> void:
