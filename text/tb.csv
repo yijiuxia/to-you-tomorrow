@@ -7,70 +7,70 @@ TB-01-03,灯光,Lighting
 TB-01-04,音乐,Music
 TB-01-05,地球情况,Earth Status
 TB-01-06,科技树,Tech Tree
-TB-01-07,科技树尚未开放。,The tech tree is not available yet.
+TB-01-07,科技树尚未开放。,The Tech Tree is not yet available.
 TB-02-01,地球 · 标准画面,Earth · Standard View
-TB-02-02,地球 · 实时画面,Earth · Live View
+TB-02-02,地球 · 实时画面,Earth · Live Feed
 TB-02-03,星空,Starfield
 TB-02-04,方舟温室 · 摄像头,Ark Greenhouse · Camera
-TB-02-05,说明：标准画面经过色彩优化。实时画面为方舟对地相机的原始图像。,Note: the standard view is color-enhanced. The live view is raw footage from the Ark's Earth camera.
-TB-03-01,自动（模拟昼夜）,Auto (simulated day and night)
+TB-02-05,说明：标准画面经过色彩优化。实时画面为方舟对地相机的原始图像。,Note: The standard view is color-enhanced. The live feed shows raw images from the Ark's Earth-facing camera.
+TB-03-01,自动（模拟昼夜）,Auto (simulated day/night)
 TB-03-02,暖光,Warm
 TB-03-03,冷光,Cool
 TB-03-04,夜灯,Night Light
 TB-03-05,关闭,Off
-TB-03-06,说明：方舟没有自然昼夜。自动模式按地球时间调节舱内灯光。,Note: the Ark has no natural day or night. Auto mode adjusts cabin lighting to Earth time.
+TB-03-06,说明：方舟没有自然昼夜。自动模式按地球时间调节舱内灯光。,Note: The Ark has no natural day or night. Auto mode adjusts cabin lighting to Earth time.
 TB-04-01,早晨,Morning
 TB-04-02,温室,Greenhouse
 TB-04-03,星光,Starlight
 TB-04-04,关闭,Off
-TB-05-01,地表植被：绝大部分陆地被变异植被覆盖,Surface vegetation: most land is covered by mutated plants
-TB-05-02,空气：可呼吸，含有毒花粉、孢子与粉尘,"Air: breathable, contains toxic pollen, spores and dust"
-TB-05-03,地表水：浅层受污染；雨水污染较轻,Surface water: shallow water is polluted; rainwater less so
-TB-05-04,人类在地表无防护停留：不建议,Unprotected human presence on the surface: not advised
-TB-05-05,已确认的人类聚居点：无,Confirmed human settlements: none
-TB-05-06,方舟轨道高度：约 1500 千米,Ark orbit altitude: about 1500 km
+TB-05-01,地表植被：绝大部分陆地被变异植被覆盖,Surface vegetation: Most land is covered by mutated vegetation
+TB-05-02,空气：可呼吸，含有毒花粉、孢子与粉尘,"Air: Breathable; contains toxic pollen, spores and dust"
+TB-05-03,地表水：浅层受污染；雨水污染较轻,Surface water: Shallow water contaminated; rainwater lightly contaminated
+TB-05-04,人类在地表无防护停留：不建议,Unprotected human presence on the surface: Not advised
+TB-05-05,已确认的人类聚居点：无,Confirmed human settlements: None
+TB-05-06,方舟轨道高度：约 1500 千米,"Ark orbital altitude: approx. 1,500 km"
 TB-05-07,方舟运行：第 {year} 年,Ark in service: year {year}
 TB-05-08,已确认的人类聚居点：1,Confirmed human settlements: 1
-TB-05-09,已确认的人类聚居点：未确认（发现地面活动痕迹）,Confirmed human settlements: unconfirmed (signs of surface activity found)
+TB-05-09,已确认的人类聚居点：未确认（发现地面活动痕迹）,Confirmed human settlements: Unconfirmed (signs of surface activity detected)
 TB-06-01,周记 · 第 {week} 周,Journal · Week {week}
 TB-06-02,自己 / 朋友 / 生活 / 地球 / {player},Me / Friends / Life / Earth / {player}
-TB-06-11,我第一次自己排课。机械课好难，可是我没有哭。,"I planned my own classes for the first time. Mechanics was so hard, but I didn't cry."
+TB-06-11,我第一次自己排课。机械课好难，可是我没有哭。,"I made my own schedule for the first time. Mechanics is super hard, but I didn't cry."
 TB-06-12,温室里的番茄苗。我每天跟它说早安。,The tomato seedling in the greenhouse. I say good morning to it every day.
-TB-06-13,早上灯会变黄，晚上灯会变蓝。我知道那不是真的天，可是我喜欢。,"The lights turn yellow in the morning and blue at night. I know it's not the real sky, but I like it."
-TB-06-14,我看了实时画面，地球是灰色的。可是我还是觉得，有一棵绿色的树躲起来了。,"I watched the live view. Earth is gray. But I still think a green tree is hiding somewhere."
+TB-06-13,早上灯会变黄，晚上灯会变蓝。我知道那不是真的天，可是我喜欢。,"In the morning the lights turn yellow, and at night they turn blue. I know it's not the real sky, but I like it."
+TB-06-14,我看了实时画面，地球是灰色的。可是我还是觉得，有一棵绿色的树躲起来了。,I looked at the live feed. Earth is gray. But I still think there's a green tree hiding somewhere.
 TB-06-15,{player}说我今天做得很好。我要记下来。,{player} said I did great today. I'm writing it down.
-TB-06-21,我会开机器人了！在游戏里。,I can drive the robot now! In the game.
-TB-06-22,ARK-01 走路摇摇晃晃的，还没有名字。我要想一个好听的。,ARK-01 wobbles when it walks and has no name yet. I'll think of a nice one.
-TB-06-23,我画了维修站修好的样子，还录了话给明天的我。不告诉别人说了什么。,"I drew the repair station all fixed, and recorded a message for tomorrow's me. I'm not telling anyone what I said."
-TB-06-24,游戏里的小镇也是灰灰的。做游戏的人肯定也看过窗外。,The town in the game is gray too. Whoever made the game must have looked out the window.
+TB-06-21,我会开机器人了！在游戏里。,I can drive a robot now! In the game.
+TB-06-22,ARK-01 走路摇摇晃晃的，还没有名字。我要想一个好听的。,"ARK-01 wobbles when it walks, and it doesn't have a name yet. I'm gonna think of a good one."
+TB-06-23,我画了维修站修好的样子，还录了话给明天的我。不告诉别人说了什么。,"I drew the repair station all fixed up, and I recorded a message for tomorrow me. It's a secret what I said."
+TB-06-24,游戏里的小镇也是灰灰的。做游戏的人肯定也看过窗外。,The town in the game is all gray too. The people who made the game must've looked out the window too.
 TB-06-25,{player}陪我把一整片地都清干净了。,{player} helped me clear a whole patch of ground.
-TB-06-31,我给它起名字了，叫{ark}！,"I named it! It's called {ark}!"
-TB-06-32,{ark}，还有第三台机器人。它躺了好久，现在能站起来了。,"{ark}, and the third robot. It lay there so long, and now it can stand up."
-TB-06-33,种植区开了。我要种好多好多东西。,The planting area is open. I'm going to grow lots and lots of things.
-TB-06-34,小叶子是绿色的！跟方舟温室里的一样绿！,The little leaf is green! As green as the ones in the Ark greenhouse!
+TB-06-31,我给它起名字了，叫{ark}！,I gave it a name! It's {ark}!
+TB-06-32,{ark}，还有第三台机器人。它躺了好久，现在能站起来了。,"{ark}, and the third robot too. It was lying down for so long, and now it can stand up."
+TB-06-33,种植区开了。我要种好多好多东西。,The planting plot is open. I'm gonna grow lots and lots of stuff.
+TB-06-34,小叶子是绿色的！跟方舟温室里的一样绿！,The little leaf is green! Just as green as the ones in the Ark greenhouse!
 TB-06-35,{player}说我照顾得很好。小叶子也是{player}的。,{player} said I took good care of it. The little leaf belongs to {player} too.
-TB-06-41,这周第一次由我来定方案。说出来之前，我紧张得把平板按亮了三次。,"This week I made the plan for the first time. Before I said it, I was so nervous I woke the tablet three times."
-TB-06-42,工业区大门打开的时候，{ark}被灰盖了一身。我在屏幕这边也跟着用力。,"When the industrial gate opened, {ark} got covered in dust. I was pushing along on my side of the screen."
-TB-06-43,课排得很满，但我不想少上一节。,"My classes are packed, but I don't want to skip a single one."
-TB-06-44,很久没开实时画面了。小时候我以为能找到一棵绿树，现在知道没那么简单。,"I haven't opened the live view in a long time. As a kid I thought I'd find a green tree. Now I know it's not that simple."
+TB-06-41,这周第一次由我来定方案。说出来之前，我紧张得把平板按亮了三次。,"This week was the first time I got to decide the plan. Before I said it, I was so nervous I turned my tablet on three times."
+TB-06-42,工业区大门打开的时候，{ark}被灰盖了一身。我在屏幕这边也跟着用力。,"When the industrial zone gate opened, {ark} got covered in dust. I was straining right along with it on my side of the screen."
+TB-06-43,课排得很满，但我不想少上一节。,"My schedule is packed, but I don't want to skip a single lesson."
+TB-06-44,很久没开实时画面了。小时候我以为能找到一棵绿树，现在知道没那么简单。,I haven't opened the live feed in a long time. When I was little I thought I'd find a green tree. Now I know it's not that simple.
 TB-06-45,{player}没有直接说好，先问了我为什么。我喜欢这样。,"{player} didn't just say yes. They asked me why first. I like that."
-TB-06-51,有人在动我的东西。我要自己查清楚。,Someone is moving my things. I'm going to find out myself.
-TB-06-52,{ark}的脚印旁边，多了一串不是它的脚印。,"Next to {ark}'s tracks, there's another set that isn't its own."
+TB-06-51,有人在动我的东西。我要自己查清楚。,Someone's been messing with my stuff. I'm going to figure it out myself.
+TB-06-52,{ark}的脚印旁边，多了一串不是它的脚印。,"Next to {ark}'s tracks, there's a trail of tracks that aren't its own."
 TB-06-53,这周睡得不好，一直在想那个坏掉的滤芯。,I didn't sleep well this week. I kept thinking about that broken filter.
-TB-06-54,档案里说，旧时代的人上地面要戴面罩。游戏的设定也做得这么细吗？,"The archives say people in the old days wore masks on the surface. Is the game really that detailed?"
+TB-06-54,档案里说，旧时代的人上地面要戴面罩。游戏的设定也做得这么细吗？,The archives say people in the old days had to wear masks on the surface. Is the game really that detailed?
 TB-06-55,我问{player}这是不是隐藏任务。我想自己找到答案。,I asked {player} if this is a hidden quest. I want to find the answer myself.
 TB-06-61,在温室门口，我差点没敢进去。,"At the greenhouse door, I almost didn't dare go in."
-TB-06-62,那个人。他不像 NPC。,That person. He doesn't feel like an NPC.
-TB-06-63,这几天，我吃饭的时候都在想他。,"These days, I keep thinking about him at meals."
-TB-06-64,我又开了实时画面，看了很久。,I opened the live view again and watched for a long time.
+TB-06-62,那个人。他不像 NPC。,That person. He doesn't seem like an NPC.
+TB-06-63,这几天，我吃饭的时候都在想他。,"These past few days, I keep thinking about him at every meal."
+TB-06-64,我又开了实时画面，看了很久。,I opened the live feed again and looked for a long time.
 TB-06-65,{player}一直在。这就够了。,{player} is always here. That's enough.
-TB-06-71,温室没进去。下次我想自己决定。,"We didn't go into the greenhouse. Next time, I want to decide myself."
-TB-06-72,{ark}在温室门外站了很久，像是在等什么。,"{ark} stood outside the greenhouse for a long time, as if waiting for something."
+TB-06-71,温室没进去。下次我想自己决定。,We didn't go into the greenhouse. Next time I want to decide for myself.
+TB-06-72,{ark}在温室门外站了很久，像是在等什么。,"{ark} stood outside the greenhouse for a long time, like it was waiting for something."
 TB-06-73,这周过得很慢。,This week went by slowly.
 TB-06-74,做这个游戏的人，为什么要做得这么大？,Why would whoever made this game make it so big?
 TB-06-75,{player}，你说温室里到底有什么？,"{player}, what do you think is really inside the greenhouse?"
 TT-00-01,科技树,Tech Tree
-TT-00-02,技能达到要求后自动解锁。,Unlocks automatically when skills meet the requirement.
+TT-00-02,技能达到要求后自动解锁。,Unlocks automatically once skill requirements are met.
 TT-00-03,需要：{need}（当前 {now}）,Needs: {need} (now {now})
 TT-00-04,科技解锁：{name},Tech unlocked: {name}
 TT-00-06,又能多建一样东西了！,We can build something new!
@@ -93,33 +93,33 @@ TT-08-02,修复 C 区的玻璃温室，阻挡外部花粉。需要水和电。,R
 TT-09-01,修复音频收发器,Repair the Audio Transceiver
 TT-09-02,修复 ARK-01 的音频模块，使其可以发出和接收声音。,Repairs ARK-01's audio module so it can send and receive sound.
 RM-01-01,和{girl}说话,Talk to {girl}
-RM-02-01,《方舟手册 · 儿童版》：方舟各舱室的介绍，配有插图。,"""Ark Handbook · Children's Edition"": an illustrated guide to the Ark's compartments."
-RM-02-02,《植物图鉴》：灾难前地球常见植物的图鉴。书页边上画满了小星星。,"""Field Guide to Plants"": common plants of Earth before the disaster. The margins are covered in little stars."
-RM-02-03,《地面应急指南》：旧时代地面基地的工作手册。书签夹在"防护装备"一章。,"""Surface Emergency Guide"": a work manual from old surface bases. The bookmark is in the chapter on protective gear."
+RM-02-01,《方舟手册 · 儿童版》：方舟各舱室的介绍，配有插图。,Ark Handbook · Children's Edition: An illustrated guide to the Ark's modules.
+RM-02-02,《植物图鉴》：灾难前地球常见植物的图鉴。书页边上画满了小星星。,Field Guide to Plants: Common plants of pre-disaster Earth. The margins are covered in little stars.
+RM-02-03,"《地面应急指南》：旧时代地面基地的工作手册。书签夹在""防护装备""一章。",Surface Emergency Guide: An operations manual for old-era surface bases. The bookmark is in the chapter on protective equipment.
 RM-03-01,一本翻开的识字本。,An open reading workbook.
-RM-03-02,一本翻开的笔记本，写满了《重建计划》的建造方案。,"An open notebook, full of building plans for ""Rebuild Plan""."
-RM-03-03,收起 / 打开,Put away / Open
-RM-04-01,第 2 周：维修站修好的样子。,Week 2: the repair station as it will look when fixed.
-RM-04-02,第 3 周：一片小叶子，旁边写着"{ark}发现的"。,"Week 3: a little leaf, labeled ""found by {ark}""."
-RM-04-03,几张更细致的建筑草图。,Several more detailed building sketches.
+RM-03-02,一本翻开的笔记本，写满了《重建计划》的建造方案。,An open notebook filled with construction plans for Project Rebuild.
+RM-03-03,收起 / 打开,Close / Open
+RM-04-01,第 2 周：维修站修好的样子。,"Week 2: The repair station, all fixed up."
+RM-04-02,"第 3 周：一片小叶子，旁边写着""{ark}发现的""。","Week 3: A little leaf, labeled ""Found by {ark}""."
+RM-04-03,几张更细致的建筑草图。,A few more detailed building sketches.
 RM-04-04,温室的速写。,A sketch of the greenhouse.
-RM-04-05,温室的速写，还有一张：一个戴面罩的人的背影。,"A sketch of the greenhouse, and another: the back of a person wearing a mask."
-RM-05-01,一盆从方舟温室移来的薄荷。,A pot of mint moved from the Ark greenhouse.
-RM-05-02,补光灯：开 / 关,Grow light: on / off
-RM-05-03,一盆从方舟温室移来的薄荷。{girl}说它和游戏里那片小叶子是"好朋友"。,"A pot of mint moved from the Ark greenhouse. {girl} says it's ""best friends"" with the little leaf in the game."
-RM-06-01,房间灯：开 / 关,Room light: on / off
+RM-04-05,温室的速写，还有一张：一个戴面罩的人的背影。,"A masked figure, seen from behind."
+RM-05-01,一盆从方舟温室移来的薄荷。,"A pot of mint, transplanted from the Ark greenhouse."
+RM-05-02,补光灯：开 / 关,Grow light: On / Off
+RM-05-03,"一盆从方舟温室移来的薄荷。{girl}说它和游戏里那片小叶子是""好朋友""。","A pot of mint, transplanted from the Ark greenhouse. {girl} says it's ""best friends"" with the little leaf in the game."
+RM-06-01,房间灯：开 / 关,Room light: On / Off
 RM-07-01,方舟模型。她小时候最喜欢的玩具。,A model of the Ark. Her favorite toy as a child.
-RM-07-02,ARK-01 模型，用方舟机械室的边角料拼的，胳膊能动。,"An ARK-01 model, built from machine-room scraps. Its arms move."
+RM-07-02,ARK-01 模型，用方舟机械室的边角料拼的，胳膊能动。,"A model of ARK-01, built from scraps from the Ark's machine room. The arms move."
 RM-08-01,观景窗 · {view},Viewing Window · {view}
 PL-00-01,前往：,Go to:
-PL-00-02,生活舱,Living Cabin
+PL-00-02,生活舱,Living Module
 PL-00-03,机械室,Machine Room
 PL-00-04,温室,Greenhouse
 PL-00-05,通讯室,Comms Room
 PL-00-06,人类保护区,Human Preserve
 PL-00-07,正在前往 {place}……,Heading to {place}...
-PL-01-01,机械室：方舟的维修车间。负责舱体、管道和设备的日常维修。,"Machine Room: the Ark's repair workshop, handling daily maintenance of the hull, pipes and equipment."
-PL-02-01,方舟温室：种子库的一部分在这里培育，用于研究和舱内供给。,Ark Greenhouse: part of the seed bank is grown here for research and onboard supply.
-PL-03-01,通讯室：负责方舟与中继卫星、地面设备之间的通信。,"Comms Room: handles communication between the Ark, relay satellites and ground equipment."
+PL-01-01,机械室：方舟的维修车间。负责舱体、管道和设备的日常维修。,"Machine Room: The Ark's repair workshop, responsible for routine maintenance of the hull, piping and equipment."
+PL-02-01,方舟温室：种子库的一部分在这里培育，用于研究和舱内供给。,Ark Greenhouse: Part of the seed bank is cultivated here for research and onboard supply.
+PL-03-01,通讯室：负责方舟与中继卫星、地面设备之间的通信。,"Comms Room: Handles communications between the Ark, relay satellites and ground equipment."
 PL-04-01,人类保护区：休眠舱 {pods} 个在运行；胚胎库保存中。,Human Preserve: {pods} sleep pods running; embryo bank in storage.
 PL-04-02,请勿离开过道。,Please stay on the walkway.
