@@ -218,7 +218,8 @@ func _point() -> void:
 	_turn_toward(POINT_FOREARM, POINT_HAND, point_target, 1.0)
 	var room_target := point_target
 	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
-	_aim_hand(room_target)
+	# yi：手腕不要往外翻。不再单独转手腕，手保持原来动作里的朝向，小臂已经对着平板
+	_relax_wrist()
 	_make_fist(THUMB_BONES, THUMB_AXIS, THUMB_ANGLE)
 
 
@@ -242,7 +243,16 @@ func _turn_toward(bone_name: String, child_name: String, target: Vector3, share:
 	skeleton.set_bone_pose_rotation(bone, parent_q.inverse() * wanted)
 
 
-## 转手腕，让伸出来的食指正对平板（食指根到指尖的方向 → 指尖到平板的方向）
+## 手腕回到静止时相对小臂的朝向（不往外翻）
+func _relax_wrist() -> void:
+	var hand := skeleton.find_bone(POINT_HAND)
+	if hand < 0:
+		return
+	var rest := skeleton.get_bone_rest(hand).basis.get_rotation_quaternion()
+	skeleton.set_bone_pose_rotation(hand, skeleton.get_bone_pose_rotation(hand).slerp(rest, _point_weight))
+
+
+## 转手腕，让伸出来的食指正对平板（11.19 yi 说手腕往外翻，先不用）（食指根到指尖的方向 → 指尖到平板的方向）
 func _aim_hand(target: Vector3) -> void:
 	var hand := skeleton.find_bone(POINT_HAND)
 	var root := skeleton.find_bone(POINT_INDEX_ROOT)
