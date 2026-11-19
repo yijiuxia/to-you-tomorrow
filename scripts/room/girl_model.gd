@@ -27,7 +27,7 @@ const MATERIALS := [
 ]
 const HIGHLIGHT_PRIORITY := 10
 const INNER_TOP := "Tops"   # 里面那件衣服的材质名
-const SLEEVE_BONES: Array[String] = ["UpperArm", "LowerArm", "Hand", "Index", "Middle", "Ring", "Little", "Thumb"]
+const SLEEVE_BONES: Array[String] = ["Sleeve", "UpperArm", "LowerArm", "Hand", "Index", "Middle", "Ring", "Little", "Thumb"]
 ## 坐姿：骨头名 → 绕哪根轴转多少度（大腿往前抬、小腿往下弯、胳膊放下来）
 const SIT_POSE := {
 	"J_Bip_L_UpperLeg": Vector3(-85, 0, 0),
