@@ -155,3 +155,4 @@ room_girl_scale_15,1.4,15 岁（时间跳跃后）她的模型放大多少倍（
 room_girl_drop_15,-0.58,15 岁时坐下往下放多少米
 room_girl_point,0,她隔一会儿抬手指平板：1 开 0 关（yi 说动作不自然，先关掉）
 room_showpiece_fit,0.6,场所里 Lux3D 模型占房间宽度的多少
+earth_landmark_repair_ruins,60,地标建筑（发电厂、厂房等）所在区域的废墟清到百分之多少，周结算时换成修好的样子

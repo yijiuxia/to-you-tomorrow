@@ -38,6 +38,7 @@ const SLAB_THICKNESS := 0.1
 const WORKSHOP_COLOR := Color(0.42, 0.33, 0.28)
 const WORKSHOP_HEIGHT := 2.8
 const WORKSHOP_TYPE := "repair_station"
+const HANGAR_SCALE := 2.2  # 维修站机库画得比 3×2 格大，参考图 A1 里它是主角
 const LOCKED_TINT := Color(0.12, 0.12, 0.14)
 const LOCKED_STRENGTH := 0.55
 const RIVER_COLOR := Color(0.42, 0.35, 0.27)
@@ -55,6 +56,11 @@ const PROP_LOOKS := {
 	"tank_full": [Color(0.3, 0.5, 0.7), 2.5], "tank_empty": [Color(0.45, 0.45, 0.48), 2.5],
 	"greenhouse_broken": [Color(0.6, 0.8, 0.85, 0.35), 3.5], "greenhouse_half": [Color(0.6, 0.85, 0.85, 0.5), 3.5], "greenhouse_fixed": [Color(0.4, 0.8, 0.5, 0.5), 3.5],
 	"underground_hidden": [Color.BLACK, 0.0], "underground_shown": [Color(0.15, 0.15, 0.15), 0.2],
+	"landmark_power_ruined": [RUIN_BIG_COLOR, 6.0], "landmark_power_repaired": [Color(0.6, 0.6, 0.62), 6.0],
+	"landmark_tank_ruined": [RUIN_BIG_COLOR, 6.0], "landmark_tank_repaired": [Color(0.8, 0.8, 0.8), 6.0],
+	"landmark_factory_ruined": [RUIN_BIG_COLOR, 5.0], "landmark_factory_repaired": [Color(0.7, 0.65, 0.6), 5.0],
+	"landmark_shed_ruined": [RUIN_BIG_COLOR, 5.0], "landmark_shed_repaired": [Color(0.6, 0.6, 0.62), 5.0],
+	"landmark_purifier_ruined": [RUIN_BIG_COLOR, 4.0], "landmark_purifier_repaired": [Color(0.75, 0.8, 0.85), 4.0],
 }
 
 ## Lux3D 模型（assets/models/lux3d/）：建筑种类 -> 模型名；没有文件就继续用方块
@@ -65,14 +71,16 @@ const LUX3D_BUILDINGS := {
 ## 剧情物件"种类_状态" -> 模型名
 const LUX3D_PROPS := {
 	"gate_closed": "gate", "old_power_broken": "old_power", "old_power_fixed": "old_power",
-	"greenhouse_broken": "dome", "greenhouse_half": "dome", "greenhouse_fixed": "dome",
+	"greenhouse_broken": "dome_ruin", "greenhouse_half": "dome_ruin", "greenhouse_fixed": "dome",
+	"landmark_power_ruined": "b01_ruin", "landmark_power_repaired": "b01_power",
+	"landmark_tank_ruined": "tank_ruin", "landmark_tank_repaired": "tank",
+	"landmark_factory_ruined": "b03_ruin", "landmark_factory_repaired": "b03_factory",
+	"landmark_shed_ruined": "shed_ruin", "landmark_shed_repaired": "shed",
+	"landmark_purifier_ruined": "purifier_ruin", "landmark_purifier_repaired": "purifier",
 	"tank_full": "tank", "tank_empty": "tank", "bridge_fixed": "bridge_fixed", "bridge_temp": "bridge_temp",
 }
 ## 远景：[模型, 东西位置(地图宽的倍数), 南北位置(地图长的倍数), 占地边长米, 朝向度]
 const LUX3D_SCENERY := [
-	["b01_power", -0.45, 0.42, 26.0, 90.0],
-	["b03_factory", 1.45, 0.47, 26.0, -90.0],
-	["shed", -0.4, 0.12, 22.0, 90.0],
 	["landing_pod", 1.12, 0.08, 6.0, 20.0],
 	["cable_reel", -0.06, 0.35, 2.5, 0.0],
 	["street_terminal", 1.04, 0.8, 1.6, -90.0],
@@ -80,6 +88,15 @@ const LUX3D_SCENERY := [
 	["planter_dry", -0.07, 0.88, 3.0, 0.0],
 	["van", 1.1, 0.75, 5.0, 75.0],
 	["tarp", -0.08, 0.22, 3.0, 0.0],
+	# 新布局（照参考图 A5/B1/C1）：东边高架路、C 区东边渡槽、北面和西面残楼天际线
+	["viaduct", 1.35, 0.15, 40.0, 90.0],
+	["aqueduct", 1.45, 0.83, 45.0, 90.0],
+	["ruin_big", -0.6, 0.3, 24.0, 90.0],
+	["ruin_big", -0.65, 0.6, 28.0, 80.0],
+	["ruin_big", -0.55, 0.9, 22.0, 100.0],
+	["ruin_big", 0.2, 1.12, 26.0, 180.0],
+	["ruin_big", 0.75, 1.15, 30.0, 170.0],
+	["ruin_small", 1.6, 0.5, 20.0, -90.0],
 ]
 
 var world: EarthWorld
@@ -213,7 +230,8 @@ func _build_ground() -> void:
 	_workshop = _box_mesh(Vector3(w * cell_size * 0.96, WORKSHOP_HEIGHT, h * cell_size * 0.96), WORKSHOP_COLOR)
 	_workshop.position = rect_center(int(row["fixed_x"]), int(row["fixed_z"]), w, h) + Vector3.UP * WORKSHOP_HEIGHT / 2.0
 	add_child(_workshop)
-	var hangar := Lux3DModels.make("hangar", Vector2(w, h) * cell_size * 0.96)
+	# 开局是破机库（A6 演变图第一张），修好维修站后换成新机库；模型比格子大一圈，碰撞还是按格子
+	var hangar := Lux3DModels.make("hangar_ruin", Vector2(w, h) * cell_size * HANGAR_SCALE)
 	if hangar != null:
 		(_workshop as MeshInstance3D).mesh = null
 		hangar.position = Vector3.DOWN * WORKSHOP_HEIGHT / 2.0
@@ -310,15 +328,16 @@ func _make_building(building: Dictionary, uid: int) -> Node3D:
 	node.position = rect_center(int(building["x"]), int(building["z"]), int(building["w"]), int(building["h"]))
 	# 建好且正常运转时换成 Lux3D 模型；蓝图和出问题时还用方块，颜色提示更清楚
 	if building["done"] and world.problems(uid).is_empty():
-		_swap_to_model(node, LUX3D_BUILDINGS.get(building["type"], ""), int(building["w"]), int(building["h"]))
+		var grow: float = HANGAR_SCALE if building["type"] == WORKSHOP_TYPE else 0.96
+		_swap_to_model(node, LUX3D_BUILDINGS.get(building["type"], ""), int(building["w"]), int(building["h"]), grow)
 	return node
 
 
 ## 有模型就把方块藏起来、摆上模型；碰撞盒保留，机器人寻路不受影响
-func _swap_to_model(node: Node3D, model_name: String, w: int, h: int) -> void:
+func _swap_to_model(node: Node3D, model_name: String, w: int, h: int, grow := 0.96) -> void:
 	if model_name == "":
 		return
-	var model := Lux3DModels.make(model_name, Vector2(w, h) * cell_size * 0.96)
+	var model := Lux3DModels.make(model_name, Vector2(w, h) * cell_size * grow)
 	if model == null:
 		return
 	for child in node.get_children():

@@ -30,7 +30,10 @@ const OLD_POWER_FLAG := "old_power_fixed"
 const BRIDGE_TEMP_FLAG := "bridge_temp"
 const FARM_PLANT := "grass"
 const HAND_PLANT := "flower"
-const TRAIT_STATS := {"built": "confidence", "planted": "empathy", "clues": "curiosity"}
+const LANDMARK_PREFIX := "landmark_"
+const LANDMARK_RUINED := "ruined"
+const LANDMARK_REPAIRED := "repaired"
+const TRAIT_STATS :={"built": "confidence", "planted": "empathy", "clues": "curiosity"}
 
 var grid_width: int
 var grid_height: int
@@ -461,6 +464,7 @@ func end_week() -> Dictionary:
 			_cleanse(building, int(row["cleanse_radius"]))
 	_grow_plants()
 	_recompute_networks()
+	_repair_landmarks()
 	var traits := _trait_gains()
 	week_counts = {"built": 0, "planted": 0, "clues": 0}
 	var by_region := {}
@@ -478,6 +482,20 @@ func end_week() -> Dictionary:
 
 
 # ---------- 剧情物件、特殊施工、线索（ARK-01 和剧情模块用）----------
+
+## 地标建筑（发电厂、厂房等）拆不掉；所在区域的废墟清掉一定比例后，周结算时换成修好的样子
+func _repair_landmarks() -> void:
+	var need := float(DataDB.balance("earth_landmark_repair_ruins"))
+	for id: String in props:
+		if props[id] != LANDMARK_RUINED:
+			continue
+		var row := DataDB.row("earth_props", id)
+		if not str(row["kind"]).begins_with(LANDMARK_PREFIX):
+			continue
+		var region := str(row["region"])
+		if is_region_open(region) and float(recovery(region)["ruins"]) >= need:
+			props[id] = LANDMARK_REPAIRED
+
 
 ## 剧情直接改物件状态，比如第 5 周材料堆变矮、搭临时便桥
 func set_prop_state(id: String, state: String) -> void:

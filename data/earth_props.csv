@@ -6,3 +6,8 @@ material_pile,a,pile,24,11,3,2,high|low,high|low,high,UI-15-23,材料堆：第 5
 rain_tank,a,tank,26,1,2,2,full|empty,full|empty,full,UI-15-24,雨水罐
 greenhouse_ruin,c,greenhouse,11,74,5,5,broken|half|fixed,,broken,UI-15-25,大玻璃温室：剧情固定建筑，修好时换成温室
 underground,c,underground,4,94,2,2,hidden|shown,,hidden,UI-15-26,地下入口（待定）
+lm_power,b,landmark_power,1,32,10,8,ruined|repaired,ruined|repaired,ruined,UI-15-70,地标：B-01 发电厂（拆不掉；B 区废墟清到一定比例后换成修好）
+lm_tank,b,landmark_tank,12,32,4,4,ruined|repaired,ruined|repaired,ruined,UI-15-71,地标：球形储罐
+lm_factory,b,landmark_factory,11,41,8,5,ruined|repaired,ruined|repaired,ruined,UI-15-72,地标：B-03 厂房
+lm_shed,b,landmark_shed,21,31,8,7,ruined|repaired,ruined|repaired,ruined,UI-15-73,地标：REC-01 分拣棚
+lm_purifier,c,landmark_purifier,1,69,7,5,ruined|repaired,ruined|repaired,ruined,UI-15-74,地标：C 区净水罐组

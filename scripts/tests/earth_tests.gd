@@ -26,6 +26,7 @@ func _ready() -> void:
 	test_regions_locked_until_gate()
 	test_gate_opens_with_old_power()
 	test_bridge_and_river()
+	test_landmarks()
 	test_comm_coverage()
 	test_special_fails_when_tired()
 	test_clues_and_traits()
@@ -324,6 +325,22 @@ func test_bridge_and_river() -> void:
 	_true(w.is_walkable(Vector2i(14, 62)), "桥上能走")
 	_true(not w.is_walkable(Vector2i(2, 62)), "桥外的干河道还是不能走")
 	_true(w.is_region_open("c"), "C 区开放")
+
+
+## 地标建筑：拆不掉、挡路；所在区域废墟清够比例后，周结算换成修好
+func test_landmarks() -> void:
+	var w := _rich_world()
+	_built(w, "generator", 13, 26)
+	_true(w.is_blocked(Vector2i(5, 35)), "发电厂地标挡路")
+	_eq(w.ruin_at(Vector2i(5, 35)), "", "地标不是能清理的废墟")
+	w.end_week()
+	_eq(w.props["lm_power"], "ruined", "废墟没清，地标还是破的")
+	for ruin: Dictionary in w.ruins.values():
+		if w.region_of(Vector2i(int(ruin["x"]), int(ruin["z"]))) == "b":
+			ruin["cleared"] = true
+	w.end_week()
+	_eq(w.props["lm_power"], "repaired", "B 区废墟清完，发电厂修好")
+	_eq(w.props["lm_purifier"], "ruined", "C 区没开放，净水罐不变")
 
 
 func test_comm_coverage() -> void:
