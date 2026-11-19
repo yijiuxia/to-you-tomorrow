@@ -4,6 +4,19 @@ extends Node3D
 ## 第 5 步有模型后，把这里的方块换成模型就行，规则和操作都不用动。
 
 const GROUND_COLORS: Array[Color] = [Color(0.56, 0.5, 0.36), Color(0.45, 0.42, 0.36), Color(0.33, 0.31, 0.3)]  # 无 / 轻度 / 重度污染
+const GROUND_SHADER := preload("res://scripts/earth/ground.gdshader")
+const GROUND_TEXTURES := {
+	"tex_polluted": "res://assets/textures/earth/m_ground_polluted.png", "tex_cleared": "res://assets/textures/earth/m_ground_cleared.png",
+	"tex_grass": "res://assets/textures/earth/m_ground_grass.png", "tex_soil": "res://assets/textures/earth/m_soil.png",
+}
+## 地面种类，和 ground.gdshader 里的编号一致
+const GROUND_POLLUTED := 0
+const GROUND_LIGHT := 1
+const GROUND_CLEARED := 2
+const GROUND_GRASS := 3
+const GROUND_SOIL := 4
+const SEEDLING_TINT := Color(1.15, 1.2, 0.9)
+const HOLE_TINT := Color(0.45, 0.4, 0.35)
 const PLANT_COLOR := Color(0.25, 0.62, 0.25)
 const POWER_TINT := Color(0.35, 0.5, 0.9)
 const WATER_TINT := Color(0.2, 0.75, 0.85)
@@ -30,6 +43,18 @@ const SELECT_HEIGHT := 0.05
 const WALL_HEIGHT := 10.0
 const WALL_THICKNESS := 2.0
 const SUN_ROTATION := Vector3(-55.0, -30.0, 0.0)
+const TIME_DAY := "day"
+const TIME_EVENING := "evening"
+const TIME_NIGHT := "night"
+const FOG_DENSITY := 0.004
+const SKY_PRESETS := {
+	"day": {"top": Color(0.33, 0.55, 0.85), "horizon": Color(0.75, 0.8, 0.85), "ground": Color(0.35, 0.33, 0.3),
+		"sun_rotation": Vector3(-55.0, -30.0, 0.0), "sun_color": Color(1.0, 0.97, 0.9), "sun_energy": 1.0, "ambient": Color.WHITE},
+	"evening": {"top": Color(0.3, 0.3, 0.55), "horizon": Color(0.95, 0.6, 0.38), "ground": Color(0.3, 0.24, 0.2),
+		"sun_rotation": Vector3(-12.0, -70.0, 0.0), "sun_color": Color(1.0, 0.68, 0.42), "sun_energy": 0.8, "ambient": Color(1.0, 0.85, 0.75)},
+	"night": {"top": Color(0.03, 0.04, 0.1), "horizon": Color(0.12, 0.14, 0.24), "ground": Color(0.05, 0.05, 0.06),
+		"sun_rotation": Vector3(-40.0, 150.0, 0.0), "sun_color": Color(0.6, 0.7, 1.0), "sun_energy": 0.25, "ambient": Color(0.45, 0.5, 0.75)},
+}
 const BACKGROUND_COLOR := Color(0.55, 0.57, 0.6)
 const FILTER_BRIGHTNESS := 1.1
 const FILTER_SATURATION := 1.5
@@ -79,6 +104,8 @@ const LUX3D_PROPS := {
 	"landmark_purifier_ruined": "purifier_ruin", "landmark_purifier_repaired": "purifier",
 	"tank_full": "tank", "tank_empty": "tank", "bridge_fixed": "bridge_fixed", "bridge_temp": "bridge_temp",
 }
+## 线索种类 -> 模型（脚印、信号还用发光块）
+const LUX3D_CLUES := {"hole": "hole", "item": "seed_capsule"}
 ## 远景：[模型, 东西位置(地图宽的倍数), 南北位置(地图长的倍数), 占地边长米, 朝向度]
 const LUX3D_SCENERY := [
 	["landing_pod", 1.12, 0.08, 6.0, 20.0],
@@ -104,14 +131,18 @@ var cell_size: float
 var astar := AStarGrid2D.new()  # 机器人走路用：废墟和建筑都是障碍
 
 var _ground: MultiMeshInstance3D
+var _ground_textured := false
 var _ruin_nodes := {}      # 废墟 id -> 节点
 var _building_nodes := {}  # 建筑编号 -> { node, state }
 var _scrap_nodes := {}     # 废料 id -> 节点
 var _selection: MeshInstance3D
 var _environment: Environment
+var _sun: DirectionalLight3D
+var _sky_material: ProceduralSkyMaterial
 var _workshop: Node3D  # 坏掉的旧车间：修好之前一直立在那里
 var _prop_nodes := {}    # 物件 id -> { node, state }
-var _clue_nodes := {}    # 线索 id -> 节点
+var _clue_nodes := {}
+var _hole_nodes := {}     # 格子 -> 坑的模型    # 线索 id -> 节点
 var _terrain_walls: Node3D
 var _terrain_key := ""   # 区域开放和桥的状态；变了才重建挡墙
 
@@ -175,6 +206,7 @@ func refresh() -> void:
 	_sync_scraps()
 	_sync_props()
 	_sync_clues()
+	_sync_holes()
 	_update_terrain_walls()
 	_update_astar()
 	_workshop.visible = true
@@ -184,31 +216,51 @@ func refresh() -> void:
 
 
 func _build_environment() -> void:
-	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = SUN_ROTATION
-	sun.shadow_enabled = true
-	add_child(sun)
+	_sun = DirectionalLight3D.new()
+	_sun.rotation_degrees = SUN_ROTATION
+	_sun.shadow_enabled = true
+	add_child(_sun)
 	_environment = Environment.new()
-	_environment.background_mode = Environment.BG_COLOR
-	_environment.background_color = BACKGROUND_COLOR
+	_sky_material = ProceduralSkyMaterial.new()
+	var sky := Sky.new()
+	sky.sky_material = _sky_material
+	_environment.background_mode = Environment.BG_SKY
+	_environment.sky = sky
 	_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	_environment.ambient_light_color = Color.WHITE
 	_environment.ambient_light_energy = 0.5
+	# 远处起一点雾，地图外的残楼才有远近层次（参考图 B1、C1）
+	_environment.fog_enabled = true
+	_environment.fog_density = FOG_DENSITY
 	var holder := WorldEnvironment.new()
 	holder.environment = _environment
 	add_child(holder)
+	set_time_of_day(TIME_DAY)
+
+
+## 天空三种：白天 / 傍晚 / 夜里。颜色、太阳角度和亮度都在 SKY_PRESETS 里
+func set_time_of_day(mode: String) -> void:
+	var preset: Dictionary = SKY_PRESETS.get(mode, SKY_PRESETS[TIME_DAY])
+	_sky_material.sky_top_color = preset["top"]
+	_sky_material.sky_horizon_color = preset["horizon"]
+	_sky_material.ground_horizon_color = preset["horizon"]
+	_sky_material.ground_bottom_color = preset["ground"]
+	_sun.rotation_degrees = preset["sun_rotation"]
+	_sun.light_color = preset["sun_color"]
+	_sun.light_energy = preset["sun_energy"]
+	_environment.ambient_light_color = preset["ambient"]
+	_environment.fog_light_color = preset["horizon"]
 
 
 ## 地面用 MultiMesh：900 格一次画完，改颜色不用重建
 func _build_ground() -> void:
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(cell_size * 0.98, 0.1, cell_size * 0.98)
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	mesh.material = material
+	mesh.material = _ground_material()
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.use_colors = true
+	multimesh.use_custom_data = true
 	multimesh.mesh = mesh
 	multimesh.instance_count = world.grid_width * world.grid_height
 	for z in world.grid_height:
@@ -264,19 +316,48 @@ func _build_boundary() -> void:
 		add_child(body)
 
 
+## 地面有贴图就用贴图（按污染程度、草、河道换），贴图缺了退回纯色
+func _ground_material() -> Material:
+	var shader_material := ShaderMaterial.new()
+	shader_material.shader = GROUND_SHADER
+	for key: String in GROUND_TEXTURES:
+		var path: String = GROUND_TEXTURES[key]
+		if not ResourceLoader.exists(path):
+			var plain := StandardMaterial3D.new()
+			plain.vertex_color_use_as_albedo = true
+			_ground_textured = false
+			return plain
+		shader_material.set_shader_parameter(key, load(path))
+	_ground_textured = true
+	return shader_material
+
+
 func _update_ground() -> void:
 	var multimesh := _ground.multimesh
 	for z in world.grid_height:
 		for x in world.grid_width:
 			var cell := Vector2i(x, z)
 			var region := world.region_of(cell)
-			var color: Color = GROUND_COLORS[clampi(int(world.pollution.get(cell, 0)), 0, GROUND_COLORS.size() - 1)]
+			var level := clampi(int(world.pollution.get(cell, 0)), 0, GROUND_COLORS.size() - 1)
+			var color: Color = GROUND_COLORS[level]
+			var kind: int = [GROUND_CLEARED, GROUND_LIGHT, GROUND_POLLUTED][level]
 			if region == EarthWorld.RIVER:
 				color = RIVER_COLOR
+				kind = GROUND_SOIL
 			if world.plants.has(cell):
 				color = PLANT_COLOR if world.plant_grown(cell) else SEEDLING_COLOR
+				kind = GROUND_GRASS
 			elif world.holes.has(cell):
 				color = HOLE_COLOR
+				kind = GROUND_SOIL
+			if _ground_textured:
+				# 贴图自己带颜色，这里只留"苗比草浅、坑比泥深"的一点区别，叠加色照旧
+				color = Color.WHITE
+				if world.plants.has(cell) and not world.plant_grown(cell):
+					color = SEEDLING_TINT
+				elif world.holes.has(cell):
+					color = HOLE_TINT
+			multimesh.set_instance_custom_data(_cell_index(cell), Color(kind, 0, 0, 0))
 			if not world.is_region_open(region):
 				color = color.lerp(LOCKED_TINT, LOCKED_STRENGTH)
 			if world.is_cell_wet(cell):
@@ -418,6 +499,23 @@ func _sync_props() -> void:
 
 
 ## 线索：俯视看到地上的标记，第三人称看到发光路标（美术清单），这里先用同一个发光方块
+## 苗被挖走留下的坑：地面变深色之外再摆一个坑的模型
+func _sync_holes() -> void:
+	for cell: Vector2i in world.holes:
+		if _hole_nodes.has(cell):
+			continue
+		var model := Lux3DModels.make("hole", Vector2.ONE * cell_size * 0.9)
+		if model == null:
+			return
+		model.position = cell_center(cell)
+		add_child(model)
+		_hole_nodes[cell] = model
+	for cell: Vector2i in _hole_nodes.keys():
+		if not world.holes.has(cell):
+			_hole_nodes[cell].queue_free()
+			_hole_nodes.erase(cell)
+
+
 func _sync_clues() -> void:
 	var live := {}
 	for id in world.active_clues():
@@ -430,6 +528,16 @@ func _sync_clues() -> void:
 			material.emission_enabled = true
 			material.emission = CLUE_COLOR
 			node.position = cell_center(world.clue_cell(id)) + Vector3.UP * CLUE_SIZE.y / 2.0
+			# 被挖的坑、种子罐这类线索换成 Lux3D 模型，发光块压扁成脚下的光圈，还能一眼看到
+			var kind := str(DataDB.row("earth_clues", id).get("kind", ""))
+			var model := Lux3DModels.make(LUX3D_CLUES.get(kind, ""), Vector2.ONE * cell_size * 0.8) if LUX3D_CLUES.has(kind) else null
+			if model != null:
+				node.scale = Vector3(1.6, 0.25, 1.6)
+				var holder := Node3D.new()
+				holder.scale = Vector3(1.0 / 1.6, 4.0, 1.0 / 1.6)
+				holder.position = Vector3.DOWN * CLUE_SIZE.y / 2.0
+				holder.add_child(model)
+				node.add_child(holder)
 			add_child(node)
 			_clue_nodes[id] = node
 	for id: String in _clue_nodes.keys():
