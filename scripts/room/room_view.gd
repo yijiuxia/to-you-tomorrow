@@ -163,8 +163,9 @@ func _load_model() -> void:
 	_turn_off_fake_lights()
 
 
-## blend 里左边柜子的拉手用了发光材质（WB_Amber_Light），游戏里看着像灯，yi 说不是灯，关掉发光
+## blend 里左边柜子的拉手用了发光的琥珀色材质（WB_Amber_Light），游戏里看着像灯；yi 定：不发光、改成白色
 const NOT_LIGHTS: Array[String] = ["WB_Amber_Light"]
+const HANDLE_COLOR := Color(0.95, 0.95, 0.93)
 
 
 func _turn_off_fake_lights() -> void:
@@ -175,6 +176,7 @@ func _turn_off_fake_lights() -> void:
 			if mat != null and NOT_LIGHTS.has(mat.resource_name):
 				var plain := mat.duplicate() as BaseMaterial3D
 				plain.emission_enabled = false
+				plain.albedo_color = HANDLE_COLOR  # yi：拉手改成白色
 				mesh.set_surface_override_material(i, plain)
 
 
