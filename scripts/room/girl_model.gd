@@ -60,7 +60,9 @@ const POINT_FOREARM := "J_Bip_L_LowerArm"
 const POINT_HAND := "J_Bip_L_Hand"
 const POINT_SHOULDER := "J_Bip_L_Shoulder"
 const POINT_CHEST := "J_Bip_C_UpperChest"
-const SHOULDER_SHARE := 0.35   # 肩膀跟着转几成
+const SHOULDER_SHARE := 0.15   # 肩膀跟着转几成
+const ELBOW_REACH := 0.35      # 手肘往平板方向伸出去多少（肩膀到平板距离的几成）
+const ELBOW_DROP := 0.18       # 手肘往下放多少米（贴近身体，不往外甩）
 const CHEST_SHARE := 0.08      # 上身跟着转几成（很小，只是带一下）
 const POINT_INDEX_ROOT := "J_Bip_L_Index1"
 const POINT_INDEX_TIP := "J_Bip_L_Index3"
@@ -207,30 +209,14 @@ func _point() -> void:
 	var forearm := skeleton.find_bone(POINT_FOREARM)
 	if arm < 0 or forearm < 0:
 		return
-	# 先让上身和肩膀跟着往平板那边带一点，再动胳膊（yi：抬手要肩膀一起动）
+	# 像真人指东西：肩膀和上身轻轻带一下，手肘往下、贴近身体，小臂往前伸向平板（yi：之前整条胳膊往外甩）
 	_turn_toward(POINT_CHEST, POINT_SHOULDER, point_target, CHEST_SHARE)
 	_turn_toward(POINT_SHOULDER, POINT_ARM, point_target, SHOULDER_SHARE)
-	# 小臂伸直（回到静止时相对大臂的朝向）
-	var straight := skeleton.get_bone_rest(forearm).basis.get_rotation_quaternion()
-	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight * POINT_STRAIGHTEN))
-	# 大臂转向平板：在世界里算从"现在胳膊的方向"转到"肩膀指向平板的方向"
-	var skel_basis := skeleton.global_basis.orthonormalized()
-	var arm_pose := skeleton.get_bone_global_pose(arm)
-	var hand_pose := skeleton.get_bone_global_pose(forearm)
-	var shoulder := skeleton.global_transform * arm_pose.origin
-	var elbow := skeleton.global_transform * hand_pose.origin
-	var room_target := point_target  # 房间物件的坐标就是 3D 世界坐标
-	var now_dir := (elbow - shoulder).normalized()
-	var want_dir := (room_target - shoulder).normalized()
-	if now_dir.is_zero_approx() or want_dir.is_zero_approx():
-		return
-	var turn := Quaternion(now_dir, want_dir)
-	var skel_q := skel_basis.get_rotation_quaternion()
-	var arm_global := skel_q * arm_pose.basis.orthonormalized().get_rotation_quaternion()
-	var wanted: Quaternion = (Quaternion.IDENTITY.slerp(turn, _point_weight)) * arm_global
-	var parent := skeleton.get_bone_parent(arm)
-	var parent_q := skel_q * skeleton.get_bone_global_pose(parent).basis.orthonormalized().get_rotation_quaternion()
-	skeleton.set_bone_pose_rotation(arm, parent_q.inverse() * wanted)
+	var shoulder := skeleton.global_transform * skeleton.get_bone_global_pose(arm).origin
+	var elbow_goal := shoulder + (point_target - shoulder) * ELBOW_REACH + Vector3(0, -ELBOW_DROP, 0)
+	_turn_toward(POINT_ARM, POINT_FOREARM, elbow_goal, 1.0)
+	_turn_toward(POINT_FOREARM, POINT_HAND, point_target, 1.0)
+	var room_target := point_target
 	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
 	_aim_hand(room_target)
 	_make_fist(THUMB_BONES, THUMB_AXIS, THUMB_ANGLE)
