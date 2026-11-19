@@ -50,6 +50,14 @@ const SUN_ROTATION := Vector3(-55.0, -30.0, 0.0)
 const TIME_DAY := "day"
 const TIME_EVENING := "evening"
 const TIME_NIGHT := "night"
+const GRID_GAP_TOP := 0.02            # 俯视时格子之间留 2% 的缝当网格线
+const GRID_GAP_THIRD_PERSON := 0.0     # 第三人称不留缝
+const WEED_MODEL := "toxic_weeds"
+const SHRUB_MODEL := "toxic_shrub"
+const WEED_CHANCE := 0.07    # 重度污染格子里有多少长毒草
+const SHRUB_CHANCE := 0.025  # 多少长毒灌木
+const WEED_SIZE := 1.6
+const SHRUB_SIZE := 2.2
 const OUTER_GROUND_SIZE := 900.0
 const OUTER_GROUND_Y := -0.25
 const SKY_CURVE := 0.06  # 越小，天顶颜色离地平线越近，天空渐变越明显
@@ -134,6 +142,7 @@ var astar := AStarGrid2D.new()  # 机器人走路用：废墟和建筑都是障�
 
 var _ground: MultiMeshInstance3D
 var _ground_textured := false
+var _ground_cell_mesh: BoxMesh
 var _road_cells := {}  # 格子 -> 地面种类（柏油路 / 斑马线），来自 earth_roads.csv
 var _ruin_nodes := {}      # 废墟 id -> 节点
 var _building_nodes := {}  # 建筑编号 -> { node, state }
@@ -145,7 +154,8 @@ var _sky_material: ProceduralSkyMaterial
 var _workshop: Node3D  # 坏掉的旧车间：修好之前一直立在那里
 var _prop_nodes := {}    # 物件 id -> { node, state }
 var _clue_nodes := {}
-var _hole_nodes := {}     # 格子 -> 坑的模型    # 线索 id -> 节点
+var _hole_nodes := {}
+var _weed_nodes := {}     # 格子 -> 毒草/毒灌木模型     # 格子 -> 坑的模型    # 线索 id -> 节点
 var _terrain_walls: Node3D
 var _terrain_key := ""   # 区域开放和桥的状态；变了才重建挡墙
 
@@ -189,6 +199,9 @@ func map_size() -> Vector2:
 
 ## 第三人称才有的"游戏滤镜"：调亮、加饱和。俯视保持灰暗的真实颜色（比赛版 4.4）。
 func set_game_filter(enabled: bool) -> void:
+	# 第三人称不画格子线：格子铺满不留缝；俯视建造时留缝当网格线（yi 定）
+	var gap := GRID_GAP_THIRD_PERSON if enabled else GRID_GAP_TOP
+	_ground_cell_mesh.size = Vector3(cell_size * (1.0 - gap), _ground_cell_mesh.size.y, cell_size * (1.0 - gap))
 	_environment.adjustment_enabled = enabled
 	_environment.adjustment_brightness = FILTER_BRIGHTNESS
 	_environment.adjustment_saturation = FILTER_SATURATION
@@ -213,6 +226,7 @@ func refresh() -> void:
 	_sync_props()
 	_sync_clues()
 	_sync_holes()
+	_sync_weeds()
 	_update_terrain_walls()
 	_update_astar()
 	_workshop.visible = true
@@ -269,8 +283,9 @@ func set_time_of_day(mode: String) -> void:
 ## 地面用 MultiMesh：900 格一次画完，改颜色不用重建
 func _build_ground() -> void:
 	var mesh := BoxMesh.new()
-	mesh.size = Vector3(cell_size * 0.98, 0.1, cell_size * 0.98)
+	mesh.size = Vector3(cell_size * (1.0 - GRID_GAP_TOP), 0.1, cell_size * (1.0 - GRID_GAP_TOP))
 	mesh.material = _ground_material()
+	_ground_cell_mesh = mesh
 	var multimesh := MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.use_colors = true
@@ -551,6 +566,49 @@ func _sync_props() -> void:
 
 
 ## 线索：俯视看到地上的标记，第三人称看到发光路标（美术清单），这里先用同一个发光方块
+## 重度污染的地上零星长着毒草（暗紫、灰褐，世界观：只有她种的才是真绿）。
+## 哪些格子长按格子坐标算，每次都一样；污染降下去、建了东西、种了植物，毒草就消失。
+func _sync_weeds() -> void:
+	for z in world.grid_height:
+		for x in world.grid_width:
+			var cell := Vector2i(x, z)
+			var want := _weed_for(cell)
+			if want.is_empty():
+				if _weed_nodes.has(cell):
+					_weed_nodes[cell].queue_free()
+					_weed_nodes.erase(cell)
+				continue
+			if _weed_nodes.has(cell):
+				continue
+			var model := Lux3DModels.make_spec("lux3d:" + want, WEED_SIZE if want == WEED_MODEL else SHRUB_SIZE)
+			if model == null:
+				return
+			var jitter := _cell_hash(cell, 7)
+			model.position = cell_center(cell) + Vector3(jitter - 0.5, 0.0, _cell_hash(cell, 13) - 0.5) * cell_size * 0.5
+			model.rotation_degrees.y = jitter * 360.0
+			add_child(model)
+			_weed_nodes[cell] = model
+
+
+func _weed_for(cell: Vector2i) -> String:
+	if int(world.pollution.get(cell, 0)) < 2 or world.is_blocked(cell) or _road_cells.has(cell):
+		return ""
+	if world.plants.has(cell) or world.holes.has(cell) or world.region_of(cell) == EarthWorld.RIVER:
+		return ""
+	var roll := _cell_hash(cell, 1)
+	if roll < SHRUB_CHANCE:
+		return SHRUB_MODEL
+	if roll < SHRUB_CHANCE + WEED_CHANCE:
+		return WEED_MODEL
+	return ""
+
+
+## 按格子坐标算一个 0～1 的固定"随机数"，同一格每次都一样
+func _cell_hash(cell: Vector2i, salt: int) -> float:
+	var h := absi(hash(Vector3i(cell.x, cell.y, salt)))
+	return float(h % 10000) / 10000.0
+
+
 ## 苗被挖走留下的坑：地面变深色之外再摆一个坑的模型
 func _sync_holes() -> void:
 	for cell: Vector2i in world.holes:
