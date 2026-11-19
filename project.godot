@@ -38,4 +38,4 @@ theme/custom_font="res://assets/fonts/NotoSansSC-Regular.otf"
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("res://story/op.dialogue", "res://story/w1.dialogue", "res://story/w5.dialogue", "res://story/w3.dialogue")
+locale/translations_pot_files=PackedStringArray("res://story/op.dialogue", "res://story/w1.dialogue", "res://story/w5.dialogue", "res://story/w3.dialogue", "res://story/ed.dialogue", "res://story/tj.dialogue", "res://story/w2.dialogue", "res://story/w4.dialogue", "res://story/w6.dialogue", "res://story/w7.dialogue")

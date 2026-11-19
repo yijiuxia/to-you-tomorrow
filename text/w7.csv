@@ -1,0 +1,70 @@
+keys,zh,en
+# 第 7 周两条线（文案 10_第7周_遇到线.md = W7A，11_第7周_没遇到线.md = W7B）。编号 -9x 是选项文字。
+W7A-00-01,修复 ARK-01 的音频收发器，和他说上话,Repair ARK-01's audio transceiver and talk to him
+W7A-00-02,和他一起修复旧温室,Restore the old greenhouse together with him
+W7A-01-02,早，{player}。我一晚上都在想，他今天还会来吗？,"Morning, {player}. I was thinking all night... will he come today?"
+W7A-01-03,提示：便桥不稳，建议加固（金属 3、工作单位 1）。,"Tip: the temporary bridge is shaky. Reinforce it (Metal 3, 1 work unit)."
+W7A-02-01,盖板是他撬开的……要不是他，我都不知道{ark}身上还有这个。,"He's the one who pried the panel open... if not for him, I wouldn't know {ark} had this."
+W7A-02-02,修复音频收发器：需要 通信 55；电子元件 3、工作单位 2,"Repair audio transceiver: needs Comms 55; Electronics 3, 2 work units"
+W7A-02-03,我这阵子通信课没白上，交给我！,All those comms classes paid off. Leave it to me!
+W7A-02-04,通信 {value} / 55,Comms {value} / 55
+W7A-02-05,还是修不好……那就用屏幕跟他说吧。,I still can't fix it... then I'll talk to him with the screen.
+W7A-02-06,音频收发器：已修复。ARK-01 现在可以发出和接收声音。,Audio transceiver: repaired. ARK-01 can now send and receive sound.
+W7A-02-07,{ark}，你要第一次开口说话了。,"{ark}, you're about to speak for the first time."
+W7A-03-01,你……你好？,H-hello?
+W7A-03-02,避难所？我……我不在地上。,Shelter? I... I'm not on the ground.
+W7A-03-03,你住在这里吗？其他人呢？,Do you live here? Where is everyone else?
+W7A-03-06,每次{ark}走到这边，信号就很差。,"Every time {ark} comes over here, the signal gets really bad."
+W7A-03-07,ARK-01 屏幕：你好,ARK-01 screen: Hello
+W7A-03-08,扫描仪：检测到种子 3 种（未登记的品种）,Scanner: 3 kinds of seeds detected (unregistered varieties)
+W7A-03-10,地图已更新：C 区域标记 1 处,Map updated: 1 marker in area C
+W7A-03-11,往下……他住在地下？,Down... does he live underground?
+W7A-04-01,新建筑：修复旧温室（工作单位 6；金属 8、电子元件 4，其中金属 3、电子元件 1 由他们提供；需要水和电）,"New building: restore the old greenhouse (6 work units; Metal 8, Electronics 4, of which Metal 3 and Electronics 1 come from them; needs water and power)"
+W7A-04-02,他们来帮忙：本周工作单位 +2,They're helping: +2 work units this week
+W7A-04-03,新种子：他们给的 3 种植物（种植区可用）,New seeds: 3 plants they gave us (usable in farm plots)
+W7A-04-04,他们知道哪些植物能在这里长……这些，我们的仓库里都没有。,They know which plants can grow here... none of these are in our storage.
+W7A-04-06,它们还活着……,They're still alive...
+W7A-05-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
+W7A-06-01,{player}，我一直在想，信号为什么会断。,"{player}, I keep wondering why the signal cuts out."
+W7A-06-02,我查了{ark}的画面是从哪传过来的。天线、中继卫星……最后是地面上的一个点。,"I traced where {ark}'s video comes from. Antenna, relay satellite... and in the end, a point on the ground."
+W7A-06-03,"信号来源：地面 · 坐标 [ X, Y ]","Signal source: ground · coordinates [ X, Y ]"
+W7A-06-04,我又调了方舟的对地观测记录，看那个点。,Then I pulled the ark's Earth observation records and looked at that point.
+W7A-06-05,……是小镇。没有颜色的小镇。,...It's the town. The town without colors.
+W7A-06-06,可是……也可能只是做得很逼真，对吧？,"But... it could just be very realistic, right?"
+W7A-06-07,我想问你一件事。你们在下面……会看天吗？,Can I ask you something? Down there... do you ever look at the sky?
+W7A-06-08,{player}，我知道小镇在哪了。方舟再过一会儿，就会从那片天上飞过去。,"{player}, I know where the town is now. In a little while, the ark will fly over that sky."
+W7A-06-09,"方舟导航：预计经过坐标 [ X, Y ] 上空：00:03:12","Ark navigation: estimated pass over coordinates [ X, Y ]: 00:03:12"
+W7A-06-10,我想让方舟的一块太阳能板转个角度，把光反射到那里。要是他看见了……就说明，是真的。,I want to turn one of the ark's solar panels to reflect light down there. If he sees it... then it's real.
+W7A-06-11,这个要你批准。,This needs your approval.
+W7A-06-13,嗯，我确定。,Yes. I'm sure.
+W7A-06-15,太阳能板 B-7：调整角度中,Solar panel B-7: adjusting angle
+W7A-06-16,三。,Three.
+W7A-06-17,二。,Two.
+W7A-06-18,一。,One.
+W7A-06-19,……他看到的那颗星星，是我们。,...The star he saw is us.
+W7A-06-20,小镇是真的。,The town is real.
+W7B-00-01,找到留下脚印的人,Find whoever left the footprints
+W7B-01-02,早，{player}。今天去温室那边再看看吧？,"Morning, {player}. Let's go look at the greenhouse again today?"
+W7B-02-01,《重建计划》进入第二阶段。根据方舟协议，有关地面的决定须由人类在知情的前提下作出。请向{girl}说明情况。,"Rebuild Plan has entered phase two. Under the ark protocol, decisions about the ground must be made by humans who are fully informed. Please explain the situation to {girl}."
+W7B-02-05,……你在开玩笑吧？,"...You're joking, right?"
+W7B-02-06,……我要自己看。,...I want to see for myself.
+W7B-02-07,{ark}的画面是从哪传过来的？天线、中继卫星……,"Where does {ark}'s video come from? Antenna, relay satellite..."
+W7B-02-08,"信号来源：地面 · 坐标 [ X, Y ]","Signal source: ground · coordinates [ X, Y ]"
+W7B-02-09,……是小镇。没有颜色的小镇。,...It's the town. The town without colors.
+W7B-02-10,七年。我在真的地球上，待了七年。,Seven years. I've been on the real Earth for seven years.
+W7B-02-11,那材料、苗、脚印……不是任务。,"Then the materials, the seedlings, the footprints... weren't a quest."
+W7B-02-12,是有人。地上……还有人？,It's people. There are... still people down there?
+W7B-02-14,本周目标：找到留下脚印的人,This week's goal: find whoever left the footprints
+W7B-03-01,信号越差的地方，越可能有人。我们往信号最差的地方走。,"The worse the signal, the more likely there are people. Let's head where the signal is worst."
+W7B-03-02,扫描仪：检测到竖井（深度未知）,Scanner: shaft detected (depth unknown)
+W7B-03-03,……下面有风吹上来。是暖的。,...There's air blowing up from below. It's warm.
+W7B-04-01,ARK-01 屏幕：你好。我们没有恶意。,ARK-01 screen: Hello. We mean no harm.
+W7A-03-91,问问他还需要什么。,Ask him what else they need.
+W7A-03-92,问问温室能不能一起修。,Ask if we can fix the greenhouse together.
+W7A-03-93,先别说太多。,Don't say too much yet.
+W7A-06-91,批准。,Approved.
+W7A-06-92,转吧，我也想知道答案。,Turn it. I want to know the answer too.
+W7A-06-93,……你确定想知道吗？,...Are you sure you want to know?
+W7B-02-91,{girl}，我有件事一直没告诉你。,"{girl}, there's something I never told you."
+W7B-02-92,你的小镇，是真的。是地球。,Your town is real. It's Earth.
+W7B-02-93,还记得那串脚印吗？那不是任务标记。,Remember those footprints? They weren't quest markers.

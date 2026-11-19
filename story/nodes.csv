@@ -1,11 +1,35 @@
 id,moment,week,file,cue,condition,note
 # 剧情节点表：每行一段剧情。moment 是时刻（见 story_triggers.gd 开头），week 空着表示哪周都行。
 # condition 是条件，可以用 week() age() stat("trust") flag("x") seen("节点id") met_survivor() cognition()，用 and / or / not 连接。
-# 下面都是临时节点，文案到了按 文案/00_目录.md 的编号替换。
-op,new_game,,op.dialogue,start,,开场（临时）
-w1_start,week_start,1,w1.dialogue,start,,第 1 周开始（临时）
-w5_alarm,week_end,5,w5.dialogue,alarm,"not flag(""w5_trace_found"")",保底示例：第 5 周没发现线索时，传感器报警把线索推给玩家（临时）
+# 同一时刻有几段时按表格顺序播。文案见策划文件夹 文案/（2026-11-19 定稿版）。
+op,new_game,,op.dialogue,start,,开场世界观介绍（OP-01）
+w1_start,week_start,1,w1.dialogue,start,,第 1 周早上和课程教学（W1-01～W1-03）
+w1_night,week_night,1,w1.dialogue,night,,第 1 周结算后：夜里看地球（W1-05），选项记标记给第 3 周用
+w2_morning,week_start,2,w2.dialogue,morning,,第 2 周早上：新游戏《重建计划》（W2-01）
+w2_enter,earth_enter,2,w2.dialogue,enter,,第 2 周第一次进小镇（W2-02～W2-04 她的台词；教学提示由地球画面显示）
+w2_end,week_end,2,w2.dialogue,end,,第 2 周结束本周：下周目标（W2-07）
+w2_night,week_night,2,w2.dialogue,night,,第 2 周结算后：给明天的自己（W2-08）
+w3_morning,week_start,3,w3.dialogue,morning,,第 3 周早上（W3-01，模型早安先用后备句）
 w3_enter,earth_enter,3,w3.dialogue,enter,,第 3 周第一次进小镇（文案 W3-02）。地球画面进小镇时调用 StoryScreen.play_over(画面, "earth_enter")
 w3_plant,earth_plant_found,3,w3.dialogue,plant,"not flag(""plant_event_done"")",植物事件 + 起名（W3-03、W3-05）：ARK-01 走近广场边缘时，地球画面调用 play_over(画面, "earth_plant_found")
 w3_plant_fallback,week_end,3,w3.dialogue,plant,"not flag(""plant_event_done"")",保底：一直没走过去，点结束本周时强制播植物事件（文案"没完成目标"）
 seed_jar,earth_seed_jar_found,,w3.dialogue,seed_jar,,扫到种子罐（W3-04）：植物事件前后两种说法；第 2 周也能找到。地球设 seed_jar_found 后调用 play_over(画面, "earth_seed_jar_found")
+tj_montage,time_jump,,tj.dialogue,montage,,第 3 周结算后：时间跳跃蒙太奇（TJ-02），之后是"这些年"总结页（TJ-03）
+tj_morning,after_jump,,tj.dialogue,morning,,七年后的第一个早上（TJ-04），代替第 4 周早安
+w4_enter,earth_enter,4,w4.dialogue,enter,,第 4 周进小镇：工业区大门 + 她第一次提方案（W4-02、W4-03）
+w4_night,week_night,4,w4.dialogue,night,,第 4 周结算后：大门打开（W4-07）。开门的玩法没做，当保底剧情一定播
+w5_morning,week_start,5,w5.dialogue,morning,,第 5 周早上（W5-01 后备句）
+w5_enter,earth_enter,5,w5.dialogue,enter,,第 5 周第一次进小镇：净水站 + 第一处异常（W5-02、W5-03）
+w5_alarm,week_end,5,w5.dialogue,alarm,"not flag(""w5_trace_found"")",保底：结束本周时线索没找齐，传感器警报把剩下的线索补上（W5-10-01、W5-04、W5-05）
+w5_night,week_night,5,w5.dialogue,night,,第 5 周结算后：痕迹的尽头（W5-11）
+w6_morning,week_start,6,w6.dialogue,morning,,第 6 周早上（W6-01 后备句）
+w6_enter,earth_enter,6,w6.dialogue,enter,,第 6 周进小镇：断桥（W6-02）
+w6_bridge,week_end,6,w6.dialogue,bridge,,分线点（W6-03、W6-04）：修桥和进温室的玩法没做，结束本周时当保底播；进去了设 met_survivor
+w6_night,week_night,6,w6.dialogue,night,met_survivor(),遇到线：窗边（W6-08）
+w7a_morning,week_start,7,w7.dialogue,a_morning,met_survivor(),遇到线早上（W7A-01）
+w7a_main,earth_enter,7,w7.dialogue,a_main,met_survivor(),遇到线第一次进小镇：修音频收发器、第一次对话或屏幕交流、一起修温室（W7A-02～W7A-04）
+w7a_main_fallback,week_end,7,w7.dialogue,a_main,"met_survivor() and not seen(""w7a_main"")",保底：一直没进小镇，结束本周时补播
+w7a_star,week_end,7,w7.dialogue,a_star,met_survivor(),遇到线：天上那颗星 + 地下城（W7A-06、W7A-07），之后进结局
+w7b_morning,week_start,7,w7.dialogue,b_morning,not met_survivor(),没遇到线：早上 + 你告诉她（W7B-01、W7B-02）
+w7b_search,week_end,7,w7.dialogue,b_search,not met_survivor(),没遇到线：找地下入口（W7B-03、W7B-04），好奇够高才找到
+ending,ending,,ed.dialogue,ending,,结局 ED-01 + 尾声 ED-02，播完接制作人员名单

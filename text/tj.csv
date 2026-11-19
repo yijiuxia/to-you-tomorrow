@@ -1,9 +1,20 @@
 keys,zh,en
-TJ-01-01,这些年，你们为它接上了水。,
-TJ-01-02,小镇一年比一年大，机器人走得越来越远。,
-TJ-01-03,{girl}开始自己画图纸，有时也会和你争论该先修哪里。,
-TJ-01-04,七年后,
-TJ-02-01,这些年,
-TJ-02-02,{girl}：{old_age} 岁 → {new_age} 岁,
-TJ-02-03,{name} {old} → {new},
-TJ-02-04,{name}：{old} → {new},
+TJ-02-01,这些年，你们为它接上了水。,"Over the years, you brought water to it."
+TJ-02-02,水管接好啦！小叶子再也不会渴了！,The pipe's connected! Little leaf will never be thirsty again!
+TJ-02-03,小镇一年比一年大，机器人走得越来越远。,"The town grew bigger every year, and the robots went farther and farther."
+TJ-02-04,再往前一点点……那边还有一整条街呢！,A little farther... there's a whole street over there!
+TJ-02-05,{girl}开始自己画图纸，有时也会和你争该先修哪里。,"{girl} started drawing her own blueprints, and sometimes argued with you about what to fix first."
+TJ-02-06,这次听我的嘛，先把路修通，机器人才好跑。,Listen to me this time. Fix the road first so the robots can get around.
+TJ-02-07,那株植物，长成了一小片绿地。,That plant grew into a small patch of green.
+TJ-02-10,七年后,Seven years later
+TJ-03-01,这些年,These years
+TJ-03-02,{girl}：8 岁 → 15 岁,{girl}: age 8 → 15
+TJ-03-03,技能：{list},Skills: {list}
+TJ-03-04,性格和信任：{list},Personality and trust: {list}
+TJ-03-05,小镇：废墟清理 [旧]% → 60% · 水源 0% → 20% · 植被 [旧]% → 10%（估值，可调）,Town: ruins cleared [old]% → 60% · water 0% → 20% · plants [old]% → 10%
+TJ-03-06,那株植物：长成了一小片绿地,The plant: grew into a small patch of green
+TJ-03-07,施工机器人：3 台，每周工作单位 9,"Construction robots: 3, 9 work units per week"
+TJ-03-08,第 3 台施工机器人已修复（这些年，{girl}学会了修它）,"3rd construction robot repaired (over these years, {girl} learned how)"
+TJ-03-10,继续,Continue
+TJ-04-01,{player}，早。这周上什么课？,"Morning, {player}. What classes this week?"
+TJ-03-91,{name} {old} → {new},{name} {old} → {new}

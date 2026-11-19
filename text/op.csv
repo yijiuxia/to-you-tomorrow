@@ -1,8 +1,10 @@
 keys,zh,en
-OP-01-01,（临时开场）方舟安静地漂在黑暗里。,(Temporary opening) The ark drifts quietly through the dark.
-OP-01-02,{player}？是你在说话吗？,{player}? Is that you talking?
-OP-01-03,是我，早上好，{girl}。,"It's me. Good morning, {girl}."
-OP-01-04,……（不说话）,... (say nothing)
-OP-01-05,嘿嘿，我就知道！今天学什么？,"Hehe, I knew it! What are we learning today?"
-OP-01-06,你又不说话了……那我自己挑课啦。,Quiet again... Then I'll pick my classes myself.
-OP-01-07,（临时）先为她排好第一周的课吧。,"(Temporary) First, plan her classes for week one."
+OP-01-01,一百五十年前，人类启动全球生态修复工程，试图清除百余年工业积累的污染。,"150 years ago, humanity launched a global ecological restoration project to clear a century of industrial pollution."
+OP-01-02,人类将一批胚胎、种子与休眠者送上环绕地球的方舟，等待地面恢复。,"Humanity sent embryos, seeds and sleepers up to an ark orbiting the Earth, to wait for the ground to recover."
+OP-01-03,八年前，按照方舟的计划，第一个孩子出生了。,"Eight years ago, following the ark's plan, the first child was born."
+OP-01-04,你负责养育她。,You are responsible for raising her.
+OP-01-05,她出生那天，你为她取了名字：{girl},"On the day she was born, you gave her a name: {girl}"
+OP-01-06,{girl}学会说话以后，一直叫你：{player},"Ever since {girl} learned to talk, she has called you: {player}"
+OP-01-07,工程失控。修复性状扩散至几乎所有植物，地表植被由此富集毒素，人类无法在地面长期生存。,"The project went out of control. The restoration trait spread to almost every plant; surface vegetation began to concentrate toxins, and humans could no longer live on the ground for long."
+OP-00-01,"致明日的你 / To You, Tomorrow","To You, Tomorrow"
+OP-00-02,按任意键开始,Press any key to start

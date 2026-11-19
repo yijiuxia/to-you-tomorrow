@@ -1,0 +1,27 @@
+# 结局与尾声（定稿文案 12_结局与尾声.md）。显示的文字在 text/ed.csv。第 7 周周结算后播，播完接制作人员名单。
+# 遇到线她自己发现，问你"一直知道"；没遇到线是你告诉她的，问你"为什么现在才说"。
+
+~ ending
+if met_survivor()
+	girl: 新星。你一直知道这不是游戏，对吗？ [ID:ED-01-01]
+else
+	girl: 新星。你早就知道了……为什么现在才告诉我？ [ID:ED-01-02]
+养育者人格 · 方舟 AI · 运行第 15 年 [ID:ED-01-03]
+if stat_at_least("trust", "story_ed_trust")
+	girl: ……没关系，是你就好。 [ID:ED-01-04]
+if not met_survivor() and not flag("saw_underground")
+	girl: 他们就在那儿。总有一天，我会找到他们。 [ID:ED-01-08]
+elif top_trait_is("confidence")
+	girl: 三年后，我要自己走下去。 [ID:ED-01-05]
+elif top_trait_is("curiosity")
+	girl: 像那样的城，地球上还有多少座？ [ID:ED-01-06]
+else
+	girl: 原来地底下也有人，每天都在等天亮。 [ID:ED-01-07]
+致明日的你 [ID:ED-01-09]
+=> epilogue
+
+# 尾声：三年后（ED-02）。没有台词，只有画面；没做画面前先显示两行字
+~ epilogue
+三年后 [ID:ED-02-01]
+致明日的你 / To You, Tomorrow [ID:ED-02-02]
+=> END

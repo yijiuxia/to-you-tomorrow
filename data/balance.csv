@@ -136,3 +136,16 @@ room_earth_center,"1060,-880,-560",房间窗外地球球心的位置（x,y,z 米
 room_earth_radius,1000,窗外地球的半径（米）
 room_earth_turn,150,窗外地球转多少度（让窗口对着海洋）
 room_glass_alpha,0.05,房间玻璃有多不透明（0 完全透明，1 不透明）
+story_choice_small,1,剧情选项的小幅加减（第 1 周夜里、第 2 周录音、第 6 周进温室、第 7 周批准，文案写"+1"的都用它）
+story_w4_accept_confidence,2,第 4 周同意她的方案：自信加多少（文案 W4-03）
+story_w4_accept_trust,1,第 4 周同意她的方案：信任加多少
+story_w4_refuse_confidence,-1,第 4 周一口回绝：自信加多少（负数是减）
+story_w4_refuse_trust,-2,第 4 周一口回绝：信任加多少
+story_w6_enter_confidence,31,第 6 周温室门口：自信到这个数她自己就进去（文案 W6-03）
+story_w6_wave_confidence,60,第 6 周相遇：自信到这个数她主动挥手（文案 W6-04）
+story_w7_comms,55,第 7 周修音频收发器要的通信（文案 W6-04-18、W7A-02）
+story_w7b_lead_curiosity,60,第 7 周没遇到线：好奇到这个数她自己往信号最差的地方走，找到地下入口（文案 W7B-03）
+story_ed_trust,60,结局：信任到这个数她说"没关系，是你就好"（文案 ED-01-04）
+room_ark_years_before_birth,150,方舟在她出生前运行了多少年（世界观：大毁灭约在她出生前 150 年），平板显示"方舟运行第 X 年"=这个数+年龄
+room_preserve_pods,300,人类保护区里运行的休眠舱数量（定稿写"好几百个"，具体数待定）
+room_tech_open_week,2,第几周起平板里能看科技树（定稿：第 2 周打开《重建计划》后）

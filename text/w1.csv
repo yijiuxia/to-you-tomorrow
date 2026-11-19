@@ -1,3 +1,31 @@
 keys,zh,en
-W1-01-01,（临时）第一周！我会好好上课的。,(Temporary) Week one! I'll do my best in class.
-W1-01-02,小镇还锁着呢，等我学会了再去。,The town is still locked. I'll go once I've learned enough.
+W1-01-01,{player}{player}，早上好呀！,"{player}, {player}, good morning!"
+W1-01-02,这周上什么课？,What classes are we taking this week?
+W1-02-01,方舟为{girl}准备了一整套成长课程。等到地面恢复的那一天，{girl}要带着这些本领回到地球。,"The ark has prepared a full set of growth courses for {girl}. When the ground recovers, {girl} will take these skills back to Earth."
+W1-02-02,"由你为{girl}安排接下来 7 天的课，每天一门，可以重复。点""结束本周""后，{girl}会按课表去上课。","You plan {girl}'s classes for the next 7 days, one per day, repeats allowed. After you click End Week, {girl} attends classes by the schedule."
+W1-02-03,机械、生态、通信三门课，教{girl}修理机器、照顾植物、联络远方。,"Mechanics, Ecology and Comms teach {girl} to fix machines, care for plants and reach far-away places."
+W1-02-04,上课会消耗体力。体力太低时学得慢，降到 0 当天会生病，记得给{girl}留出休息的日子。,Classes use stamina. With low stamina she learns slowly; at 0 she gets sick that day. Remember to leave rest days.
+W1-02-05,等我都学会了，回地球以后，坏掉的东西我统统修好！,"Once I learn everything, I'll fix every broken thing on Earth!"
+W1-02-07,好，就这么上！,"Okay, let's do it this way!"
+W1-03-01,你可以和{girl}聊天。每周能聊的轮数有限，{girl}越信任你、心情越好，能聊得越多。,"You can chat with {girl}. Chat rounds per week are limited; the more she trusts you and the better her mood, the more you can talk."
+W1-03-02,你怎么回应{girl}，会慢慢改变{girl}。,How you respond to {girl} will slowly change her.
+W1-03-04,{player}，窗户外面那个圆圆的，就是地球吗？,"{player}, that round thing outside the window, is that Earth?"
+W1-04-01,结束本周？{girl}会按课表上 7 天课。,End the week? {girl} will attend 7 days of classes by the schedule.
+W1-05-01,{player}，我跟你说个秘密。,"{player}, I'll tell you a secret."
+W1-05-02,档案课上说，这个窗户是一块大屏幕，平时放的地球是画漂亮了的。,"In archive class they said this window is a big screen, and the Earth it usually shows is made prettier."
+W1-05-03,我找到按钮了！我们看一下真的地球，好不好？,"I found the button! Let's look at the real Earth, okay?"
+W1-05-15,观景窗 · 实时画面,Viewing window · Live feed
+W1-05-04,……灰灰的。,...It's all grey.
+W1-05-05,档案里说，地球上的草和树都生病了，变成灰灰的，碰都不能碰。,The archive says the grass and trees on Earth got sick and turned grey. You can't even touch them.
+W1-05-06,可是地球那么大，肯定有一棵绿色的、没生病的躲起来了，对不对？,"But Earth is so big. There must be one green tree that didn't get sick, hiding somewhere, right?"
+W1-05-08,嗯！那它好勇敢呀，一个人在那里。,"Mm! Then it's really brave, all alone down there."
+W1-05-09,对！我们种！种好多好多棵！,Right! We'll plant them! Lots and lots!
+W1-05-10,想！我长大了就去找它，跟它说你好。,Yes! When I grow up I'll go find it and say hello.
+W1-05-17,嗯……{player}说的话，我记住啦。,"Mm... I'll remember what you said, {player}."
+W1-05-11,等我长大了，我要把地球修好。,"When I grow up, I'm going to fix the Earth."
+W1-05-12,……还是这样好看。,...It looks nicer like this.
+W1-05-13,晚安，{player}。,"Good night, {player}."
+W1-05-14,第 2 周,Week 2
+W1-05-91,说不定真的有。,Maybe there really is.
+W1-05-92,就算没有，以后也会有的。,"Even if there isn't, there will be someday."
+W1-05-93,你想看见它吗？,Do you want to see it?

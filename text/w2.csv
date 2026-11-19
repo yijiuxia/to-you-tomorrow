@@ -1,16 +1,54 @@
 keys,zh,en
 # 第 2 周建造教学的【界面·教学】提示（文案 04_第2周.md），地球画面负责显示。剧情台词以后也加在这里。
 W2-02-03,目标：让废墟重新变得能住人。每片区域有四项恢复度：废墟清理、供电、水源、植被。,"Goal: make the ruins livable again. Each area has four recovery levels: ruins cleared, power, water, plants."
-W2-02-04,俯视时，由你规划建筑、安排机器人施工；第三人称时，你操控 ARK-01 亲自走动、查看、拆小件、做修理。,"In top view, you plan buildings and send robots to work. In third person, you drive ARK-01 yourself to walk, look around, cut small scrap and repair."
+W2-02-04,俯视时，由你规划建筑、安排机器人施工；第三人称时，你操控 ARK-01 亲自走动、查看、拆小件、做修理。,"In top view, you plan buildings and send robots to work. In third person, you drive ARK-01 to walk, look around, cut small scrap and repair."
 W2-02-05,{girl}在课上学到的本领，决定了这里能修什么、能建什么。,What {girl} learns in class decides what can be repaired and built here.
-W2-02-06,施工机器人每周能干的活有限，用"工作单位"表示。施工要消耗工作单位；走动、查看、拆小件不消耗。,"The robots can only do so much each week, counted in work units. Construction uses work units; walking, looking and cutting small scrap don't."
-W2-02-07,施工不会马上完成，点"结束本周"时统一结算。,"Construction doesn't finish right away. It's all settled when you click End Week."
+W2-02-06,"施工机器人每周能干的活有限，用""工作单位""表示。施工要消耗工作单位；走动、查看、拆小件不消耗。","The robots can only do so much each week, counted in work units. Construction uses work units; walking, looking and cutting small scrap don't."
+W2-02-07,"施工不会马上完成，点""结束本周""时统一结算。",Construction doesn't finish right away. It's all settled when you click End Week.
 W2-02-08,本周目标：清理维修站前的广场,This week's goal: clear the plaza in front of the repair station
 W2-03-02,WASD 移动镜头，滚轮缩放，按住右键旋转。,"WASD to move the camera, mouse wheel to zoom, hold right mouse to rotate."
-W2-03-03,右上角是本周剩下的工作单位：{units}。,The work units left this week are shown at the top: {units}.
+W2-03-03,右上角是本周剩下的工作单位：{units}。,The work units left this week are shown at the top right: {units}.
 W2-04-01,按 V 切换到第三人称，操控 ARK-01。,Press V to switch to third person and drive ARK-01.
 W2-04-03,WASD 移动，空格越过障碍，E 交互。,"WASD to move, Space to hop over obstacles, E to interact."
-W2-04-04,Tab 切换工具头，选择切割头。,Press Tab to switch tool heads and pick the cutter.
-W2-05-01,按 V 回到俯视。选中广场上的废墟，点"清理"。,"Press V to go back to top view. Select the ruins on the plaza and click Clear."
-W2-05-04,施工会一直进行到本周结束，点"结束本周"时完成。,Work continues until the end of the week and finishes when you click End Week.
+W2-04-04,Tab 打开工具轮盘，选择切割头。,Press Tab to open the tool wheel and pick the cutter.
+W2-05-01,"按 V 回到俯视。选中广场上的废墟，点""清理""。",Press V to go back to top view. Select the ruins on the plaza and click Clear.
+W2-05-04,"施工会一直进行到本周结束，点""结束本周""时完成。",Work continues until the end of the week and finishes when you click End Week.
 W2-06-01,本周还剩 {units} 个工作单位。可以继续安排施工，也可以四处看看，或者直接结束本周。,"You have {units} work units left this week. Keep building, look around, or end the week."
+W2-01-01,{player}，早上好！,"Good morning, {player}!"
+W2-01-02,你猜怎么着？方舟给我发了一个新游戏！叫《重建计划》！,Guess what? The ark sent me a new game! It's called Rebuild Plan!
+W2-01-03,主界面多了一个按钮：小镇,A new button appeared on the main screen: Town
+W2-02-01,里面是地球上一个好久没人住的小镇，坏掉了。我们要指挥机器人把它修好！,It's an old town on Earth where nobody's lived for ages. It's broken. We get to command robots to fix it!
+W2-02-02,等我长大回地球，就知道怎么修啦！,"So when I grow up and go back to Earth, I'll know how to fix things!"
+W2-03-01,这就是我的小镇！现在破破烂烂的，以后会很漂亮的！,"This is my town! It's all broken now, but it'll be beautiful later!"
+W2-03-04,那两个小机器人会帮我们干活，可是它们一周只能干这么多。,"Those two little robots will work for us, but they can only do this much a week."
+W2-04-02,这个是 ARK-01，我们的小帮手！你来开，我帮你看路！,"This is ARK-01, our little helper! You drive, I'll watch the road!"
+W2-04-05,用切割头！对准那根歪掉的钢管，按住 E！,Use the cutter! Aim at that bent steel pipe and hold E!
+W2-04-06,金属 +1（第 3 块另外加 电子元件 +1）,Metal +1 (the 3rd piece also gives Electronics +1)
+W2-04-09,哇！拆下来了！,Wow! It came off!
+W2-04-08,一块一块拆好慢呀……整个广场要拆到什么时候嘛？,Cutting them one by one is so slow... When will we ever finish the whole plaza?
+W2-05-02,清理广场废墟：需要 2 个工作单位，获得 金属 +8、电子元件 +2。,"Clear plaza ruins: costs 2 work units, gives Metal +8, Electronics +2."
+W2-05-03,小块的我们自己拆，大块的给机器人。这叫分工！,We cut the small bits ourselves and give the big ones to the robots. That's teamwork!
+W2-06-03,嗯嗯，就这样！,"Mm-hm, just like that!"
+W2-07-01,下周小镇目标：修好维修站里的第 3 台施工机器人（需要 机械 10）,Next week's town goal: repair the 3rd construction robot in the repair station (needs Mechanics 10)
+W2-07-02,门里面趴着的那个机器人，下周我们把它修好吧！,The robot lying inside the door... let's fix it next week!
+W2-07-03,结束本周？没用完的工作单位不会保留。,End the week? Unused work units won't carry over.
+W2-08-01,{player}，你看我画的！,"{player}, look what I drew!"
+W2-08-02,这是修好以后的维修站。门是好的，灯是亮的，旁边还有一棵树！,"This is the repair station after we fix it. The door works, the lights are on, and there's a tree next to it!"
+W2-08-03,档案课说，以前的人会给以后的自己写信。,Archive class said people long ago wrote letters to their future selves.
+W2-08-04,我也要录一个，给明天的我！,"I want to record one too, for tomorrow's me!"
+W2-08-05,● 录音中,● Recording
+W2-08-06,明天的我，你好！我是今天的我。,"Hello, tomorrow's me! This is today's me."
+W2-08-07,今天我和{player}把广场打扫干净了。,Today {player} and I cleaned up the plaza.
+W2-08-08,今天我和{player}去看了小镇，有好多好多石头。,Today {player} and I went to see the town. There were so many rocks.
+W2-08-09,游戏里的小镇，我会把它修好的。真的地球，等我长大了也要修好！,"I'll fix the town in the game. And the real Earth, I'll fix it too when I grow up!"
+W2-08-10,{player}，你也说一句嘛！,"{player}, you say something too!"
+W2-08-15,哈哈，{player}好啰嗦！,"Haha, {player} nags so much!"
+W2-08-16,嘿嘿，那我以后画更多！,"Hehe, then I'll draw even more!"
+W2-08-17,嗯！拉钩！,Mm! Pinky promise!
+W2-08-19,录进去啦！明天的我会听到的！,It's recorded! Tomorrow's me will hear it!
+W2-08-12,以后我每年都录一段！,I'll record one every year from now on!
+W2-08-13,……晚安，{player}。,"...Good night, {player}."
+W2-08-14,第 3 周,Week 3
+W2-08-91,明天的你，也要好好吃饭。,Tomorrow's you should eat well too.
+W2-08-92,你画得真好看。,Your drawing is really nice.
+W2-08-93,我们一起把它变成画里的样子。,Let's make it look like the picture together.

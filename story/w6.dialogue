@@ -1,0 +1,72 @@
+# 第 6 周（定稿文案 09_第6周.md），含分线点。显示的文字在 text/w6.csv。
+# 修桥、走进温室没有做成玩法：结束本周时当保底剧情播（bridge）。她进不进温室按自信和你的选择决定，
+# 进去了就是遇到线（meet_survivor 设 GameState.met_survivor），第 7 周走 W7A；没进去走 W7B。
+
+~ morning
+girl: 早！今天去修桥，隐藏任务就在对面！ [ID:W6-01-02]
+=> END
+
+~ enter
+girl: 桥墩还是好的，只是中间断了。 [ID:W6-02-01]
+girl: 两个办法：我去现场把断掉的那段接起来，或者让机器人搭一座临时的便桥。 [ID:W6-02-02]
+=> END
+
+~ bridge
+新区域：C 温室与旧居民区 [ID:W6-03-01]
+girl: 这就是温室……比工业区还安静。 [ID:W6-03-02]
+通信信号：不稳定（比之前更差） [ID:W6-03-03]
+girl: 信号越来越差了……终点一定就在里面。 [ID:W6-03-05]
+if stat_at_least("confidence", "story_w6_enter_confidence")
+	girl: 进去看看！ [ID:W6-03-06]
+	=> meet
+girl: 里面好暗……我们……要进去吗？ [ID:W6-03-07]
+- 进去吧，我陪着你。 [ID:W6-03-91]
+	$> add_stat("trust", "story_choice_small")
+	=> meet
+- 听你的，你想进就进。 [ID:W6-03-92]
+	$> add_stat("confidence", "story_choice_small")
+	if stat_at_least("confidence", "story_w6_enter_confidence")
+		=> meet
+	girl: 那……下次再来吧。不进去。 [ID:W6-03-09]
+- 先别进去，太危险了。 [ID:W6-03-93]
+	girl: 好吧…… [ID:W6-03-10]
+=> END
+
+# 相遇（W6-04）
+~ meet
+$> meet_survivor()
+通信中断 [ID:W6-04-01]
+girl: 诶？{ark}？动不了了！ [ID:W6-04-02]
+正在重新连接…… [ID:W6-04-03]
+通信恢复（信号弱） [ID:W6-04-04]
+girl: ……这是谁？ [ID:W6-04-05]
+$> model_line("W6-04-07")
+girl: 游戏里……有人？ [ID:W6-04-07]
+她正在操控 ARK-01 [ID:W6-04-08]
+if stat_below("confidence", "story_w6_enter_confidence")
+	girl: 我该怎么办…… [ID:W6-04-11]
+- 先别动，看看他要做什么。 [ID:W6-04-91]
+- 要不要跟他打个招呼？ [ID:W6-04-92]
+- 小心一点。 [ID:W6-04-93]
+girl: 他……把零件放回来了。 [ID:W6-04-12]
+girl: 他好像，是在怕{ark}。 [ID:W6-04-13]
+ARK-01 自检：发现模块：音频收发器（已损坏） [ID:W6-04-15]
+girl: {ark}身上……原来还有这个。 [ID:W6-04-16]
+girl: 要是能修好，是不是就能跟他说话了？ [ID:W6-04-17]
+新目标（第 7 周）：修复 ARK-01 的音频收发器（需要 通信 55） [ID:W6-04-18]
+$> set_cognition("doubt")
+=> END
+
+# 周结算之后：窗边（W6-08，遇到线才播）。【模型】W6-08-04/08 先播"不回应"的那句
+~ night
+girl: 新星，你今天也看到了吧。 [ID:W6-08-01]
+girl: 我在小镇里待了七年，从来没见过别人。 [ID:W6-08-02]
+girl: ……游戏里，为什么会有人呢？ [ID:W6-08-03]
+girl: 算了，下周问他自己吧。 [ID:W6-08-05]
+girl: 隐藏任务的终点，到底在哪儿呢…… [ID:W6-08-06]
+girl: 新星，你说，做这个游戏的人，为什么要做得这么大？ [ID:W6-08-07]
+if stat_below("comms", "story_w7_comms")
+	girl: 我下周多上几节通信课吧。 [ID:W6-06-02]
+girl: 晚安。 [ID:W6-08-09]
+第 7 周 [ID:W6-08-10]
+=> END

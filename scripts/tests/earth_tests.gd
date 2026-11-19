@@ -495,19 +495,18 @@ func test_farm_unlock() -> void:
 	var w := _world()
 	w.metal = 100
 	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "开局种植区没解锁")
-	GameState.flags["plant_event_done"] = true
-	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "只有植物事件不够")
 	_true(w.active_clues().has("seed_jar"), "种子罐能找")
 	w.discover_clue("seed_jar")
 	_true(GameState.flags.get("seed_jar_found", false), "找到种子罐")
 	_true(not GameState.flags.get("w5_trace_found", false), "种子罐不算第 5 周的线索")
-	_true(w.unlock_reason("farm_plot").is_empty(), "种子罐 + 植物事件 = 解锁")
+	# 11.19 改：种子来自维修站地下仓库，种植区只由第 3 周植物事件解锁，种子罐只加品种
+	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "只有种子罐、没看到植物事件不解锁")
 	GameState.flags.clear()
-	GameState.flags["seed_jar_found"] = true
-	_eq(w.unlock_reason("farm_plot").get("key"), "UI-13-07", "只有种子罐、没看到植物事件也不行")
+	GameState.flags["plant_event_done"] = true
+	_true(w.unlock_reason("farm_plot").is_empty(), "植物事件后解锁（不用种子罐）")
 	GameState.flags.clear()
 	WeekSystem.apply_time_jump()
-	_true(w.unlock_reason("farm_plot").is_empty(), "没找到种子罐：时间跳跃后解锁")
+	_true(w.unlock_reason("farm_plot").is_empty(), "时间跳跃后保底解锁")
 	GameState.reset()
 
 

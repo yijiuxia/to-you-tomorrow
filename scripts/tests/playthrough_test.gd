@@ -82,17 +82,17 @@ func _play() -> void:
 		await _shot("summary_w%d" % week)
 		_click(Text.t("UI-06-01"))
 		await _frames()
+		await _finish_stories()  # 周结算后的夜里剧情（week_night）、第 3 周后的蒙太奇（time_jump）
 		if week == 3:
 			_check(GameState.age == 15, "第 3 周后应该 15 岁")
 			await _shot("jump")
-			_click(Text.t("UI-06-01"))
+			_click(Text.t("TJ-03-10"))
 			await _frames()
 			await _finish_stories()
 
+	# 第 7 周结算后：结局和尾声都是剧情（上面已跳过），播完直接到制作人员名单
 	await _finish_stories()
-	await _shot("ending")
-	_click(Text.t("UI-06-01"))
-	await _frames()
+	_check(GameState.cognition == GameState.Cognition.BELIEVE, "结局前她已经相信地球是真的")
 	await _shot("credits")
 	_click(Text.t("UI-56-09"))
 	await _frames()
@@ -132,6 +132,20 @@ func _finish_stories() -> void:
 	_check(false, "剧情没有播完")
 
 
+## 小镇画面上盖着播的剧情（进小镇时的 earth_enter 等）：一路跳过，遇到选择选第一个
+func _finish_overlay_stories(earth: Node) -> void:
+	for _i in 20:
+		var stories := _find_all(earth, "Control").filter(func(n: Node) -> bool: return n is StoryScreen and not n.is_queued_for_deletion())
+		if stories.is_empty():
+			return
+		var story: Control = stories[0]
+		await story.skip()
+		await _frames()
+		if is_instance_valid(story) and not story.is_queued_for_deletion() and story.line != null:
+			story.choose(0)
+			await _frames()
+
+
 ## 第一次排课，周一到周日：3 节机械课、休息、2 节生态课、休息
 func _set_first_week_plan() -> void:
 	var plan := ["mechanics", "mechanics", "mechanics", "rest", "ecology", "ecology", "rest"]
@@ -162,6 +176,7 @@ func _finish_settlement() -> void:
 	await _frames()
 	_click(Text.t("UI-06-01"))  # 第二次离开
 	await _frames()
+	await _finish_stories()  # 早上的剧情（week_start）
 
 
 ## 把本周的轮数全部聊完，最后再点一次聊天，确认她只回一句
@@ -227,6 +242,7 @@ func _visit_town() -> void:
 	_click(Text.t("UI-01-01"))
 	await _frames()
 	var earth: Control = _main.current
+	await _finish_overlay_stories(earth)
 	await _seconds(0.3)
 	await _shot("earth_card")
 	_dismiss_girl_card(earth)
@@ -279,6 +295,7 @@ func _build_power_and_water() -> void:
 	_click(Text.t("UI-01-01"))
 	await _frames()
 	var earth: Control = _main.current
+	await _finish_overlay_stories(earth)
 	_dismiss_girl_card(earth)
 	var world: EarthWorld = GameState.earth
 	_check(world.ruins["plaza"]["cleared"], "广场废墟上周应该清理完")

@@ -1,0 +1,35 @@
+# 第 4 周（定稿文案 07_第4周.md）。显示的文字在 text/w4.csv。早安由时间跳跃的 TJ-04 代替。
+# 【模型】句：W4-03-02 由模型按性格说（data/chat_story_lines.csv），其余（W4-03-04～07、W4-04-03、W4-06-01）先直接播后备句，后备句用模型句自己的编号。
+# 修旧备用电源的特殊施工没有做成玩法，这里只放她提方案和选项；"大门打开"在周结算后当保底剧情播。
+
+~ enter
+girl: 工业区的大门。锁了好多年了。 [ID:W4-02-01]
+girl: 门是电动的，没电打不开。 [ID:W4-02-02]
+工业区大门：需要供电 [ID:W4-02-03]
+girl: 两个办法：建一台新发电机，或者我去修门边那台旧备用电源。 [ID:W4-02-04]
+$> model_line("W4-03-02")
+girl: 我想自己去修门边那台旧电源。你觉得呢？ [ID:W4-03-02]
+- 好，就按你说的来。 [ID:W4-03-91]
+	$> add_stat("confidence", "story_w4_accept_confidence")
+	$> add_stat("trust", "story_w4_accept_trust")
+	$> set_flag("w4_her_plan")
+	girl: 嗯，交给我。 [ID:W4-03-04]
+- 我想先建发电机，长远更划算。 [ID:W4-03-92]
+	girl: ……好吧，听你的。 [ID:W4-03-05]
+- 不行。 [ID:W4-03-93]
+	$> add_stat("confidence", "story_w4_refuse_confidence")
+	$> add_stat("trust", "story_w4_refuse_trust")
+	girl: 哦。知道了。 [ID:W4-03-06]
+=> END
+
+# 周结算之后：大门打开（W4-07）
+~ night
+girl: 门的事，总算有着落了。 [ID:W4-06-01]
+girl: 开了…… [ID:W4-07-01]
+girl: 好大……比我想的大多了。 [ID:W4-07-02]
+新区域：B 工业区 [ID:W4-07-03]
+通信信号：不稳定 [ID:W4-07-04]
+girl: 信号有点抖……厂房太多，挡住了吧。 [ID:W4-07-05]
+girl: 下周进去好好看看。 [ID:W4-07-06]
+第 5 周 [ID:W4-07-07]
+=> END

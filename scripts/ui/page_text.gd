@@ -21,33 +21,30 @@ static func week_summary(recovered: int) -> PackedStringArray:
 	return result
 
 
-## 时间跳跃：先几句过渡，再是"这些年"总结（比赛版用一页文字代替蒙太奇）
+## 时间跳跃后的"这些年"总结页（文案 TJ-03）。蒙太奇（TJ-02）在这页之前由剧情播放器播。
+## 技能一行、性格和信任一行，写真实的旧值和新值。
 static func time_jump(before: Dictionary, old_age: int) -> PackedStringArray:
 	var result := PackedStringArray()
-	for i in range(1, 5):
-		result.append(Text.t("TJ-01-%02d" % i))
-	result.append(Text.f("TJ-02-02", {"girl": GameState.girl_name, "old_age": old_age, "new_age": GameState.age}))
+	result.append(Text.f("TJ-03-02", {"girl": GameState.girl_name, "old_age": old_age, "new_age": GameState.age}))
+	var skills := PackedStringArray()
+	var traits := PackedStringArray()
 	for id: String in DataDB.table("girl_stats"):
-		if str(DataDB.row("girl_stats", id)["category"]) != JUMP_HIDDEN_CATEGORY:
-			result.append(Text.f("TJ-02-03", {"name": UiKit.stat_name(id), "old": before[id], "new": GameState.get_stat(id)}))
-	# 第 3 周没找到种子罐：那株植物结了种子，种植区由此解锁（文案 W3-04 方案 B）
-	if GameState.flags.get("seeds_from_plant", false) and not GameState.flags.get("seed_jar_found", false):
+		var category := str(DataDB.row("girl_stats", id)["category"])
+		if category == JUMP_HIDDEN_CATEGORY:
+			continue
+		var item := Text.f("TJ-03-91", {"name": UiKit.stat_name(id), "old": before[id], "new": GameState.get_stat(id)})
+		if category == "skill":
+			skills.append(item)
+		else:
+			traits.append(item)
+	result.append(Text.f("TJ-03-03", {"list": " · ".join(skills)}))
+	result.append(Text.f("TJ-03-04", {"list": " · ".join(traits)}))
+	result.append(Text.t("TJ-03-06"))
+	result.append(Text.t("TJ-03-07"))
+	# 第 3 周一直没看到植物事件（正常不会发生，结束本周时会保底播）：种植区由时间跳跃保底解锁
+	if GameState.flags.get("seeds_from_plant", false) and not GameState.flags.get("plant_event_done", false):
 		result.append(Text.t("UI-54-07"))
 	GameState.summary_stats = GameState.stats.duplicate()
-	return result
-
-
-## 结局（比赛版第 5 节的统一收尾，先用一页文字）
-static func ending() -> PackedStringArray:
-	var girl := {"girl": GameState.girl_name}
-	var result := PackedStringArray([
-		Text.t("ED-01-02"),
-		Text.f("ED-02-" + WeekSystem.top_trait(), girl),
-		Text.f("ED-01-03", girl),
-		Text.t("ED-01-04"),
-	])
-	if GameState.is_high("trust"):
-		result.append(Text.f("ED-01-05", girl))
 	return result
 
 

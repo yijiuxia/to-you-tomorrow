@@ -106,3 +106,5 @@
 - 测试 `scenes/tests/room_tests.tscn`（后台）；`room_shot.tscn` 会开窗口截图，跑前先告诉 yi。
 - 注意：`--model=` 要写在 `--` 后面才生效（`... xxx.tscn -- --model=none.gguf`），否则会加载真模型。
 - 2026-11-19 接了房间真模型：`assets/models/room/cabin.glb`（从 `E:\jianmo_test\致你\房间\cabin_v02_20261108.blend` 导出，贴图压到 1024、WebP；导出脚本思路：不带灯/相机/Orbit_View/Tripo 占位）。镜头对齐 blend 的 Cam_Main（places.csv 的 cam_x/cam_yaw/cam_fov）。能点的东西是盖在模型上的看不见的点击框（room_objects.csv 里 color 空着），开关要藏的零件写在 nodes 列。窗外星空和地球用 `assets/textures/room/`。她还是胶囊占位。
+- 2026-11-19 界面：全部画面用 `scripts/ui/glass_theme.gd` 的玻璃面板样式（科技蓝，main.gd 设在根窗口上）。主界面 `hub_screen.gd` 照 yi 的参考图（`C:\Users\ZJST\Pictures\方舟\实际画面` 第 3 张）逐块做；图标是 `assets/ui/icons/*.svg`。平板和舱门不做按钮，只能点房间里的（yi 定）。
+- 2026-11-19 文字编号：定稿 13_平板与房间、14_场所的文字在 `text/tb.csv`（TB、TT、RM、PL，按定稿编号）。房间线程自己写的界面文字改用 RT 前缀，放 `text/rt.csv`（原 rm.csv），不要再用 RM 写新东西。

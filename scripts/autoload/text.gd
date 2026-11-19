@@ -5,7 +5,7 @@ extends Node
 ## 这样改完表格直接生效，和 data/ 的表格一个用法。
 
 const TEXT_DIR := "res://text/"
-const FILES: Array[String] = ["ui", "cr", "fb", "wk", "tj", "ed", "op", "w1", "w2", "w3", "w5", "rm", "en_fill"]  # w2 由地球线程加（建造教学提示）  # en_fill 放最后：只补前面表里空着的英文
+const FILES: Array[String] = ["ui", "cr", "fb", "wk", "tj", "ed", "op", "w1", "w2", "w3", "w5", "rt", "tb", "w4", "w6", "w7", "sv", "en_fill"]  # w2 由地球线程加（建造教学提示）  # en_fill 放最后：只补前面表里空着的英文
 const DEFAULT_LANGUAGE := "zh"
 
 var language := DEFAULT_LANGUAGE

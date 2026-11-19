@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dvker745yy46x"
+path="res://.godot/imported/w7.dialogue-98e4d475693d487f699420b4f00ea3fc.tres"
+
+[deps]
+
+source_file="res://story/w7.dialogue"
+dest_files=["res://.godot/imported/w7.dialogue-98e4d475693d487f699420b4f00ea3fc.tres"]
+
+[params]
+
+defaults=true

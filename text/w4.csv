@@ -1,0 +1,29 @@
+keys,zh,en
+# 第 4 周（文案 07_第4周.md）。剧情台词在 story/w4.dialogue。编号 -9x 是剧本里没有单独编号的选项文字。
+W4-00-01,给工业区大门通电，打开工业区,Power the industrial gate and open the industrial zone
+W4-02-01,工业区的大门。锁了好多年了。,The industrial zone gate. It's been locked for years.
+W4-02-02,门是电动的，没电打不开。,"It's electric. No power, no opening."
+W4-02-03,工业区大门：需要供电,Industrial zone gate: needs power
+W4-02-04,两个办法：建一台新发电机，或者我去修门边那台旧备用电源。,"Two options: build a new generator, or I go fix the old backup power unit by the gate."
+W4-03-02,我想自己去修门边那台旧电源，省下的材料可以多建点别的。你觉得呢？,I want to fix the old power unit by the gate myself. The materials we save can go to other buildings. What do you think?
+W4-04-01,按 V 切到第三人称，走到大门旁的旧备用电源。,Press V for third person and walk to the old backup power unit by the gate.
+W4-04-02,Tab 选择装配头，对准电源按住 E：特殊施工。这是只有{girl}能在现场完成的修理，修得好不好取决于她的机械技能。,"Press Tab, pick the assembler, aim at the unit and hold E: special construction. Only {girl} can do this repair on site; how well it goes depends on her mechanics skill."
+W4-04-04,旧备用电源：修复完成，本周结束时接通,"Old backup power: repaired, connects at the end of the week"
+W4-05-01,本周还剩 {units} 个工作单位。,{units} work units left this week.
+W4-05-02,嗯。,Mm.
+W4-05-03,水源不足（雨水罐只够一小片）。,Not enough water (the rain tank only covers a small patch).
+W4-07-01,开了……,It's open...
+W4-07-02,好大……比我想的大多了。,So big... much bigger than I thought.
+W4-07-03,新区域：B 工业区,New area: B Industrial Zone
+W4-07-04,通信信号：不稳定,Comms signal: unstable
+W4-07-05,信号有点抖……厂房太多，挡住了吧。,"The signal's a bit shaky... too many factory buildings blocking it, I guess."
+W4-07-06,下周进去好好看看。,Let's go in and take a good look next week.
+W4-07-07,第 5 周,Week 5
+W4-03-04,嗯，交给我。,"Okay, leave it to me."
+W4-03-05,……好吧，听你的。,"...Fine, we'll do it your way."
+W4-03-06,哦。知道了。,Oh. Got it.
+W4-03-91,好，就按你说的来。,"Okay, let's do it your way."
+W4-03-92,我想先建发电机，长远更划算。,I'd rather build a generator first. It pays off long-term.
+W4-03-93,不行。,No.
+W4-04-03,快好了。,Almost done.
+W4-06-01,门的事，总算有着落了。,At least the gate is sorted out now.

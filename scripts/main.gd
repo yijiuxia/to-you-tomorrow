@@ -136,19 +136,25 @@ func show_week_summary() -> void:
 	var recovered := WeekSystem.end_week()
 	var lines := PageText.week_summary(recovered)
 	lines.append(await ChatLines.week_end_line())  # 人物 AI 线程加：把本周的事记进她的记忆，她说一句周总结
-	_show_page(Text.f("UI-07-01", {"week": GameState.week}), lines, Text.t("UI-06-01"), _after_summary)
+	_show_page(Text.f("UI-07-01", {"week": GameState.week}), lines, Text.t("UI-06-01"), func() -> void: _play_story("week_night", _after_summary))
 
 
+## 周结算页关掉、夜里的剧情（week_night，如第 1 周看地球）播完之后：
+## 第 3 周后先播蒙太奇（time_jump）再跳跃和"这些年"页；第 7 周后播结局和尾声（ending），接制作人员名单
 func _after_summary() -> void:
 	match WeekSystem.next_stage():
 		WeekSystem.NEXT_ENDING:
-			_play_story("ending", func() -> void: _show_page(Text.t("ED-01-01"), PageText.ending(), Text.t("UI-06-01"), show_credits))
+			_play_story("ending", show_credits)
 		WeekSystem.NEXT_JUMP:
-			var old_age := GameState.age
-			var before := WeekSystem.apply_time_jump()
-			_show_page(Text.t("TJ-02-01"), PageText.time_jump(before, old_age), Text.t("UI-06-01"), func() -> void: _play_story("after_jump", _start_next_week))
+			_play_story("time_jump", _show_time_jump)
 		_:
 			_start_next_week()
+
+
+func _show_time_jump() -> void:
+	var old_age := GameState.age
+	var before := WeekSystem.apply_time_jump()
+	_show_page(Text.t("TJ-03-01"), PageText.time_jump(before, old_age), Text.t("TJ-03-10"), func() -> void: _play_story("after_jump", _start_next_week))
 
 
 func _start_next_week() -> void:

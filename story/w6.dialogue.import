@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bbejntvqmwsmg"
+path="res://.godot/imported/w6.dialogue-8b1f9e5fea776ec358b70181bfd6b847.tres"
+
+[deps]
+
+source_file="res://story/w6.dialogue"
+dest_files=["res://.godot/imported/w6.dialogue-8b1f9e5fea776ec358b70181bfd6b847.tres"]
+
+[params]
+
+defaults=true

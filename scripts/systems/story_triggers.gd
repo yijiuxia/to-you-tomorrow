@@ -8,7 +8,9 @@ extends RefCounted
 ##
 ## 现在 main.gd 会在这些时刻问一次：
 ##   new_game 起完名字后 · week_start 早上课程结算后、进主界面前 · week_end 点结束本周后、周结算前
-##   after_jump 时间跳跃页之后 · ending 进结局页前
+##   week_night 周结算页关掉后（夜里的剧情）· time_jump 第 3 周夜里之后、"这些年"页之前（蒙太奇）
+##   after_jump 时间跳跃页之后 · ending 第 7 周之后（结局和尾声，播完接制作人员名单）
+## 地球画面会问 earth_enter（进小镇）、earth_plant_found、earth_seed_jar_found。
 ## 别的模块（比如地球进入新区域）也可以自己起名字调用 pick("earth_enter_b")，再播放返回的节点。
 
 const NODES_PATH := "res://story/nodes.csv"

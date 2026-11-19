@@ -142,20 +142,3 @@ WK-06-01,{girl}'s state: {stats}.
 WK-06-02,{name} {value}
 WK-06-03,{name}: {text}
 WK-06-04,Classes this week: {courses}.
-TJ-01-01,"Over the years, you brought water back to it."
-TJ-01-02,"The town grew bigger every year, and the robots went farther and farther."
-TJ-01-03,"{girl} started drawing her own blueprints, and sometimes argued with you about what to fix first."
-TJ-01-04,Seven years later
-TJ-02-01,These years
-TJ-02-02,{girl}: age {old_age} → {new_age}
-TJ-02-03,{name} {old} → {new}
-TJ-02-04,{name}: {old} → {new}
-ED-01-01,"(Temporary ending, to be replaced by the real story)"
-ED-01-02,"The filter fades, and the screen shows the real Earth."
-ED-01-03,"{girl}: You knew this wasn't a game, didn't you?"
-ED-01-04,A line appears on the terminal: Caretaker persona · Ark AI · Year 15 of operation
-ED-01-05,{girl}: It's okay. As long as it's you.
-ED-02-confidence,"{girl}: Next time, I want to go meet them myself."
-ED-02-curiosity,{girl}: How many people... are still on Earth?
-ED-02-empathy,"{girl}: They've been there all along, waiting for a hundred years."
-ED-03-01,Start over

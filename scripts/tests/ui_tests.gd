@@ -38,6 +38,7 @@ func _ready() -> void:
 	await test_story_runner_choice_changes_state()
 	await test_story_screen_skip()
 	await test_week3_plant_and_seed_jar()
+	await test_week6_branch()
 	await test_play_over()
 	test_time_jump_seed_line()
 	await test_title_to_first_week_and_pause()
@@ -171,7 +172,6 @@ func test_story_triggers_and_fallback() -> void:
 
 func test_story_runner_choice_changes_state() -> void:
 	GameState.reset()
-	var trust := GameState.get_stat("trust")
 	var runner := StoryRunner.new()
 	var line := await runner.start("op.dialogue", "start")
 	_ok(line != null, "开场能读到第一句")
@@ -179,19 +179,28 @@ func test_story_runner_choice_changes_state() -> void:
 		return
 	_eq(StoryRunner.text_of(line), Text.t("OP-01-01"), "台词按编号取文字表")
 	_eq(StoryRunner.speaker_of(line), "", "旁白不显示名字")
-	line = await runner.next(line.next_id)
+	# 选项用第 1 周夜里看地球（W1-05）：选第一个，好奇 +1、记下标记给第 3 周用
+	var curiosity := GameState.get_stat("curiosity")
+	line = await runner.start("w1.dialogue", "night")
 	_eq(StoryRunner.speaker_of(line), GameState.girl_name, "girl 显示她的名字")
-	_eq(line.responses.size(), 2, "开场有两个选项")
+	var count := 0
+	while line != null and line.responses.is_empty() and count < 20:
+		line = await runner.next(line.next_id)
+		count += 1
+	_ok(line != null and line.responses.size() == 3, "夜里看地球有三个选项")
+	if line == null:
+		return
 	Text.language = "en"
-	_eq(StoryRunner.text_of(line.responses[0]), Text.t("OP-01-03"), "选项也能显示英文")
+	_eq(StoryRunner.text_of(line.responses[0]), Text.t("W1-05-91"), "选项也能显示英文")
 	Text.language = "zh"
 	line = await runner.next(line.responses[0].next_id)
-	_eq(GameState.get_stat("trust"), trust + int(DataDB.balance("story_op_greet_trust")), "选项改了属性")
-	var count := 0
+	_eq(GameState.get_stat("curiosity"), curiosity + int(DataDB.balance("story_choice_small")), "选项改了属性")
+	_ok(GameState.flags.get("w1_night_maybe", false), "选项记下标记")
+	count = 0
 	while line != null and count < 20:
 		line = await runner.next(line.next_id)
 		count += 1
-	_ok(line == null, "开场能走到结尾")
+	_ok(line == null, "夜里看地球能走到结尾")
 	GameState.reset()
 
 
@@ -226,14 +235,14 @@ func test_week3_plant_and_seed_jar() -> void:
 	said = await _play_all("w3.dialogue", "plant")
 	_ok(GameState.flags.get("plant_event_done", false), "植物事件播完设 plant_event_done")
 	_eq(StoryRunner.ark_name(), Text.t("UI-54-06"), "ARK-01 有了名字")
-	_ok("W3-03-19" in said and not "W3-04-01" in said, "已有种子罐：起名后说我们有种子")
+	_ok("W3-03-19" in said and not "W3-04-01" in said, "已有种子罐：起名后说土能种，不再引导去维修站")
 	_ok(said.find("W3-05-05") < said.find("W3-03-19"), "W3-03-19 在起名之后")
 	_ok(not "w3_plant_fallback" in _ids(StoryTriggers.pick("week_end")), "看过植物事件后不再保底")
 	# 植物事件后才找到
 	GameState.reset()
 	GameState.week = 3
 	said = await _play_all("w3.dialogue", "plant")
-	_ok("W3-04-01" in said and not "W3-03-19" in said, "还没种子罐：引导去维修站")
+	_ok("W3-04-01" in said and "W3-03-19" in said, "还没种子罐：种植区照样解锁，再引导去维修站")
 	GameState.flags["seed_jar_found"] = true
 	said = await _play_all("w3.dialogue", "seed_jar")
 	_ok("W3-04-05" in said and not "W3-04-08" in said, "植物事件后找到：可以自己种了")
@@ -261,13 +270,36 @@ func test_play_over() -> void:
 	GameState.reset()
 
 
+## 第 6 周分线（定稿文案 09_第6周）：她进温室就遇到幸存者，第 7 周走 W7A；没进去走 W7B
+func test_week6_branch() -> void:
+	GameState.reset()
+	GameState.week = 6
+	_ok("w6_bridge" in _ids(StoryTriggers.pick("week_end")), "第 6 周结束本周：保底播过桥")
+	GameState.change_stat("confidence", 100)
+	var said := await _play_all("w6.dialogue", "bridge")
+	_ok(GameState.met_survivor and "W6-04-12" in said, "自信够高：自己走进温室，遇到他")
+	_eq(GameState.cognition, GameState.Cognition.DOUBT, "遇到后她开始怀疑")
+	GameState.week = 7
+	var morning := _ids(StoryTriggers.pick("week_start"))
+	_ok("w7a_morning" in morning and not "w7b_morning" in morning, "遇到线：第 7 周走 W7A")
+	said = await _play_all("w7.dialogue", "a_star")
+	_eq(GameState.cognition, GameState.Cognition.BELIEVE, "W7A 验证后相信地球是真的")
+	GameState.reset()
+	GameState.week = 7
+	morning = _ids(StoryTriggers.pick("week_start"))
+	_ok("w7b_morning" in morning and not "w7a_morning" in morning, "没遇到线：第 7 周走 W7B")
+	said = await _play_all("ed.dialogue", "ending")
+	_ok("ED-01-02" in said and "ED-01-08" in said and "ED-02-02" in said, "没遇到线又没找到入口：结局说总有一天会找到他们，接尾声")
+	GameState.reset()
+
+
 func test_time_jump_seed_line() -> void:
 	GameState.reset()
 	var before := GameState.stats.duplicate()
 	GameState.flags["seeds_from_plant"] = true
 	_ok(Text.t("UI-54-07") in PageText.time_jump(before, 8), "没找到种子罐：这些年页写植物结了种子")
-	GameState.flags["seed_jar_found"] = true
-	_ok(not Text.t("UI-54-07") in PageText.time_jump(before, 8), "找到过种子罐：不写这一行")
+	GameState.flags["plant_event_done"] = true
+	_ok(not Text.t("UI-54-07") in PageText.time_jump(before, 8), "看过植物事件：不写这一行（11.19 种植区只由植物事件解锁）")
 	GameState.reset()
 
 
@@ -304,10 +336,7 @@ func test_title_to_first_week_and_pause() -> void:
 	_ok(main.current is StoryScreen, "起名后播开场")
 	var story: StoryScreen = main.current
 	await _frames(2)
-	await story.skip()
-	story.choose(1)
-	await _frames(2)
-	await story.skip()
+	await story.skip()  # 定稿开场只有世界观介绍，没有选项，跳过就走完
 	await _frames(2)
 	_ok(main.current is ScheduleScreen, "开场后排第一周的课")
 	_ok(SaveSystem.has_save(), "第 1 周开始已自动存档")

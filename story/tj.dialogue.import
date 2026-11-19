@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://br0o06gdsla7a"
+path="res://.godot/imported/tj.dialogue-d33974767ba37a641ba3a3c113c25c45.tres"
+
+[deps]
+
+source_file="res://story/tj.dialogue"
+dest_files=["res://.godot/imported/tj.dialogue-d33974767ba37a641ba3a3c113c25c45.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,132 @@
+# 第 7 周两条线（定稿文案 10_第7周_遇到线.md = W7A，11_第7周_没遇到线.md = W7B）。
+# 显示的文字在 text/w7.csv，幸存者的台词在 text/sv.csv。
+# 修音频收发器、找地下入口都没有做成新玩法：遇到线第一次进小镇时播 a_main（修收发器、对话、温室解锁），
+# 一直没进小镇就在结束本周时保底播；"天上那颗星"和地下城（a_star）、没遇到线找入口（b_search）在结束本周时播。
+# 收发器修没修好按通信技能判断（门槛 story_w7_comms，文案 W6-04-18）。
+
+# ===== 遇到线 W7A =====
+~ a_morning
+girl: 早，新星。我一晚上都在想，他今天还会来吗？ [ID:W7A-01-02]
+=> END
+
+~ a_main
+girl: 盖板是他撬开的……要不是他，我都不知道{ark}身上还有这个。 [ID:W7A-02-01]
+修复音频收发器：需要 通信 55 [ID:W7A-02-02]
+if stat_at_least("comms", "story_w7_comms")
+	girl: 我这阵子通信课没白上，交给我！ [ID:W7A-02-03]
+	音频收发器：已修复。 [ID:W7A-02-06]
+	girl: {ark}，你要第一次开口说话了。 [ID:W7A-02-07]
+	$> set_flag("w7_transceiver_fixed")
+	=> a_talk
+girl: 还是修不好……那就用屏幕跟他说吧。 [ID:W7A-02-05]
+=> a_screen
+
+# 第一次对话（W7A-03A，收发器修好）
+~ a_talk
+girl: 你……你好？ [ID:W7A-03-01]
+survivor: ……它会说话。 [ID:SV-01-01]
+survivor: 这台机器是谁派来的？你们是哪个避难所的？ [ID:SV-01-02]
+girl: 避难所？我……我不在地上。 [ID:W7A-03-02]
+survivor: 不在地上？ [ID:SV-01-03]
+girl: 你住在这里吗？其他人呢？ [ID:W7A-03-03]
+survivor: 在下面。上面待不久，得戴着这个。 [ID:SV-01-04]
+survivor: 我们以为是别的避难所的人来了。 [ID:SV-01-05]
+survivor: 你那片绿地的苗，是我们拿的。 [ID:SV-01-06]
+- 问问他还需要什么。 [ID:W7A-03-91]
+- 问问温室能不能一起修。 [ID:W7A-03-92]
+- 先别说太多。 [ID:W7A-03-93]
+girl: 每次{ark}走到这边，信号就很差。 [ID:W7A-03-06]
+survivor: 入口那边放着干扰器，防旧机器靠近的。 [ID:SV-01-07]
+survivor: 这座温室以前能种东西。 [ID:SV-01-08]
+=> a_greenhouse
+
+# 屏幕交流（W7A-03B，收发器没修好）
+~ a_screen
+ARK-01 屏幕：你好 [ID:W7A-03-07]
+扫描仪：检测到种子 3 种（未登记的品种） [ID:W7A-03-08]
+地图已更新：C 区域标记 1 处 [ID:W7A-03-10]
+girl: 往下……他住在地下？ [ID:W7A-03-11]
+=> a_greenhouse
+
+# 一起修复旧温室（W7A-04）
+~ a_greenhouse
+新建筑：修复旧温室 [ID:W7A-04-01]
+他们来帮忙：本周工作单位 +2 [ID:W7A-04-02]
+新种子：他们给的 3 种植物 [ID:W7A-04-03]
+girl: 他们知道哪些植物能在这里长…… [ID:W7A-04-04]
+if flag("w7_transceiver_fixed")
+	survivor: 还你的。在下面养不好，还是这里的土合适。 [ID:SV-01-09]
+$> model_line("W7A-04-06")
+girl: 它们还活着…… [ID:W7A-04-06]
+$> set_flag("greenhouse_unlocked")
+=> END
+
+# 天上那颗星（W7A-06，她自己验证）
+~ a_star
+girl: 新星，我一直在想，信号为什么会断。 [ID:W7A-06-01]
+girl: 最后是地面上的一个点。 [ID:W7A-06-02]
+信号来源：地面 [ID:W7A-06-03]
+girl: 我又调了方舟的对地观测记录，看那个点。 [ID:W7A-06-04]
+girl: ……是小镇。没有颜色的小镇。 [ID:W7A-06-05]
+girl: 可是……也可能只是做得很逼真，对吧？ [ID:W7A-06-06]
+if flag("w7_transceiver_fixed")
+	girl: 你们在下面……会看天吗？ [ID:W7A-06-07]
+	survivor: 会。天上有一颗很亮的星。 [ID:SV-02-01]
+girl: 新星，我知道小镇在哪了。 [ID:W7A-06-08]
+方舟导航：预计经过小镇上空 [ID:W7A-06-09]
+girl: 我想让方舟的一块太阳能板转个角度，把光反射到那里。 [ID:W7A-06-10]
+girl: 这个要你批准。 [ID:W7A-06-11]
+- 批准。 [ID:W7A-06-91]
+	$> add_stat("trust", "story_choice_small")
+- 转吧，我也想知道答案。 [ID:W7A-06-92]
+	$> add_stat("empathy", "story_choice_small")
+- ……你确定想知道吗？ [ID:W7A-06-93]
+	girl: 嗯，我确定。 [ID:W7A-06-13]
+太阳能板 B-7：调整角度中 [ID:W7A-06-15]
+girl: 三。 [ID:W7A-06-16]
+girl: 二。 [ID:W7A-06-17]
+girl: 一。 [ID:W7A-06-18]
+if flag("w7_transceiver_fixed")
+	survivor: ……它刚才突然亮了一下。很亮。 [ID:SV-02-02]
+girl: ……他看到的那颗星星，是我们。 [ID:W7A-06-19]
+girl: 小镇是真的。 [ID:W7A-06-20]
+$> set_cognition("believe")
+$> set_flag("know_underground")
+# 地下城（W7A-07）：收发器修好时他开口邀请，没修好只有画面
+if flag("w7_transceiver_fixed")
+	survivor: 干扰器关了。跟我下来，让他们也看看你。 [ID:SV-03-01]
+$> set_flag("saw_underground")
+=> END
+
+# ===== 没遇到线 W7B =====
+# 早安之后、进主界面前：你告诉她（W7B-02）
+~ b_morning
+girl: 早，新星。今天去温室那边再看看吧？ [ID:W7B-01-02]
+《重建计划》进入第二阶段。请向她说明情况。 [ID:W7B-02-01]
+- 我有件事一直没告诉你。 [ID:W7B-02-91]
+- 你的小镇，是真的。是地球。 [ID:W7B-02-92]
+- 还记得那串脚印吗？那不是任务标记。 [ID:W7B-02-93]
+$> model_line("W7B-02-05")
+girl: ……你在开玩笑吧？ [ID:W7B-02-05]
+girl: ……我要自己看。 [ID:W7B-02-06]
+girl: {ark}的画面是从哪传过来的？天线、中继卫星…… [ID:W7B-02-07]
+信号来源：地面 [ID:W7B-02-08]
+girl: ……是小镇。没有颜色的小镇。 [ID:W7B-02-09]
+girl: 七年。我在真的地球上，待了七年。 [ID:W7B-02-10]
+$> set_cognition("believe")
+girl: 那材料、苗、脚印……不是任务。 [ID:W7B-02-11]
+girl: 是有人。地上……还有人？ [ID:W7B-02-12]
+$> set_flag("know_underground")
+本周目标：找到留下脚印的人 [ID:W7B-02-14]
+$> set_flag("greenhouse_unlocked")
+=> END
+
+# 结束本周时：找地下入口（W7B-03/04）。好奇够高她自己带路，找到入口；不够就没找到，直接进结局
+~ b_search
+if stat_at_least("curiosity", "story_w7b_lead_curiosity")
+	girl: 信号越差的地方，越可能有人。我们往信号最差的地方走。 [ID:W7B-03-01]
+	扫描仪：检测到竖井（深度未知） [ID:W7B-03-02]
+	girl: ……下面有风吹上来。是暖的。 [ID:W7B-03-03]
+	ARK-01 屏幕：你好。我们没有恶意。 [ID:W7B-04-01]
+	$> set_flag("saw_underground")
+=> END

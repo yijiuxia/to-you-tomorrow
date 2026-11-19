@@ -143,3 +143,39 @@ func camera(shot: String) -> void:
 
 func view(mode: String) -> void:
 	view_requested.emit(mode)
+
+
+# ---- 定稿剧本主线加的（2026-11-19）----
+
+## 本周小镇目标完成没有（周结算算好的，夜里的剧情据此换说法，如第 2 周 W2-08-07 / 08）
+func goal_done() -> bool:
+	return bool(GameState.last_earth_report.get("goal_done", false))
+
+
+## 某个属性低于门槛（门槛写在 balance.csv）
+func stat_below(stat_id: String, balance_id: String) -> bool:
+	return not stat_at_least(stat_id, balance_id)
+
+
+## 结局按最高的性格换一句（ED-01-05～07），和 WeekSystem.top_trait 同一个算法
+func top_trait_is(trait_id: String) -> bool:
+	return WeekSystem.top_trait() == trait_id
+
+
+## 第 6 周分线：ARK-01 走进了温室，遇到了幸存者（第 7 周据此走 W7A 或 W7B）
+func meet_survivor() -> void:
+	GameState.met_survivor = true
+
+
+func met_survivor() -> bool:
+	return GameState.met_survivor
+
+
+## 改认知状态："doubt" 怀疑（第 6 周相遇后）、"believe" 相信地球是真的（第 7 周验证后）
+func set_cognition(state: String) -> void:
+	match state:
+		"doubt":
+			if GameState.cognition == GameState.Cognition.GAME:
+				GameState.cognition = GameState.Cognition.DOUBT
+		"believe":
+			GameState.cognition = GameState.Cognition.BELIEVE
