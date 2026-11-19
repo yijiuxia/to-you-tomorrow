@@ -209,6 +209,9 @@ func _grow_vines() -> void:
 		var vine := VineCurtain.new()
 		vine.width = maxf(box.size.x, box.size.z)
 		vine.length = box.size.y
+		# yi 11.19：靠近她的那串垂到桌面
+		if String(card.name) == str(DataDB.balance("room_vine_long_card", "")):
+			vine.length = box.end.y - float(DataDB.balance("room_vine_long_bottom", 0.78))
 		vine.axis = Vector3.RIGHT if box.size.x >= box.size.z else Vector3.BACK
 		vine.seed_value = index + 1
 		vine.position = Vector3(box.get_center().x, box.end.y, box.get_center().z)

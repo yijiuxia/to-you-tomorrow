@@ -158,3 +158,5 @@ room_showpiece_fit,0.6,场所里 Lux3D 模型占房间宽度的多少
 room_vine_per_meter,90,垂藤：每米横杆长几根藤
 room_vine_leaf_spacing,0.035,垂藤：叶子间隔（米）
 room_vine_leaf_size,0.045,垂藤：叶子大小（米）
+room_vine_long_card,Card_Vine_DCab_Hang,垂到桌面的那一串垂藤（房间模型里贴片的名字，靠近她的那串）
+room_vine_long_bottom,0.78,那一串垂到多低（米，桌面高度）
