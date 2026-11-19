@@ -26,7 +26,7 @@ const MATERIALS := [
 	["Coat", "T_Girl_Coat", "coat"],
 ]
 const MODEL_HEIGHT := 1.39  # 模型原本多高（米）
-const COAT_GROW := 0.006  # 外套往外撑多少米，盖住袖子里露出来的内衣（yi 11.19）
+const COAT_GROW := 0.014  # 外套往外撑多少米，盖住袖子里露出来的内衣（yi 11.19）
 ## 坐姿：骨头名 → 绕哪根轴转多少度（大腿往前抬、小腿往下弯、胳膊放下来）
 const SIT_POSE := {
 	"J_Bip_L_UpperLeg": Vector3(-85, 0, 0),
@@ -56,6 +56,13 @@ const RETARGET := {
 ## 隔一会儿抬左手指一下桌上的平板（yi 11.19）：在坐着的动作上面把左胳膊转向平板
 const POINT_ARM := "J_Bip_L_UpperArm"
 const POINT_FOREARM := "J_Bip_L_LowerArm"
+## 指的时候握拳、只伸食指（yi 11.19）：这些手指关节往里弯
+const FIST_BONES: Array[String] = ["J_Bip_L_Middle1", "J_Bip_L_Middle2", "J_Bip_L_Middle3", "J_Bip_L_Ring1", "J_Bip_L_Ring2", "J_Bip_L_Ring3", "J_Bip_L_Little1", "J_Bip_L_Little2", "J_Bip_L_Little3"]
+const THUMB_BONES: Array[String] = ["J_Bip_L_Thumb2", "J_Bip_L_Thumb3"]
+const FIST_AXIS := Vector3(0, 0, 1)
+const FIST_ANGLE := -80.0
+const THUMB_AXIS := Vector3(0, 1, 0)
+const THUMB_ANGLE := 45.0
 const POINT_GAP := Vector2(7.0, 12.0)   # 每隔几秒指一次
 const POINT_HOLD := 1.6                  # 指着停多久
 const POINT_BLEND := 0.5                 # 抬手、放手用多久
@@ -212,6 +219,19 @@ func _point() -> void:
 	var parent := skeleton.get_bone_parent(arm)
 	var parent_q := skel_q * skeleton.get_bone_global_pose(parent).basis.orthonormalized().get_rotation_quaternion()
 	skeleton.set_bone_pose_rotation(arm, parent_q.inverse() * wanted)
+	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
+	_make_fist(THUMB_BONES, THUMB_AXIS, THUMB_ANGLE)
+
+
+## 手指从静止姿势往里弯，按指的程度混合（食指不动，就是伸着的）
+func _make_fist(bones: Array[String], axis_local: Vector3, angle: float) -> void:
+	for bone_name in bones:
+		var bone := skeleton.find_bone(bone_name)
+		if bone < 0:
+			continue
+		var rest := skeleton.get_bone_rest(bone).basis.get_rotation_quaternion()
+		var curled := rest * Quaternion(axis_local, deg_to_rad(angle))
+		skeleton.set_bone_pose_rotation(bone, skeleton.get_bone_pose_rotation(bone).slerp(curled, _point_weight))
 
 
 func _blink() -> void:
@@ -248,6 +268,9 @@ func _apply_materials(mesh: MeshInstance3D) -> void:
 				if entry[2] == "coat":
 					mat.grow = true
 					mat.grow_amount = COAT_GROW * unit
+				if entry[0] == "Tops":
+					mat.grow = true
+					mat.grow_amount = -COAT_GROW * unit  # 里面的衣服往里缩一点，抬手时不从袖子里穿出来
 				mesh.set_surface_override_material(i, mat)
 				break
 
