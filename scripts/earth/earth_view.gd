@@ -57,6 +57,23 @@ const PROP_LOOKS := {
 	"underground_hidden": [Color.BLACK, 0.0], "underground_shown": [Color(0.15, 0.15, 0.15), 0.2],
 }
 
+## Lux3D 模型（assets/models/lux3d/）：建筑种类 -> 模型名；没有文件就继续用方块
+const LUX3D_BUILDINGS := {
+	"recycler": "recycler", "generator": "generator", "purifier": "purifier", "repair_station": "hangar",
+	"farm_plot": "farm_plot", "soil_improver": "soil_improver", "relay": "relay",
+}
+## 剧情物件"种类_状态" -> 模型名
+const LUX3D_PROPS := {
+	"gate_closed": "gate", "old_power_broken": "old_power", "old_power_fixed": "old_power",
+	"greenhouse_broken": "dome", "greenhouse_half": "dome", "greenhouse_fixed": "dome",
+}
+## 远景：[模型, 东西位置(地图宽的倍数), 南北位置(地图长的倍数), 占地边长米, 朝向度]
+const LUX3D_SCENERY := [
+	["b01_power", -0.45, 0.42, 26.0, 90.0],
+	["b03_factory", 1.45, 0.47, 26.0, -90.0],
+	["shed", -0.4, 0.12, 22.0, 90.0],
+]
+
 var world: EarthWorld
 var cell_size: float
 var astar := AStarGrid2D.new()  # 机器人走路用：废墟和建筑都是障碍
@@ -80,6 +97,7 @@ func setup(earth_world: EarthWorld) -> void:
 	_build_environment()
 	_build_ground()
 	_build_boundary()
+	_build_scenery()
 	astar.region = Rect2i(0, 0, world.grid_width, world.grid_height)
 	astar.cell_size = Vector2.ONE
 	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
@@ -187,6 +205,11 @@ func _build_ground() -> void:
 	_workshop = _box_mesh(Vector3(w * cell_size * 0.96, WORKSHOP_HEIGHT, h * cell_size * 0.96), WORKSHOP_COLOR)
 	_workshop.position = rect_center(int(row["fixed_x"]), int(row["fixed_z"]), w, h) + Vector3.UP * WORKSHOP_HEIGHT / 2.0
 	add_child(_workshop)
+	var hangar := Lux3DModels.make("hangar", Vector2(w, h) * cell_size * 0.96)
+	if hangar != null:
+		(_workshop as MeshInstance3D).mesh = null
+		hangar.position = Vector3.DOWN * WORKSHOP_HEIGHT / 2.0
+		_workshop.add_child(hangar)
 
 	var body := StaticBody3D.new()
 	var shape := CollisionShape3D.new()
@@ -276,7 +299,35 @@ func _make_building(building: Dictionary, uid: int) -> Node3D:
 		color = color.lerp(PROBLEM_COLOR, 0.6)
 	var node := _solid_block(int(building["w"]), int(building["h"]), BUILDING_HEIGHTS.get(building["type"], 2.0), color)
 	node.position = rect_center(int(building["x"]), int(building["z"]), int(building["w"]), int(building["h"]))
+	# 建好且正常运转时换成 Lux3D 模型；蓝图和出问题时还用方块，颜色提示更清楚
+	if building["done"] and world.problems(uid).is_empty():
+		_swap_to_model(node, LUX3D_BUILDINGS.get(building["type"], ""), int(building["w"]), int(building["h"]))
 	return node
+
+
+## 有模型就把方块藏起来、摆上模型；碰撞盒保留，机器人寻路不受影响
+func _swap_to_model(node: Node3D, model_name: String, w: int, h: int) -> void:
+	if model_name == "":
+		return
+	var model := Lux3DModels.make(model_name, Vector2(w, h) * cell_size * 0.96)
+	if model == null:
+		return
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			child.visible = false
+	node.add_child(model)
+
+
+## 地图外面的远景建筑：B 区的发电厂、厂房，A 区的分拣棚（只看不进）
+func _build_scenery() -> void:
+	var size := map_size()
+	for item: Array in LUX3D_SCENERY:
+		var model := Lux3DModels.make(item[0], Vector2(item[3], item[3]))
+		if model == null:
+			continue
+		model.position = Vector3(item[1] * size.x, 0.0, item[2] * size.y)
+		model.rotation_degrees.y = item[4]
+		add_child(model)
 
 
 func _sync_scraps() -> void:
@@ -313,7 +364,10 @@ func _sync_props() -> void:
 		var look: Array = PROP_LOOKS.get(look_key, [Color.MAGENTA, 1.0])
 		var rect := world.prop_rect(id)
 		var node := Node3D.new()
-		if float(look[1]) > 0.0:
+		var model := Lux3DModels.make(LUX3D_PROPS.get(look_key, ""), Vector2(rect.size) * cell_size * 0.96) if LUX3D_PROPS.has(look_key) else null
+		if model != null:
+			node.add_child(model)
+		elif float(look[1]) > 0.0:
 			var mesh := _box_mesh(Vector3(rect.size.x * cell_size * 0.96, float(look[1]), rect.size.y * cell_size * 0.96), look[0])
 			mesh.position = Vector3.UP * float(look[1]) / 2.0
 			node.add_child(mesh)
