@@ -22,8 +22,8 @@ const SCREEN_BOTTOM := Color(0.01, 0.03, 0.08)
 
 static func make() -> Theme:
 	var theme := Theme.new()
-	theme.default_font_size = 17
-	var panel := box(BG, BORDER, RADIUS, 14)
+	theme.default_font_size = 14
+	var panel := box(BG, BORDER, RADIUS, 10)
 	_glow(panel, 0.18)
 	theme.set_stylebox("panel", "PanelContainer", panel)
 	theme.set_stylebox("panel", "Panel", panel)
@@ -33,13 +33,13 @@ static func make() -> Theme:
 
 	for type: String in ["Button", "CheckBox", "OptionButton", "MenuButton"]:
 		var normal := box(BG_BUTTON, BORDER, BUTTON_RADIUS, 0)
-		_pad(normal, 16, 8)
+		_pad(normal, 12, 5)
 		var hover := box(BG_HOVER, BORDER_HOVER, BUTTON_RADIUS, 0)
-		_pad(hover, 16, 8)
+		_pad(hover, 12, 5)
 		var pressed := box(BG_PRESSED, BORDER_HOVER, BUTTON_RADIUS, 0)
-		_pad(pressed, 16, 8)
+		_pad(pressed, 12, 5)
 		var disabled := box(Color(BG_BUTTON, 0.45), Color(BORDER, 0.2), BUTTON_RADIUS, 0)
-		_pad(disabled, 16, 8)
+		_pad(disabled, 12, 5)
 		if type == "CheckBox":
 			# 单选框不要底板，太重；只在指上去时亮一点
 			normal = box(Color(0, 0, 0, 0), Color(0, 0, 0, 0), BUTTON_RADIUS, 6)

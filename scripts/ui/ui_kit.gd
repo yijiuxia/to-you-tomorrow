@@ -2,9 +2,9 @@ class_name UiKit
 extends RefCounted
 ## 方块版界面的小工具：所有画面用它搭，第 5 步换美术时只要换画面，不动规则。
 
-const PAGE_MARGIN := 32
-const GAP := 12
-const TITLE_SIZE := 28
+const PAGE_MARGIN := 24
+const GAP := 10
+const TITLE_SIZE := 22
 
 
 ## 铺满屏幕的竖排容器，带边距。返回里面的 VBox，画面内容往里加。

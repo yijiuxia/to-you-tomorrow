@@ -14,17 +14,17 @@ signal end_week_confirmed
 signal place_pressed(id: String)  # 从舱门电梯或第 7 周按钮去别的场所
 
 const ICON_DIR := "res://assets/ui/icons/"
-const ICON_SIZE := 20
-const ICON_SMALL := 16
-const MARGIN := 16
-const TOP_HEIGHT := 46.0
-const LEFT_WIDTH := 300.0
-const CENTER_WIDTH := 500.0
-const RIGHT_WIDTH := 150.0
-const BUBBLE_WIDTH := 420.0
-const BAR_HEIGHT := 5.0
-const SMALL_FONT := 13
-const TITLE_FONT := 20
+const ICON_SIZE := 16
+const ICON_SMALL := 13
+const MARGIN := 12
+const TOP_HEIGHT := 34.0
+const LEFT_WIDTH := 236.0
+const CENTER_WIDTH := 390.0
+const RIGHT_WIDTH := 118.0
+const BUBBLE_WIDTH := 330.0
+const BAR_HEIGHT := 4.0
+const SMALL_FONT := 11
+const TITLE_FONT := 15
 const STATUS_STATS := {"mood": "smile", "curiosity": "bulb", "stamina": "battery", "empathy": "hands", "confidence": "star"}
 const SKILL_STATS := {"mechanics": "wrench", "ecology": "leaf", "comms": "signal"}
 const COURSE_ICONS := {"skill": "book", "confidence": "star", "curiosity": "bulb", "empathy": "hands", "trust": "heart", "rest": "moon"}
@@ -76,7 +76,7 @@ func _build_top_bar() -> void:
 	bar.offset_right = -MARGIN
 	bar.offset_top = 10
 	bar.custom_minimum_size.y = TOP_HEIGHT
-	bar.add_theme_stylebox_override("panel", _panel_style(8))
+	bar.add_theme_stylebox_override("panel", _panel_style(6))
 	var row := _row(bar, 14)
 	_icon(row, "home", ICON_SIZE + 4)
 	_label(row, Text.t("RT-09-01"), TITLE_FONT)
@@ -124,17 +124,17 @@ func _build_left_column() -> void:
 
 	# 人物卡：yi 定不做头像，只放名字、年龄、周数和信任
 	var card := PanelContainer.new()
-	card.add_theme_stylebox_override("panel", _panel_style(14))
+	card.add_theme_stylebox_override("panel", _panel_style(9))
 	_status_column.add_child(card)
 	var info := VBoxContainer.new()
 	card.add_child(info)
 	var name_row := _row(info, 10)
-	_label(name_row, GameState.girl_name, 24)
+	_label(name_row, GameState.girl_name, 18)
 	_label(name_row, Text.f("RT-09-04", {"age": GameState.age, "week": GameState.week}), SMALL_FONT, GlassTheme.TEXT_DIM)
 	_stat_line(info, "trust", "heart", false)
 
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _panel_style(14))
+	panel.add_theme_stylebox_override("panel", _panel_style(9))
 	_status_column.add_child(panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 7)
@@ -165,7 +165,7 @@ func _stat_line(parent: Control, id: String, icon_name: String, with_word: bool)
 	parent.add_child(line)
 	var head := _row(line, 8)
 	_icon(head, icon_name, ICON_SMALL).modulate = GlassTheme.ACCENT
-	_label(head, UiKit.stat_name(id), 15)
+	_label(head, UiKit.stat_name(id), 12)
 	if with_word:
 		_label(head, _band_word(id), SMALL_FONT, GlassTheme.TEXT_DIM)
 	_spacer(head)
@@ -200,7 +200,7 @@ static func stat_max(id: String) -> int:
 
 func _build_center() -> void:
 	center = PanelContainer.new()
-	center.add_theme_stylebox_override("panel", _panel_style(16))
+	center.add_theme_stylebox_override("panel", _panel_style(10))
 	add_child(center)
 	center.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE)
 	center.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -275,7 +275,7 @@ func _fill_plan() -> void:
 	var goal_text := VBoxContainer.new()
 	goal_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	goal_row.add_child(goal_text)
-	_label(goal_text, Text.t("RT-09-17"), 15)
+	_label(goal_text, Text.t("RT-09-17"), 12)
 	var intent := Text.f("RT-09-18", {"girl": GameState.girl_name, "intent": Text.t("UI-12-" + GameState.girl_intent)}) if GameState.girl_intent != "none" else Text.t("RT-09-19")
 	_label(goal_text, intent, SMALL_FONT, GlassTheme.TEXT_DIM).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
@@ -286,10 +286,10 @@ func _fill_plan() -> void:
 		line.add_theme_stylebox_override("panel", GlassTheme.box(Color(1, 1, 1, 0.03), Color(GlassTheme.BORDER, 0.25), 6, 6))
 		_center_box.add_child(line)
 		var row := _row(line, 12)
-		var day_label := _label(row, Text.t("RT-09-%02d" % (20 + day)), 15)
-		day_label.custom_minimum_size.x = 44
+		var day_label := _label(row, Text.t("RT-09-%02d" % (20 + day)), 12)
+		day_label.custom_minimum_size.x = 34
 		_icon(row, COURSE_ICONS.get(str(course.get("type", "")), "dot"), ICON_SMALL).modulate = GlassTheme.ACCENT
-		var name_label := _label(row, Text.t(str(course.get("name_key", course_id))), 15)
+		var name_label := _label(row, Text.t(str(course.get("name_key", course_id))), 12)
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		UiKit.set_hover_text(name_label, Text.t(str(course.get("desc_key", ""))))
 		var resting := course_id == "rest"
@@ -310,11 +310,11 @@ func _fill_growth() -> void:
 	var written := RoomRules.journal_weeks()
 	if written.is_empty():
 		_center_header("book", Text.t("RT-09-11"), "")
-		_wrap(_label(_center_box, Text.t("RT-04-60"), 15))
+		_wrap(_label(_center_box, Text.t("RT-04-60"), 12))
 		return
 	_center_header("book", Text.t("RT-09-11"), Text.f("TB-06-01", {"week": written[-1]}))
 	for line in RoomRules.journal_text(written[-1]):
-		_wrap(_label(_center_box, line, 15))
+		_wrap(_label(_center_box, line, 12))
 
 
 ## 记忆日志：她记住的约定、喜好和最近几周的事
@@ -330,28 +330,28 @@ func _fill_memory() -> void:
 	if lines.is_empty():
 		lines.append(Text.t("RT-09-34"))
 	for line in lines:
-		_wrap(_label(_center_box, line, 14))
+		_wrap(_label(_center_box, line, 12))
 
 
 ## 方舟总览：地球情况 + 方舟各处哪些能去
 func _fill_overview() -> void:
 	_center_header("globe", Text.t("RT-09-13"), "")
 	for line in RoomRules.earth_lines():
-		_wrap(_label(_center_box, line, 15))
+		_wrap(_label(_center_box, line, 12))
 	_center_box.add_child(HSeparator.new())
-	_label(_center_box, Text.t("RT-09-40"), 15)
+	_label(_center_box, Text.t("RT-09-40"), 12)
 	for row in RoomRules.elevator_places():
 		if row["id"] == "cabin":
 			continue
 		var key := "RT-09-42" if RoomRules.is_place_open(row["id"]) else "RT-09-41"
-		_label(_center_box, Text.f(key, {"name": Text.t(row["name_key"]), "week": row["open_week"]}), 14, GlassTheme.TEXT_DIM)
+		_label(_center_box, Text.f(key, {"name": Text.t(row["name_key"]), "week": row["open_week"]}), 12, GlassTheme.TEXT_DIM)
 
 
 # ---------- 右边竖排菜单 ----------
 
 func _build_right_menu() -> void:
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _panel_style(8))
+	panel.add_theme_stylebox_override("panel", _panel_style(6))
 	add_child(panel)
 	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_MINSIZE)
 	panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -373,7 +373,7 @@ func _build_right_menu() -> void:
 func _menu_button(parent: Control, icon_name: String, text: String, on_pressed: Callable) -> Button:
 	var button := _flat_button(parent, text, icon_name, on_pressed)
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	button.custom_minimum_size.y = 44
+	button.custom_minimum_size.y = 32
 	return button
 
 
@@ -381,7 +381,7 @@ func _menu_button(parent: Control, icon_name: String, text: String, on_pressed: 
 
 func _build_bubble() -> void:
 	var bubble := _corner_panel(Control.PRESET_BOTTOM_LEFT)
-	bubble.add_theme_stylebox_override("panel", _panel_style(14))
+	bubble.add_theme_stylebox_override("panel", _panel_style(9))
 	bubble.offset_left = MARGIN
 	bubble.offset_bottom = -MARGIN
 	bubble.custom_minimum_size.x = BUBBLE_WIDTH
@@ -389,8 +389,8 @@ func _build_bubble() -> void:
 	bubble.add_child(box)
 	var head := _row(box, 8)
 	_icon(head, "wave", ICON_SMALL).modulate = GlassTheme.ACCENT
-	_label(head, GameState.girl_name, 15, GlassTheme.ACCENT)
-	_label(head, "···", 15, GlassTheme.TEXT_DIM)
+	_label(head, GameState.girl_name, 12, GlassTheme.ACCENT)
+	_label(head, "···", 12, GlassTheme.TEXT_DIM)
 	# 人物 AI 线程的 ChatPresence：她自己做事、偶尔主动开口（比赛版 4.5）
 	var presence := ChatPresence.new()
 	presence.custom_minimum_size.x = BUBBLE_WIDTH - 32.0
@@ -402,7 +402,7 @@ func _build_bubble() -> void:
 
 func _build_bottom() -> void:
 	var holder := _corner_panel(Control.PRESET_CENTER_BOTTOM)
-	holder.add_theme_stylebox_override("panel", _panel_style(8))
+	holder.add_theme_stylebox_override("panel", _panel_style(6))
 	holder.offset_bottom = -MARGIN
 	var row := _row(holder, 10)
 	if RoomRules.can_go_underground():
@@ -413,7 +413,7 @@ func _build_bottom() -> void:
 
 func _build_time() -> void:
 	var badge := _corner_panel(Control.PRESET_BOTTOM_RIGHT)
-	badge.add_theme_stylebox_override("panel", _panel_style(12))
+	badge.add_theme_stylebox_override("panel", _panel_style(6))
 	badge.offset_right = -MARGIN
 	badge.offset_bottom = -MARGIN
 	var row := _row(badge, 10)
@@ -421,7 +421,7 @@ func _build_time() -> void:
 	var box := VBoxContainer.new()
 	row.add_child(box)
 	_label(box, Text.t("RT-09-08"), SMALL_FONT, GlassTheme.TEXT_DIM)
-	_label(box, Text.f("RT-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}), 15)
+	_label(box, Text.f("RT-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}), 12)
 
 
 # ---------- 弹出 ----------
@@ -479,7 +479,7 @@ func _corner_panel(preset: Control.LayoutPreset) -> PanelContainer:
 func _header(parent: Control, icon_name: String, text: String) -> void:
 	var head := _row(parent, 8)
 	_icon(head, icon_name, ICON_SMALL).modulate = GlassTheme.ACCENT
-	_label(head, text, 16)
+	_label(head, text, 13)
 	parent.add_child(HSeparator.new())
 
 
@@ -547,7 +547,7 @@ func _flat_button(parent: Control, text: String, icon_name: String, on_pressed: 
 
 func _icon_button(parent: Control, icon_name: String, on_pressed: Callable) -> Button:
 	var button := _flat_button(parent, "", icon_name, on_pressed)
-	button.custom_minimum_size = Vector2(36, 32)
+	button.custom_minimum_size = Vector2(28, 24)
 	return button
 
 
