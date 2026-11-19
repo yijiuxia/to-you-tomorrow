@@ -60,9 +60,7 @@ const POINT_FOREARM := "J_Bip_L_LowerArm"
 const POINT_HAND := "J_Bip_L_Hand"
 const POINT_SHOULDER := "J_Bip_L_Shoulder"
 const POINT_CHEST := "J_Bip_C_UpperChest"
-const SHOULDER_SHARE := 0.15   # 肩膀跟着转几成
-const ELBOW_REACH := 0.35      # 手肘往平板方向伸出去多少（肩膀到平板距离的几成）
-const ELBOW_DROP := 0.18       # 手肘往下放多少米（贴近身体，不往外甩）
+const SHOULDER_SHARE := 0.35   # 肩膀跟着转几成
 const CHEST_SHARE := 0.08      # 上身跟着转几成（很小，只是带一下）
 const POINT_INDEX_ROOT := "J_Bip_L_Index1"
 const POINT_INDEX_TIP := "J_Bip_L_Index3"
@@ -209,13 +207,14 @@ func _point() -> void:
 	var forearm := skeleton.find_bone(POINT_FOREARM)
 	if arm < 0 or forearm < 0:
 		return
-	# 像真人指东西：肩膀和上身轻轻带一下，手肘往下、贴近身体，小臂往前伸向平板（yi：之前整条胳膊往外甩）
+	# 肩膀和上身跟着往平板那边带一点，再抬整条胳膊指向平板（yi：手肘改回原来的样子）
 	_turn_toward(POINT_CHEST, POINT_SHOULDER, point_target, CHEST_SHARE)
 	_turn_toward(POINT_SHOULDER, POINT_ARM, point_target, SHOULDER_SHARE)
-	var shoulder := skeleton.global_transform * skeleton.get_bone_global_pose(arm).origin
-	var elbow_goal := shoulder + (point_target - shoulder) * ELBOW_REACH + Vector3(0, -ELBOW_DROP, 0)
-	_turn_toward(POINT_ARM, POINT_FOREARM, elbow_goal, 1.0)
-	_turn_toward(POINT_FOREARM, POINT_HAND, point_target, 1.0)
+	# 小臂伸直（回到静止时相对大臂的朝向），肘部留一点弯
+	var straight := skeleton.get_bone_rest(forearm).basis.get_rotation_quaternion()
+	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight * POINT_STRAIGHTEN))
+	# 大臂转向平板：从"现在胳膊的方向"转到"肩膀指向平板的方向"
+	_turn_toward(POINT_ARM, POINT_FOREARM, point_target, 1.0)
 	var room_target := point_target
 	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
 	# yi：手腕不要往外翻。不再单独转手腕，手保持原来动作里的朝向，小臂已经对着平板
