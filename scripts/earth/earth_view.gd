@@ -232,6 +232,8 @@ func _build_ground() -> void:
 	add_child(_workshop)
 	# 开局是破机库（A6 演变图第一张），修好维修站后换成新机库；模型比格子大一圈，碰撞还是按格子
 	var hangar := Lux3DModels.make("hangar_ruin", Vector2(w, h) * cell_size * HANGAR_SCALE)
+	if hangar == null:
+		hangar = Lux3DModels.make("hangar", Vector2(w, h) * cell_size * HANGAR_SCALE)
 	if hangar != null:
 		(_workshop as MeshInstance3D).mesh = null
 		hangar.position = Vector3.DOWN * WORKSHOP_HEIGHT / 2.0
