@@ -329,9 +329,15 @@ func _make_object(row: Dictionary) -> void:
 		mesh.visible = false
 		girl = GirlModel.new()
 		# 大小和坐下时往下放多少都在 balance.csv（yi：按参考图比例放大）
-		var girl_scale := float(DataDB.balance("room_girl_scale", 1.0))
+		# 15 岁（时间跳跃后）再大一些（yi 11.19）
+		var teen := GameState.age >= int(DataDB.balance("teen_age", 15))
+		var girl_scale := float(DataDB.balance("room_girl_scale_15" if teen else "room_girl_scale", 1.0))
 		girl.scale = Vector3.ONE * girl_scale
-		girl.position = Vector3(0, -float(row["y"]) + float(DataDB.balance("room_girl_drop", -0.25)), 0)
+		girl.position = Vector3(0, -float(row["y"]) + float(DataDB.balance("room_girl_drop_15" if teen else "room_girl_drop", -0.25)), 0)
+		# 平板在哪：她隔一会儿抬手指一下
+		for other in RoomRules.objects_in(scene_id):
+			if other["kind"] == "tablet":
+				girl.point_target = Vector3(float(other["x"]), float(other["y"]), float(other["z"]))
 		body.add_child(girl)
 	if row["kind"] == "talk":
 		_exclaim = Label3D.new()

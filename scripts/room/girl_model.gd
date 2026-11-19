@@ -51,6 +51,12 @@ const RETARGET := {
 	"mixamorig_RightUpLeg": "J_Bip_R_UpperLeg", "mixamorig_RightLeg": "J_Bip_R_LowerLeg",
 	"mixamorig_RightFoot": "J_Bip_R_Foot", "mixamorig_RightToeBase": "J_Bip_R_ToeBase",
 }
+## 隔一会儿抬左手指一下桌上的平板（yi 11.19）：在坐着的动作上面把左胳膊转向平板
+const POINT_ARM := "J_Bip_L_UpperArm"
+const POINT_FOREARM := "J_Bip_L_LowerArm"
+const POINT_GAP := Vector2(7.0, 12.0)   # 每隔几秒指一次
+const POINT_HOLD := 1.6                  # 指着停多久
+const POINT_BLEND := 0.5                 # 抬手、放手用多久
 const BLINK_KEY := "Fcl_EYE_Close"
 const SMILE_KEY := "Fcl_ALL_Joy"
 const BLINK_TIME := 0.12
@@ -66,7 +72,10 @@ var _time := 0.0
 var _next_blink := 3.0
 var _rng := RandomNumberGenerator.new()
 var _source: Skeleton3D          # 播着 Sitting Idle 的 Mixamo 骨架（藏起来，只拿它的动作）
-var _pairs: Array = []           # [源骨头, 目标骨头, 源静止朝向(世界), 目标静止朝向(世界)]，父骨头在前
+var _pairs: Array = []
+var point_target := Vector3.INF  # 平板的位置（房间坐标），房间画面设
+var _point_weight := 0.0
+var _next_point := 4.0           # [源骨头, 目标骨头, 源静止朝向(世界), 目标静止朝向(世界)]，父骨头在前
 
 
 ## 模型文件在不在（打包漏了就退回胶囊）
@@ -93,6 +102,7 @@ func _process(delta: float) -> void:
 	_time += delta
 	if _source != null:
 		_retarget()
+		_point()
 	elif _chest >= 0:
 		var breath := 1.0 + sin(_time * BREATH_SPEED) * BREATH_DEPTH
 		skeleton.set_bone_pose_scale(_chest, Vector3(breath, breath, breath))
@@ -160,6 +170,45 @@ func _retarget() -> void:
 		if parent >= 0:
 			parent_rot = skeleton.get_bone_global_pose(parent).basis.orthonormalized().get_rotation_quaternion()
 		skeleton.set_bone_pose_rotation(pair[1], parent_rot.inverse() * in_skeleton)
+
+
+## 抬手指平板：权重 0 是原来的动作，1 是胳膊伸直对着平板
+func _point() -> void:
+	if point_target == Vector3.INF:
+		return
+	if _time >= _next_point:
+		_next_point = _time + _rng.randf_range(POINT_GAP.x, POINT_GAP.y)
+		var tween := create_tween()
+		tween.tween_property(self, "_point_weight", 1.0, POINT_BLEND).set_trans(Tween.TRANS_SINE)
+		tween.tween_interval(POINT_HOLD)
+		tween.tween_property(self, "_point_weight", 0.0, POINT_BLEND).set_trans(Tween.TRANS_SINE)
+	if _point_weight <= 0.001:
+		return
+	var arm := skeleton.find_bone(POINT_ARM)
+	var forearm := skeleton.find_bone(POINT_FOREARM)
+	if arm < 0 or forearm < 0:
+		return
+	# 小臂伸直（回到静止时相对大臂的朝向）
+	var straight := skeleton.get_bone_rest(forearm).basis.get_rotation_quaternion()
+	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight))
+	# 大臂转向平板：在世界里算从"现在胳膊的方向"转到"肩膀指向平板的方向"
+	var skel_basis := skeleton.global_basis.orthonormalized()
+	var arm_pose := skeleton.get_bone_global_pose(arm)
+	var hand_pose := skeleton.get_bone_global_pose(forearm)
+	var shoulder := skeleton.global_transform * arm_pose.origin
+	var elbow := skeleton.global_transform * hand_pose.origin
+	var room_target := point_target  # 房间物件的坐标就是 3D 世界坐标
+	var now_dir := (elbow - shoulder).normalized()
+	var want_dir := (room_target - shoulder).normalized()
+	if now_dir.is_zero_approx() or want_dir.is_zero_approx():
+		return
+	var turn := Quaternion(now_dir, want_dir)
+	var skel_q := skel_basis.get_rotation_quaternion()
+	var arm_global := skel_q * arm_pose.basis.orthonormalized().get_rotation_quaternion()
+	var wanted: Quaternion = (Quaternion.IDENTITY.slerp(turn, _point_weight)) * arm_global
+	var parent := skeleton.get_bone_parent(arm)
+	var parent_q := skel_q * skeleton.get_bone_global_pose(parent).basis.orthonormalized().get_rotation_quaternion()
+	skeleton.set_bone_pose_rotation(arm, parent_q.inverse() * wanted)
 
 
 func _blink() -> void:
