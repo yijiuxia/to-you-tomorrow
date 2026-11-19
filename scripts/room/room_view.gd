@@ -190,6 +190,7 @@ func _load_model() -> void:
 	_build_backdrop()
 	_apply_glass()
 	_turn_off_fake_lights()
+	_move_tablet()
 	_grow_vines()
 
 
@@ -218,6 +219,19 @@ func _grow_vines() -> void:
 		viewport.add_child(vine)
 		card.visible = false
 		index += 1
+
+
+## 桌上平板（连支架）往她那边挪一点，她指的时候手指刚好点到屏幕（yi 11.19）
+const TABLET_PARTS: Array[String] = ["Terminal_Tablet", "Terminal_Tablet_Screen", "Terminal_Kickstand", "Terminal_Dock_Tray", "Terminal_Dock_Lip"]
+
+
+func _move_tablet() -> void:
+	var parts := str(DataDB.balance("room_tablet_shift", "0,0,0")).split(",")
+	var shift := Vector3(float(parts[0]), float(parts[1]), float(parts[2]))
+	for part_name in TABLET_PARTS:
+		var node := _model.find_child(part_name, true, false) as Node3D
+		if node != null:
+			node.position += shift
 
 
 func _turn_off_fake_lights() -> void:
