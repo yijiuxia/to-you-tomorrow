@@ -373,7 +373,7 @@ func _hide_inner_sleeves(node: MeshInstance3D) -> void:
 		node.set_surface_override_material(i, overrides[i])
 
 
-## 一个顶点"主要跟着胳膊动"：权重最大的那根骨头是胳膊或手。三角形三个顶点有一个是，就删掉
+## 一个顶点"主要跟着胳膊动"：权重最大的那根骨头是胳膊、手或袖子摆动骨头。三角形三个顶点都是才删
 func _drop_arm_triangles(arrays: Array, arm_binds: Dictionary) -> PackedInt32Array:
 	var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
 	var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
@@ -391,7 +391,8 @@ func _drop_arm_triangles(arrays: Array, arm_binds: Dictionary) -> PackedInt32Arr
 		on_arm[v] = 1 if arm_binds.has(best) else 0
 	var kept := PackedInt32Array()
 	for t in range(0, indices.size(), 3):
-		if on_arm[indices[t]] == 0 and on_arm[indices[t + 1]] == 0 and on_arm[indices[t + 2]] == 0:
+		# 三个顶点都跟着胳膊动才删（边上的三角形留着，不然肩膀那里会露出参差的缺口，yi 11.19）
+		if on_arm[indices[t]] == 0 or on_arm[indices[t + 1]] == 0 or on_arm[indices[t + 2]] == 0:
 			kept.append(indices[t])
 			kept.append(indices[t + 1])
 			kept.append(indices[t + 2])
