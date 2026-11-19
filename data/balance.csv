@@ -161,3 +161,4 @@ room_vine_leaf_size,0.045,垂藤：叶子大小（米）
 room_vine_long_card,Card_Vine_DCab_Hang,垂到桌面的那一串垂藤（房间模型里贴片的名字，靠近她的那串）
 room_vine_long_bottom,0.78,那一串垂到多低（米，桌面高度）
 earth_landmark_repair_ruins,60,地标建筑（发电厂、厂房等）所在区域的废墟清到百分之多少，周结算时换成修好的样子
+earth_sky_by_week,day|day|day|evening|evening|day|night,小镇天空按周换（第 1～7 周，用 | 隔开）：day 白天 / evening 傍晚 / night 夜里；超出范围用最后一个

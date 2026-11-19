@@ -203,6 +203,7 @@ func show_selection(rect: Rect2i) -> void:
 
 ## 世界状态变了就同步画面
 func refresh() -> void:
+	set_time_of_day(sky_for_week(GameState.week))  # 小镇画面跨周不重建时，天空也跟着换
 	_update_ground()
 	_sync_ruins()
 	_sync_buildings()
@@ -239,7 +240,13 @@ func _build_environment() -> void:
 	var holder := WorldEnvironment.new()
 	holder.environment = _environment
 	add_child(holder)
-	set_time_of_day(TIME_DAY)
+	set_time_of_day(sky_for_week(GameState.week))
+
+
+## 第几周用哪种天空（yi 定：只按周换），表在 balance.csv 的 earth_sky_by_week
+static func sky_for_week(week: int) -> String:
+	var list := str(DataDB.balance("earth_sky_by_week", TIME_DAY)).split("|")
+	return list[clampi(week - 1, 0, list.size() - 1)].strip_edges()
 
 
 ## 天空三种：白天 / 傍晚 / 夜里。颜色、太阳角度和亮度都在 SKY_PRESETS 里

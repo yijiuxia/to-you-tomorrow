@@ -27,6 +27,7 @@ func _ready() -> void:
 	test_gate_opens_with_old_power()
 	test_bridge_and_river()
 	test_landmarks()
+	test_sky_by_week()
 	test_comm_coverage()
 	test_special_fails_when_tired()
 	test_clues_and_traits()
@@ -341,6 +342,14 @@ func test_landmarks() -> void:
 	w.end_week()
 	_eq(w.props["lm_power"], "repaired", "B 区废墟清完，发电厂修好")
 	_eq(w.props["lm_purifier"], "ruined", "C 区没开放，净水罐不变")
+
+
+## 天空按周换：第 2 周白天、第 4 周傍晚、第 7 周夜里，超过 7 周用最后一个
+func test_sky_by_week() -> void:
+	_eq(EarthView.sky_for_week(2), "day", "第 2 周白天")
+	_eq(EarthView.sky_for_week(4), "evening", "第 4 周傍晚")
+	_eq(EarthView.sky_for_week(7), "night", "第 7 周夜里")
+	_eq(EarthView.sky_for_week(9), "night", "超出范围用最后一个")
 
 
 func test_comm_coverage() -> void:
