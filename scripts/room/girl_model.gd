@@ -56,6 +56,9 @@ const RETARGET := {
 ## 隔一会儿抬左手指一下桌上的平板（yi 11.19）：在坐着的动作上面把左胳膊转向平板
 const POINT_ARM := "J_Bip_L_UpperArm"
 const POINT_FOREARM := "J_Bip_L_LowerArm"
+const POINT_HAND := "J_Bip_L_Hand"
+const POINT_INDEX_ROOT := "J_Bip_L_Index1"
+const POINT_INDEX_TIP := "J_Bip_L_Index3"
 ## 指的时候握拳、只伸食指（yi 11.19）：这些手指关节往里弯
 const FIST_BONES: Array[String] = ["J_Bip_L_Middle1", "J_Bip_L_Middle2", "J_Bip_L_Middle3", "J_Bip_L_Ring1", "J_Bip_L_Ring2", "J_Bip_L_Ring3", "J_Bip_L_Little1", "J_Bip_L_Little2", "J_Bip_L_Little3"]
 const THUMB_BONES: Array[String] = ["J_Bip_L_Thumb2", "J_Bip_L_Thumb3"]
@@ -64,8 +67,9 @@ const FIST_ANGLE := -80.0
 const THUMB_AXIS := Vector3(0, 1, 0)
 const THUMB_ANGLE := 45.0
 const POINT_GAP := Vector2(7.0, 12.0)   # 每隔几秒指一次
-const POINT_HOLD := 1.6                  # 指着停多久
-const POINT_BLEND := 0.5                 # 抬手、放手用多久
+const POINT_HOLD := 1.8                  # 指着停多久
+const POINT_BLEND := 1.0                 # 抬手、放手用多久（yi：放慢一点，更自然）
+const POINT_STRAIGHTEN := 0.75           # 小臂伸直到几成（不完全伸直，肘部留一点弯）
 const BLINK_KEY := "Fcl_EYE_Close"
 const SMILE_KEY := "Fcl_ALL_Joy"
 const BLINK_TIME := 0.12
@@ -189,9 +193,9 @@ func _point() -> void:
 	if _time >= _next_point:
 		_next_point = _time + _rng.randf_range(POINT_GAP.x, POINT_GAP.y)
 		var tween := create_tween()
-		tween.tween_property(self, "_point_weight", 1.0, POINT_BLEND).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(self, "_point_weight", 1.0, POINT_BLEND).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		tween.tween_interval(POINT_HOLD)
-		tween.tween_property(self, "_point_weight", 0.0, POINT_BLEND).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(self, "_point_weight", 0.0, POINT_BLEND * 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	if _point_weight <= 0.001:
 		return
 	var arm := skeleton.find_bone(POINT_ARM)
@@ -200,7 +204,7 @@ func _point() -> void:
 		return
 	# 小臂伸直（回到静止时相对大臂的朝向）
 	var straight := skeleton.get_bone_rest(forearm).basis.get_rotation_quaternion()
-	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight))
+	skeleton.set_bone_pose_rotation(forearm, skeleton.get_bone_pose_rotation(forearm).slerp(straight, _point_weight * POINT_STRAIGHTEN))
 	# 大臂转向平板：在世界里算从"现在胳膊的方向"转到"肩膀指向平板的方向"
 	var skel_basis := skeleton.global_basis.orthonormalized()
 	var arm_pose := skeleton.get_bone_global_pose(arm)
@@ -220,7 +224,28 @@ func _point() -> void:
 	var parent_q := skel_q * skeleton.get_bone_global_pose(parent).basis.orthonormalized().get_rotation_quaternion()
 	skeleton.set_bone_pose_rotation(arm, parent_q.inverse() * wanted)
 	_make_fist(FIST_BONES, FIST_AXIS, FIST_ANGLE)
+	_aim_hand(room_target)
 	_make_fist(THUMB_BONES, THUMB_AXIS, THUMB_ANGLE)
+
+
+## 转手腕，让伸出来的食指正对平板（食指根到指尖的方向 → 指尖到平板的方向）
+func _aim_hand(target: Vector3) -> void:
+	var hand := skeleton.find_bone(POINT_HAND)
+	var root := skeleton.find_bone(POINT_INDEX_ROOT)
+	var tip := skeleton.find_bone(POINT_INDEX_TIP)
+	if hand < 0 or root < 0 or tip < 0:
+		return
+	var root_pos := skeleton.global_transform * skeleton.get_bone_global_pose(root).origin
+	var tip_pos := skeleton.global_transform * skeleton.get_bone_global_pose(tip).origin
+	var now_dir := (tip_pos - root_pos).normalized()
+	var want_dir := (target - root_pos).normalized()
+	if now_dir.is_zero_approx() or want_dir.is_zero_approx():
+		return
+	var skel_q := skeleton.global_basis.orthonormalized().get_rotation_quaternion()
+	var hand_global := skel_q * skeleton.get_bone_global_pose(hand).basis.orthonormalized().get_rotation_quaternion()
+	var wanted: Quaternion = Quaternion.IDENTITY.slerp(Quaternion(now_dir, want_dir), _point_weight) * hand_global
+	var parent_q := skel_q * skeleton.get_bone_global_pose(skeleton.get_bone_parent(hand)).basis.orthonormalized().get_rotation_quaternion()
+	skeleton.set_bone_pose_rotation(hand, parent_q.inverse() * wanted)
 
 
 ## 手指从静止姿势往里弯，按指的程度混合（食指不动，就是伸着的）
