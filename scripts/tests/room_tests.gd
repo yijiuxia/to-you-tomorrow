@@ -148,8 +148,10 @@ func test_hub_room() -> void:
 	var chat := [false]
 	hub.chat_pressed.connect(func() -> void: chat[0] = true)
 	_ok(not hub.center.visible, "课表面板默认收起")
+	_ok(not hub.bubble.visible, "对话框默认不显示")
 	hub.room.click("girl")
 	_ok(hub.talk_button.visible and not chat[0], "点她先冒出聊天按钮")
+	_ok(hub.bubble.visible, "点她才出现对话框")
 	hub.talk_button.pressed.emit()
 	_ok(chat[0], "点聊天进聊天")
 	hub.show_tab("plan")

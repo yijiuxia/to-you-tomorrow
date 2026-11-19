@@ -3,7 +3,8 @@ extends Control
 ## 3D 房间铺满整个画面，界面是浮在上面的玻璃面板——
 ## 顶栏（方舟生活 + 四个页签 + 资源 + 设置）、左上人物卡、左边当前状态、
 ## 中间偏右的大面板（本周计划 / 成长记录 / 记忆日志 / 方舟总览，跟着页签换）、
-## 右边竖排菜单（状态、课程、地球建造）、左下她说的话、底部（结束本周）、右下方舟时间。
+## 右边竖排菜单（状态、课程、地球建造）、底部（结束本周）。周数在左上"方舟生活"旁边。
+## 左下她在做什么、说什么，点她才和"聊天"一起出现。
 ## yi 11.19 定：状态和课表面板默认收起，点按钮滑出、再点收起；主界面没有自由聊天按钮，点她才冒出"聊天"。
 ## yi 定：平板和舱门不做按钮，只能点房间里的平板和门。
 ## 头像 yi 定不做。图标是 assets/ui/icons 里的简单线条图标，以后可以换美术画的。
@@ -51,6 +52,7 @@ var _status_column: VBoxContainer
 var _status_panel: PanelContainer   # "当前状态"：点右边"状态"才滑出来（yi 11.19 定）
 var _status_button: Button
 var _plan_button: Button
+var bubble: PanelContainer         # 左下她在做什么、说什么：点她才出现（yi 11.19）
 var talk_button: Button             # 点她以后在她旁边冒出来的"聊天"（yi 定：主界面不放自由聊天按钮）
 var _tweens := {}
 
@@ -70,7 +72,6 @@ func _ready() -> void:
 	_build_right_menu()
 	_build_bubble()
 	_build_bottom()
-	_build_time()
 	_build_talk_button()
 	# 课表和状态默认收起，点按钮才滑出来
 	center.visible = false
@@ -94,6 +95,7 @@ func _build_top_bar() -> void:
 	var row := _row(bar, 14)
 	_icon(row, "home", ICON_SIZE + 4).modulate = GlassTheme.TEXT
 	_label(row, Text.t("RT-09-01"), TITLE_FONT)
+	_label(row, Text.f("RT-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}), SMALL_FONT + 1, GlassTheme.ACCENT)
 	var help := _icon(row, "help", ICON_SMALL)
 	help.modulate = GlassTheme.TEXT_DIM
 	help.tooltip_text = Text.t("RT-02-17")
@@ -396,7 +398,8 @@ func _menu_button(parent: Control, icon_name: String, text: String, on_pressed: 
 # ---------- 左下：她在做什么、她说的话 ----------
 
 func _build_bubble() -> void:
-	var bubble := _corner_panel(Control.PRESET_BOTTOM_LEFT)
+	bubble = _corner_panel(Control.PRESET_BOTTOM_LEFT)
+	bubble.visible = false
 	bubble.add_theme_stylebox_override("panel", _panel_style(9))
 	bubble.offset_left = MARGIN
 	bubble.offset_bottom = -MARGIN
@@ -482,7 +485,7 @@ func _slide(panel: Control, opening: bool, from_x: float) -> void:
 		panel.visible = opening
 		panel.modulate.a = 1.0
 		return
-	var movable := not (panel.get_parent() is Container)
+	var movable := from_x != 0.0 and not (panel.get_parent() is Container)
 	if not panel.has_meta("home"):
 		panel.set_meta("home", panel.position)
 	var home: Vector2 = panel.get_meta("home")
@@ -518,7 +521,7 @@ func _mark(button: Button, on: bool) -> void:
 
 func _build_talk_button() -> void:
 	talk_button = _flat_button(self, Text.t("RT-09-43"), "chat", func() -> void:
-		talk_button.visible = false
+		_hide_talk()
 		chat_pressed.emit())
 	talk_button.add_theme_stylebox_override("normal", GlassTheme.selected_box(8))
 	talk_button.visible = false
@@ -531,6 +534,8 @@ func _show_talk_button() -> void:
 	if girl != null and room.camera.is_inside_tree():
 		spot = room.camera.unproject_position(girl.global_position + TALK_OFFSET)
 	talk_button.visible = true
+	_slide(bubble, true, 0.0)  # 贴在角落的面板只淡入，不滑
+	_fit_bubble.call_deferred()
 	talk_button.reset_size()
 	talk_button.position = spot - Vector2(talk_button.size.x / 2.0, talk_button.size.y)
 	if is_inside_tree():
@@ -538,7 +543,18 @@ func _show_talk_button() -> void:
 		create_tween().tween_property(talk_button, "modulate:a", 1.0, SLIDE_TIME)
 		get_tree().create_timer(TALK_SHOW_SEC).timeout.connect(func() -> void:
 			if is_instance_valid(talk_button):
-				talk_button.visible = false)
+				_hide_talk())
+
+
+## 藏着的时候里面自动换行的字没有宽度，高度会算得很大；出现后按内容重新算一次高度
+func _fit_bubble() -> void:
+	bubble.offset_top = bubble.offset_bottom - bubble.get_combined_minimum_size().y
+
+
+func _hide_talk() -> void:
+	talk_button.visible = false
+	if bubble.visible:
+		_slide(bubble, false, 0.0)
 
 
 # ---------- 小工具 ----------
