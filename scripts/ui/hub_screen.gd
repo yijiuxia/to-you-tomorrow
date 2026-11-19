@@ -29,7 +29,7 @@ const STATUS_STATS := {"mood": "smile", "curiosity": "bulb", "stamina": "battery
 const SKILL_STATS := {"mechanics": "wrench", "ecology": "leaf", "comms": "signal"}
 const COURSE_ICONS := {"skill": "book", "confidence": "star", "curiosity": "bulb", "empathy": "hands", "trust": "heart", "rest": "moon"}
 const TABS: Array[String] = ["plan", "growth", "memory", "overview"]
-const TAB_KEYS := {"plan": "RM-09-10", "growth": "RM-09-11", "memory": "RM-09-12", "overview": "RM-09-13"}
+const TAB_KEYS := {"plan": "RT-09-10", "growth": "RT-09-11", "memory": "RT-09-12", "overview": "RT-09-13"}
 const MEMORY_SHOWN := 8
 
 const EndWeekDialog := preload("res://scripts/ui/end_week_dialog.gd")
@@ -79,9 +79,9 @@ func _build_top_bar() -> void:
 	bar.add_theme_stylebox_override("panel", _panel_style(8))
 	var row := _row(bar, 14)
 	_icon(row, "home", ICON_SIZE + 4)
-	_label(row, Text.t("RM-09-01"), TITLE_FONT)
+	_label(row, Text.t("RT-09-01"), TITLE_FONT)
 	var help := _icon(row, "help", ICON_SMALL)
-	help.tooltip_text = Text.t("RM-02-17")
+	help.tooltip_text = Text.t("RT-02-17")
 	help.mouse_filter = Control.MOUSE_FILTER_STOP
 	_gap(row, 18)
 	for id in TABS:
@@ -90,10 +90,10 @@ func _build_top_bar() -> void:
 	_spacer(row)
 	if WeekSystem.is_earth_open() and GameState.earth != null:
 		var rec := GameState.earth.recovery()
-		_resource(row, "metal", Text.f("RM-09-02", {"value": GameState.earth.metal}))
-		_resource(row, "chip", Text.f("RM-09-03", {"value": GameState.earth.electronics}))
-		_resource(row, "bolt", Text.f("RM-09-14", {"value": rec.get("power", 0)}))
-		_resource(row, "drop", Text.f("RM-09-15", {"value": rec.get("water", 0)}))
+		_resource(row, "metal", Text.f("RT-09-02", {"value": GameState.earth.metal}))
+		_resource(row, "chip", Text.f("RT-09-03", {"value": GameState.earth.electronics}))
+		_resource(row, "bolt", Text.f("RT-09-14", {"value": rec.get("power", 0)}))
+		_resource(row, "drop", Text.f("RT-09-15", {"value": rec.get("water", 0)}))
 	_icon_button(row, "gear", _open_pause)
 
 
@@ -129,7 +129,7 @@ func _build_left_column() -> void:
 	card.add_child(info)
 	var name_row := _row(info, 10)
 	_label(name_row, GameState.girl_name, 24)
-	_label(name_row, Text.f("RM-09-04", {"age": GameState.age, "week": GameState.week}), SMALL_FONT, GlassTheme.TEXT_DIM)
+	_label(name_row, Text.f("RT-09-04", {"age": GameState.age, "week": GameState.week}), SMALL_FONT, GlassTheme.TEXT_DIM)
 	_stat_line(info, "trust", "heart", false)
 
 	var panel := PanelContainer.new()
@@ -138,7 +138,7 @@ func _build_left_column() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 7)
 	panel.add_child(box)
-	_header(box, "pulse", Text.t("RM-09-05"))
+	_header(box, "pulse", Text.t("RT-09-05"))
 	for id: String in STATUS_STATS:
 		_stat_line(box, id, STATUS_STATS[id], true)
 	var skills := _row(box, 14)
@@ -182,10 +182,10 @@ func _stat_line(parent: Control, id: String, icon_name: String, with_word: bool)
 ## 状态词：高 / 中 / 低三档（门槛和性格说明用的一样）
 func _band_word(id: String) -> String:
 	if GameState.is_high(id):
-		return Text.t("RM-09-36")
+		return Text.t("RT-09-36")
 	if GameState.is_low(id):
-		return Text.t("RM-09-38")
-	return Text.t("RM-09-37")
+		return Text.t("RT-09-38")
+	return Text.t("RT-09-37")
 
 
 static func stat_max(id: String) -> int:
@@ -265,7 +265,7 @@ func _center_header(icon_name: String, title: String, extra: String) -> void:
 
 ## 本周计划：本周目标 + 7 天课表 + 调整计划
 func _fill_plan() -> void:
-	_center_header("calendar", Text.t("RM-09-16"), Text.f("RM-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}))
+	_center_header("calendar", Text.t("RT-09-16"), Text.f("RT-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}))
 	var goal := PanelContainer.new()
 	goal.add_theme_stylebox_override("panel", GlassTheme.box(Color(GlassTheme.BG_BUTTON, 0.7), GlassTheme.BORDER, 8, 10))
 	_center_box.add_child(goal)
@@ -274,8 +274,8 @@ func _fill_plan() -> void:
 	var goal_text := VBoxContainer.new()
 	goal_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	goal_row.add_child(goal_text)
-	_label(goal_text, Text.t("RM-09-17"), 15)
-	var intent := Text.f("RM-09-18", {"girl": GameState.girl_name, "intent": Text.t("UI-12-" + GameState.girl_intent)}) if GameState.girl_intent != "none" else Text.t("RM-09-19")
+	_label(goal_text, Text.t("RT-09-17"), 15)
+	var intent := Text.f("RT-09-18", {"girl": GameState.girl_name, "intent": Text.t("UI-12-" + GameState.girl_intent)}) if GameState.girl_intent != "none" else Text.t("RT-09-19")
 	_label(goal_text, intent, SMALL_FONT, GlassTheme.TEXT_DIM).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 	for day in GameState.schedule.size():
@@ -285,20 +285,20 @@ func _fill_plan() -> void:
 		line.add_theme_stylebox_override("panel", GlassTheme.box(Color(1, 1, 1, 0.03), Color(GlassTheme.BORDER, 0.25), 6, 6))
 		_center_box.add_child(line)
 		var row := _row(line, 12)
-		var day_label := _label(row, Text.t("RM-09-%02d" % (20 + day)), 15)
+		var day_label := _label(row, Text.t("RT-09-%02d" % (20 + day)), 15)
 		day_label.custom_minimum_size.x = 44
 		_icon(row, COURSE_ICONS.get(str(course.get("type", "")), "dot"), ICON_SMALL).modulate = GlassTheme.ACCENT
 		var name_label := _label(row, Text.t(str(course.get("name_key", course_id))), 15)
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		UiKit.set_hover_text(name_label, Text.t(str(course.get("desc_key", ""))))
 		var resting := course_id == "rest"
-		_label(row, Text.t("RM-09-28" if resting else "RM-09-27"), SMALL_FONT, GlassTheme.TEXT_DIM if resting else GlassTheme.ACCENT)
+		_label(row, Text.t("RT-09-28" if resting else "RT-09-27"), SMALL_FONT, GlassTheme.TEXT_DIM if resting else GlassTheme.ACCENT)
 
 	var foot := _row(_center_box, 10)
-	var hint := _label(foot, Text.t("RM-09-29"), SMALL_FONT, GlassTheme.TEXT_DIM)
+	var hint := _label(foot, Text.t("RT-09-29"), SMALL_FONT, GlassTheme.TEXT_DIM)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var adjust := _flat_button(foot, Text.t("RM-09-30"), "calendar", func() -> void: schedule_pressed.emit())
+	var adjust := _flat_button(foot, Text.t("RT-09-30"), "calendar", func() -> void: schedule_pressed.emit())
 	adjust.add_theme_stylebox_override("normal", GlassTheme.selected_box(8))
 	# 最后一周结束直接进结局，课不会再结算，排了也没用
 	adjust.disabled = GameState.week >= int(DataDB.balance("last_week"))
@@ -306,38 +306,43 @@ func _fill_plan() -> void:
 
 ## 成长记录：她这周写的周记（平板里能看每一周）
 func _fill_growth() -> void:
-	_center_header("book", Text.t("RM-09-11"), Text.f("RM-04-01", {"week": GameState.week}))
-	for line in RoomRules.journal_text(GameState.week):
+	var written := RoomRules.journal_weeks()
+	if written.is_empty():
+		_center_header("book", Text.t("RT-09-11"), "")
+		_wrap(_label(_center_box, Text.t("RT-04-60"), 15))
+		return
+	_center_header("book", Text.t("RT-09-11"), Text.f("TB-06-01", {"week": written[-1]}))
+	for line in RoomRules.journal_text(written[-1]):
 		_wrap(_label(_center_box, line, 15))
 
 
 ## 记忆日志：她记住的约定、喜好和最近几周的事
 func _fill_memory() -> void:
-	_center_header("chat", Text.t("RM-09-33"), "")
+	_center_header("chat", Text.t("RT-09-33"), "")
 	var lines := PackedStringArray()
 	if GameState.memory != null:
 		for item: Dictionary in GameState.memory.core:
 			lines.append("· " + str(item.get("text", "")))
 		var events: Array[Dictionary] = GameState.memory.events
 		for i in range(events.size() - 1, maxi(events.size() - 1 - MEMORY_SHOWN, -1), -1):
-			lines.append(Text.f("RM-09-35", {"week": events[i].get("week", 0), "text": events[i].get("text", "")}))
+			lines.append(Text.f("RT-09-35", {"week": events[i].get("week", 0), "text": events[i].get("text", "")}))
 	if lines.is_empty():
-		lines.append(Text.t("RM-09-34"))
+		lines.append(Text.t("RT-09-34"))
 	for line in lines:
 		_wrap(_label(_center_box, line, 14))
 
 
 ## 方舟总览：地球情况 + 方舟各处哪些能去
 func _fill_overview() -> void:
-	_center_header("globe", Text.t("RM-09-13"), "")
+	_center_header("globe", Text.t("RT-09-13"), "")
 	for line in RoomRules.earth_lines():
 		_wrap(_label(_center_box, line, 15))
 	_center_box.add_child(HSeparator.new())
-	_label(_center_box, Text.t("RM-09-40"), 15)
+	_label(_center_box, Text.t("RT-09-40"), 15)
 	for row in RoomRules.elevator_places():
 		if row["id"] == "cabin":
 			continue
-		var key := "RM-09-42" if RoomRules.is_place_open(row["id"]) else "RM-09-41"
+		var key := "RT-09-42" if RoomRules.is_place_open(row["id"]) else "RT-09-41"
 		_label(_center_box, Text.f(key, {"name": Text.t(row["name_key"]), "week": row["open_week"]}), 14, GlassTheme.TEXT_DIM)
 
 
@@ -355,7 +360,7 @@ func _build_right_menu() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
 	panel.add_child(box)
-	var status := _menu_button(box, "pulse", Text.t("RM-09-31"), func() -> void: _status_column.visible = not _status_column.visible)
+	var status := _menu_button(box, "pulse", Text.t("RT-09-31"), func() -> void: _status_column.visible = not _status_column.visible)
 	status.add_theme_stylebox_override("normal", GlassTheme.selected_box(10))
 	var schedule_button := _menu_button(box, "book", Text.t("UI-01-03"), func() -> void: schedule_pressed.emit())
 	schedule_button.disabled = GameState.week >= int(DataDB.balance("last_week"))
@@ -400,7 +405,7 @@ func _build_bottom() -> void:
 	holder.offset_bottom = -MARGIN
 	var row := _row(holder, 10)
 	if RoomRules.can_go_underground():
-		_flat_button(row, Text.t("RM-07-02"), "down", func() -> void: place_pressed.emit("underground"))
+		_flat_button(row, Text.t("RT-07-02"), "down", func() -> void: place_pressed.emit("underground"))
 	var end_button := _flat_button(row, Text.t("UI-01-04"), "moon", func() -> void: _confirm.ask())
 	end_button.add_theme_stylebox_override("normal", GlassTheme.selected_box(10))
 
@@ -414,8 +419,8 @@ func _build_time() -> void:
 	_icon(row, "clock", ICON_SIZE + 4).modulate = GlassTheme.ACCENT
 	var box := VBoxContainer.new()
 	row.add_child(box)
-	_label(box, Text.t("RM-09-08"), SMALL_FONT, GlassTheme.TEXT_DIM)
-	_label(box, Text.f("RM-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}), 15)
+	_label(box, Text.t("RT-09-08"), SMALL_FONT, GlassTheme.TEXT_DIM)
+	_label(box, Text.f("RT-09-09", {"week": GameState.week, "last": int(DataDB.balance("last_week"))}), 15)
 
 
 # ---------- 弹出 ----------

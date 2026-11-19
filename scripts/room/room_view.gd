@@ -380,6 +380,8 @@ func refresh() -> void:
 					sky.albedo_color = Color(view.get("color", "#ffffff"))
 					# 方舟走廊：灰墙，不要星星
 					sky.albedo_texture = load(STARFIELD_TEX) if int(view.get("earth", 0)) == 1 or view.get("id", "") == "view_stars" else null
+					# 实时画面：地球也跟着偏灰（原始图像，没有色彩优化）
+					(_earth.material_override as StandardMaterial3D).albedo_color = EARTH_TINT * Color(view.get("color", "#ffffff"))
 					_earth.visible = int(view.get("earth", 0)) == 1
 					continue
 				mat.albedo_color = Color(RoomRules.current_option("view").get("color", "#101830"))
@@ -503,8 +505,7 @@ func _build_info_panel() -> void:
 
 func show_info(row: Dictionary) -> void:
 	_info_title.text = Text.t(row["name_key"])
-	var info_key := str(row["info_key"])
-	_info_text.text = Text.t(info_key) if not info_key.is_empty() else ""
+	_info_text.text = RoomRules.info_text(row)  # 按年龄、周数、窗外画面挑说明（定稿 RM）
 	for child in _info_buttons.get_children():
 		child.queue_free()
 	var id := str(row["id"])
@@ -514,7 +515,7 @@ func show_info(row: Dictionary) -> void:
 			RoomRules.toggle(id)
 			refresh()
 			toggle_button.text = RoomRules.toggle_label(row["effect"], RoomRules.is_on(id)))
-	UiKit.button(_info_buttons, Text.t("RM-02-16"), func() -> void:
+	UiKit.button(_info_buttons, Text.t("RT-02-16"), func() -> void:
 		hide_info()
 		stop_looking())
 	info_panel.visible = true

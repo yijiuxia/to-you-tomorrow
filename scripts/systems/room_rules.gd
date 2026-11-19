@@ -8,8 +8,6 @@ const FLAG_OPTION := "room_opt_"   # 平板选项：窗景、灯光、音乐当�
 const FLAG_JOURNAL := "room_journal_"  # 过去的周记写定后存下来（存编号和参数，换语言也能显示）
 const FLAG_UNDERGROUND := "underground_visited"
 
-const TRAIT_LINES := {"curiosity": "RM-04-10", "empathy": "RM-04-11", "confidence": "RM-04-12"}
-const LIFE_FIRST := 30  # RM-04-30 是第 1 周的生活句，往后每周 +1
 
 
 ## 某个场所里的全部物件，按表格顺序
@@ -60,11 +58,11 @@ static func toggle(id: String) -> bool:
 static func toggle_label(effect: String, on: bool) -> String:
 	match effect:
 		"light":
-			return Text.t("RM-02-10" if on else "RM-02-09")
+			return Text.t("RT-02-10" if on else "RT-02-09")
 		"cover":
-			return Text.t("RM-02-07" if on else "RM-02-08")
+			return Text.t("RT-02-07" if on else "RT-02-08")
 		"hide":
-			return Text.t("RM-02-11" if on else "RM-02-12")
+			return Text.t("RT-02-11" if on else "RT-02-12")
 	return ""
 
 
@@ -91,92 +89,138 @@ static func choose_option(group: String, id: String) -> void:
 	GameState.flags[FLAG_OPTION + group] = id
 
 
-# ---------- 周记 ----------
+# ---------- 物件说明（定稿 13_平板与房间 RM） ----------
 
-## 第 week 周的周记，每行 [编号, 参数]。当前这周随状态变；过去的周第一次被看到时写定。
-static func journal_entry(week: int) -> Array:
-	var key := FLAG_JOURNAL + str(week)
-	if GameState.flags.has(key):
-		return GameState.flags[key]
-	var lines: Array = []
-	lines.append(["RM-04-02", {}])
-	lines.append([_trait_line(), {}])
-	lines.append(["RM-04-03", {}])
-	lines.append(["RM-04-20", {}])
-	lines.append(["RM-04-04", {}])
-	lines.append(["RM-04-%02d" % (LIFE_FIRST + clampi(week, 1, 7) - 1), {}])
-	lines.append(["RM-04-05", {}])
-	if week >= int(DataDB.balance("earth_open_week")) and GameState.earth != null:
-		lines.append(["RM-04-40", {"value": earth_average()}])
-	else:
-		lines.append(["RM-04-41", {}])
-	lines.append(["RM-04-06", {}])
-	lines.append([_trust_line(), {}])
-	if week < GameState.week:
-		GameState.flags[key] = lines
-	return lines
+## 她给 ARK-01 起的名字（第 3 周起名前用型号）
+static func ark_name() -> String:
+	var name := str(GameState.flags.get(StoryRunner.ARK_NAME_FLAG, ""))
+	return name if not name.is_empty() else "ARK-01"
 
 
-static func journal_text(week: int) -> PackedStringArray:
-	var result := PackedStringArray()
-	for line: Array in journal_entry(week):
-		result.append(Text.f(line[0], line[1]))
+## 点物件看到的说明：分 8 岁 / 15 岁；挂册按周数换页，植物第 3 周后多一句；窗户写现在的画面
+static func info_text(row: Dictionary) -> String:
+	var keys := str(row.get("info_key", ""))
+	var later := str(row.get("info_key_15", ""))
+	if GameState.age >= int(DataDB.balance("teen_age", 15)) and not later.is_empty():
+		keys = later
+	match str(row.get("id", "")):
+		"wall_album":
+			keys = _album_key()
+		"plant":
+			if GameState.week >= 3:
+				keys = "RM-05-03"
+	var values := {"ark": ark_name(), "view": Text.t(str(current_option("view").get("name_key", "")))}
+	var lines := PackedStringArray()
+	for key in keys.split(";", false):
+		lines.append(Text.f(key.strip_edges(), values))
+	return "
+".join(lines)
+
+
+## 挂册：第 2 周维修站的画、第 3 周小叶子、时间跳跃后草图、第 6 周后温室速写（遇到线多一张背影）
+static func _album_key() -> String:
+	if GameState.week >= 6:
+		return "RM-04-05" if GameState.met_survivor else "RM-04-04"
+	if GameState.week >= 4:
+		return "RM-04-03"
+	if GameState.week >= 3:
+		return "RM-04-02"
+	return "RM-04-01"
+
+
+# ---------- 周记（定稿 TB-06：每周结算后写一篇，五栏；第 7 周和时间跳跃没有） ----------
+
+const JOURNAL_LAST_WEEK := 6
+const JOURNAL_SECTIONS := 5
+
+
+## 已经写好的周记有哪几周（本周还没结算，所以不算本周）
+static func journal_weeks() -> Array[int]:
+	var result: Array[int] = []
+	for week in range(1, mini(GameState.week, JOURNAL_LAST_WEEK + 1)):
+		result.append(week)
 	return result
 
 
-## 她最突出的性格决定"自己"那一句；都不高就写平常的一句
-static func _trait_line() -> String:
-	var best := ""
-	var best_value := -1
-	for id: String in TRAIT_LINES:
-		if GameState.is_high(id) and GameState.get_stat(id) > best_value:
-			best = id
-			best_value = GameState.get_stat(id)
-	return TRAIT_LINES[best] if not best.is_empty() else "RM-04-13"
+## 某一周的周记：小标题 + 一句，五栏。第 6 周按有没有走进温室分两种。
+## 【模型】版周记以后由人物 AI 接，现在用定稿的后备周记。
+static func journal_text(week: int) -> PackedStringArray:
+	var result := PackedStringArray()
+	if week < 1 or week > JOURNAL_LAST_WEEK:
+		return result
+	var base := week * 10
+	if week == 6 and not GameState.met_survivor:
+		base = 70
+	var titles := Text.t("TB-06-02").split(" / ")
+	var values := {"ark": ark_name()}
+	for i in JOURNAL_SECTIONS:
+		var title := titles[i] if i < titles.size() else ""
+		result.append("【%s】%s" % [title, Text.f("TB-06-%02d" % (base + i + 1), values)])
+	return result
 
 
-static func _trust_line() -> String:
-	if GameState.is_high("trust"):
-		return "RM-04-50"
-	if GameState.is_low("trust"):
-		return "RM-04-51"
-	return "RM-04-52"
-
-
-# ---------- 地球情况 ----------
-
-static func earth_average() -> int:
-	var rec := GameState.earth.recovery()
-	var total := 0
-	for value: int in rec.values():
-		total += value
-	return total / maxi(rec.size(), 1)
-
+# ---------- 地球情况（定稿 TB-05：只放档案和观测数据，不放小镇的数据，免得把小镇和地球连起来） ----------
 
 static func earth_lines() -> PackedStringArray:
 	var result := PackedStringArray()
-	if not WeekSystem.is_earth_open() or GameState.earth == null:
-		result.append(Text.t("RM-03-20"))
-		return result
-	result.append(Text.f("RM-03-18", GameState.earth.recovery()))
-	result.append(Text.f("RM-03-19", {"metal": GameState.earth.metal, "electronics": GameState.earth.electronics}))
+	for i in range(1, 7):
+		var key := "TB-05-%02d" % i
+		if i == 5 and _believes():
+			key = "TB-05-08" if GameState.met_survivor else "TB-05-09"
+		result.append(Text.t(key))
+	result.append(Text.f("TB-05-07", {"year": int(DataDB.balance("room_ark_years_before_birth")) + GameState.age}))
 	return result
 
 
-# ---------- 科技 ----------
+## 第 7 周她相信了以后，聚居点那一行要改
+static func _believes() -> bool:
+	return GameState.week >= int(DataDB.balance("last_week")) and GameState.cognition == GameState.Cognition.BELIEVE
+
+
+# ---------- 科技树（定稿 TT：技能够了自动解锁；剧情解锁的没到时显示 ???） ----------
+
+static func tech_open() -> bool:
+	return GameState.week >= int(DataDB.balance("room_tech_open_week"))
+
+
+static func is_tech_visible(id: String) -> bool:
+	var flag := str(DataDB.row("tech", id).get("show_flag", ""))
+	return flag.is_empty() or bool(GameState.flags.get(flag, false))
+
 
 static func is_tech_unlocked(id: String) -> bool:
 	var row := DataDB.row("tech", id)
-	return not row.is_empty() and GameState.get_stat(row["stat"]) >= int(row["need"])
+	if row.is_empty():
+		return false
+	var story := str(row.get("story_flag", ""))
+	if not story.is_empty():
+		return bool(GameState.flags.get(story, false))
+	for pair: Array in [["stat", "need"], ["stat2", "need2"]]:
+		var stat := str(row.get(pair[0], ""))
+		if not stat.is_empty() and GameState.get_stat(stat) < int(row[pair[1]]):
+			return false
+	return true
 
 
-## 按技能分成几列：{ 技能 id -> [科技行...] }，每列按门槛从低到高
-static func tech_tree() -> Dictionary:
-	var result := {}
+## 还差什么：技能门槛写成"机械 45（当前 12）"，剧情解锁的写 ???
+static func tech_need_text(id: String) -> String:
+	var row := DataDB.row("tech", id)
+	if not str(row.get("story_flag", "")).is_empty():
+		return "???"
+	var needs := PackedStringArray()
+	var nows := PackedStringArray()
+	for pair: Array in [["stat", "need"], ["stat2", "need2"]]:
+		var stat := str(row.get(pair[0], ""))
+		if not stat.is_empty():
+			needs.append("%s %d" % [UiKit.stat_name(stat), int(row[pair[1]])])
+			nows.append(str(GameState.get_stat(stat)))
+	return Text.f("TT-00-03", {"need": "、".join(needs), "now": " / ".join(nows)})
+
+
+## 表格顺序就是树从左到右的顺序
+static func tech_rows() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
 	for row: Dictionary in DataDB.table("tech").values():
-		if not result.has(row["stat"]):
-			result[row["stat"]] = []
-		result[row["stat"]].append(row)
-	for stat: String in result:
-		result[stat].sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["need"]) < int(b["need"]))
+		if is_tech_visible(row["id"]):
+			result.append(row)
 	return result

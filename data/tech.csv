@@ -1,12 +1,12 @@
-id,name_key,desc_key,stat,need,note
-# 科技（房间线程，yi 11.19 加）：她的技能达到 need 就自动解锁，只在平板里显示。
-# 和 buildings.csv 的建造门槛一致（发电 45、净水 40、改良器 45、中继 45），改门槛时两边一起改。
-weld,RM-08-10,RM-08-20,mechanics,20,
-generator,RM-08-11,RM-08-21,mechanics,45,同 buildings.csv generator
-arm,RM-08-12,RM-08-22,mechanics,60,展示用
-soil_test,RM-08-13,RM-08-23,ecology,20,
-purifier,RM-08-14,RM-08-24,ecology,40,同 buildings.csv purifier（还要机械 40）
-soil_improver,RM-08-15,RM-08-25,ecology,45,同 buildings.csv soil_improver
-decode,RM-08-16,RM-08-26,comms,20,
-relay,RM-08-17,RM-08-27,comms,45,同 buildings.csv relay
-long_link,RM-08-18,RM-08-28,comms,60,展示用
+id,name_key,desc_key,stat,need,stat2,need2,story_flag,show_flag,note
+# 科技树（定稿 13_平板与房间 TT）：技能够了自动解锁，只在平板里显示，第 2 周起开放。
+# stat/need 和 stat2/need2 是技能门槛（和 buildings.csv 一致，改的时候两边一起改）；story_flag 有值的靠剧情解锁（没到时显示 ???）；show_flag 有值的要这个标记出现后才显示。
+recycler,TT-01-01,TT-01-02,,0,,0,,,开局就有
+workshop,TT-02-01,TT-02-02,mechanics,10,,0,,,修复旧车间
+purifier,TT-03-01,TT-03-02,mechanics,40,ecology,40,,,
+generator,TT-04-01,TT-04-02,mechanics,45,,0,,,
+soil_improver,TT-05-01,TT-05-02,ecology,45,,0,,,
+relay,TT-06-01,TT-06-02,comms,45,,0,,,
+farm,TT-07-01,TT-07-02,,0,,0,plant_event_done,,第 3 周植物事件
+greenhouse,TT-08-01,TT-08-02,,0,,0,greenhouse_unlocked,,第 6 周剧情
+transceiver,TT-09-01,TT-09-02,comms,55,,0,,transceiver_found,第 6 周 ARK-01 自检发现音频收发器后才显示（标记名待剧情线程确认）

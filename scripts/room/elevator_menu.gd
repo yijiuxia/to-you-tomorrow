@@ -15,7 +15,7 @@ func _ready() -> void:
 	panel.custom_minimum_size.x = MENU_WIDTH
 	var box := VBoxContainer.new()
 	panel.add_child(box)
-	UiKit.title(box, Text.t("RM-05-01"))
+	UiKit.title(box, Text.t("PL-00-01"))
 	for row in RoomRules.elevator_places():
 		var id := str(row["id"])
 		if id == "cabin":
@@ -23,9 +23,9 @@ func _ready() -> void:
 		var text := Text.t(row["name_key"])
 		var open := RoomRules.is_place_open(id)
 		if not open:
-			text += " " + Text.f("RM-05-08", {"week": row["open_week"]})
+			text += " " + Text.f("RT-05-08", {"week": row["open_week"]})
 		var button := UiKit.button(box, text, func() -> void:
 			visible = false
 			place_chosen.emit(id))
 		button.disabled = not open
-	UiKit.button(box, Text.t("RM-05-11"), func() -> void: visible = false)
+	UiKit.button(box, Text.t("RT-05-11"), func() -> void: visible = false)

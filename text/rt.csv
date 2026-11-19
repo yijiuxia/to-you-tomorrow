@@ -1,0 +1,186 @@
+keys,zh,en
+# 房间、平板、场所、地下居民区、科技树（房间线程，2026-11-19）。都是临时文字，策划定了再换，编号不变。
+# RT-01 房间物件名字
+RT-01-01,{girl},{girl}
+RT-01-02,床,Bed
+RT-01-03,书桌,Desk
+RT-01-04,桌上的书,Book on the Desk
+RT-01-05,书架,Bookshelf
+RT-01-06,墙上的挂册,Wall Album
+RT-01-07,桌上的植物,Desk Plant
+RT-01-08,台灯,Desk Lamp
+RT-01-09,顶灯,Ceiling Light
+RT-01-10,ARK-01 模型,ARK-01 Model
+RT-01-11,平板,Tablet
+RT-01-12,舱门,Door
+RT-01-13,观景窗,Viewing Window
+RT-01-14,全息地球仪,Holo Globe
+# RT-02 房间物件说明
+RT-02-01,一本翻旧了的《地球植物图鉴》，书角写着：等我长大，要亲手种一棵。,"A worn copy of ""Plants of Earth"". In the corner: when I grow up, I'll plant one myself."
+RT-02-02,书架上是方舟学校发的课本：机械、生态、通信，还有一本没有封面的旧童话。,"Textbooks from the Ark school: mechanics, ecology, comms. And an old fairy tale with no cover."
+RT-02-03,挂册里贴着方舟各层的照片。最后一页是一张地球的老照片：蓝色的海，白色的云。,"Photos of every deck of the Ark. The last page is an old photo of Earth: blue sea, white clouds."
+RT-02-04,一株小小的豆苗，罩在透明灯罩里。灯罩替它挡住舱内干燥的空气。,A tiny bean sprout under a clear cover that keeps the dry cabin air away.
+RT-02-05,她照着说明书拼的 ARK-01 模型，有一只机械臂装反了，她说这样更可爱。,"The ARK-01 model she built from the manual. One arm is on backwards, and she says it's cuter that way."
+RT-02-06,窗外是现在选的景色。可以在平板里换。,Whatever view you picked. You can change it on the tablet.
+RT-02-07,打开灯罩,Open the cover
+RT-02-08,盖上灯罩,Close the cover
+RT-02-09,开灯,Light on
+RT-02-10,关灯,Light off
+RT-02-11,把书收起来,Put the book away
+RT-02-12,把书拿出来,Take the book out
+RT-02-13,近看,Look closer
+RT-02-14,看说明,Read
+RT-02-15,和她聊天,Talk to her
+RT-02-16,关闭,Close
+RT-02-17,点房间里的东西可以互动，右键退出近看。,Click things in the room. Right-click to step back.
+RT-02-18,她有话想说,She wants to say something
+RT-02-19,一个小小的全息地球仪，转得很慢。她说等小镇修好了，要把它标成绿色。,"A small holo globe, spinning slowly. She says she'll mark the town green once it's fixed."
+# RT-03 平板
+RT-03-01,平板,Tablet
+RT-03-02,窗外景色,Window View
+RT-03-03,室内音乐,Music
+RT-03-04,周记,Journal
+RT-03-05,地球情况,Earth Status
+RT-03-06,室内灯光,Room Light
+RT-03-07,科技,Tech
+RT-03-08,星空,Starfield
+RT-03-09,地球,Earth
+RT-03-10,方舟走廊,Ark Corridor
+RT-03-11,日出,Sunrise
+RT-03-12,安静,Silence
+RT-03-13,轻柔,Soft
+RT-03-14,明亮,Bright
+RT-03-15,暖白,Warm White
+RT-03-16,冷白,Cool White
+RT-03-17,夜灯,Night Light
+RT-03-18,恢复度：生态 {plants}　清理 {ruins}　电力 {power}　水 {water},"Recovery: plants {plants}  cleared {ruins}  power {power}  water {water}"
+RT-03-19,材料：金属 {metal}　电子 {electronics},"Materials: metal {metal}  electronics {electronics}"
+RT-03-20,小镇还没开放。,The town isn't open yet.
+RT-03-21,返回,Back
+# RT-04 周记（她写的，按周和她现在的性格挑句子）
+RT-04-01,第 {week} 周,Week {week}
+RT-04-02,【自己】,[Me]
+RT-04-03,【朋友】,[Friend]
+RT-04-04,【生活】,[Life]
+RT-04-05,【地球】,[Earth]
+RT-04-06,【{player}】,[{player}]
+RT-04-10,今天又发现了一个不懂的东西。不懂的东西越多，我越想知道。,I found something I don't understand again. The more I don't know, the more I want to.
+RT-04-11,ARK-01 的灯一闪一闪的，好像在难过。我想它也会累吧。,"ARK-01's light kept flickering, like it was sad. Maybe it gets tired too."
+RT-04-12,我这周做成了一件事。原来我可以。,"I got something done this week. Turns out I can."
+RT-04-13,这周平平常常的，没有特别想写的。,This week was ordinary. Nothing special to write.
+RT-04-20,我的朋友是 ARK-01。它不会说话，但它每次都会回头等我。,"My friend is ARK-01. It can't talk, but it always turns back to wait for me."
+RT-04-30,第一周：开始上课了。机械课的老师说话好快。,Week 1: classes started. The mechanics teacher talks so fast.
+RT-04-31,第二周：游戏里的小镇好安静，只有风声。,"Week 2: the town in the game is so quiet, just wind."
+RT-04-32,第三周：广场边上居然长出了一棵草！,Week 3: a plant is growing at the edge of the square!
+RT-04-33,第四周：大门开了。门后面是什么呢？,Week 4: the gate opened. What's behind it?
+RT-04-34,第五周：有人来过的脚印。是谁？,Week 5: footprints. Someone was here. Who?
+RT-04-35,第六周：桥修好了。我站在桥上，像站在真的地球上。,"Week 6: the bridge is fixed. Standing on it felt like standing on the real Earth."
+RT-04-36,第七周：我们要去地下了。,Week 7: we're going underground.
+RT-04-40,地球的恢复度到了 {value}。好像比上周绿了一点点。,Earth recovery is at {value}. A tiny bit greener than last week.
+RT-04-41,小镇还没开放，我只能在窗边想象它的样子。,"The town isn't open yet, so I imagine it from the window."
+RT-04-50,{player} 总是听我说话。我很高兴有你。,{player} always listens to me. I'm glad you're here.
+RT-04-51,{player} 今天又替我决定了。我不太高兴。,{player} decided for me again today. I'm not happy about it.
+RT-04-52,{player} 是怎样的人呢？我还在想。,What kind of person is {player}? I'm still figuring it out.
+RT-04-60,还没有周记。,No journal entries yet.
+# RT-05 电梯和场所
+RT-05-01,去哪里？,Where to?
+RT-05-02,生活舱,Living Cabin
+RT-05-03,机械室,Machine Room
+RT-05-04,温室,Greenhouse
+RT-05-05,通讯室,Comms Room
+RT-05-06,人类保护区,Human Preserve
+RT-05-07,地下居民区,Underground Settlement
+RT-05-08,（第 {week} 周开放）,(Opens in week {week})
+RT-05-09,A / D 或方向键沿过道走，点发光的东西看说明。,"A / D or arrow keys to walk, click glowing things to read."
+RT-05-10,回生活舱,Back to Cabin
+RT-05-11,取消,Cancel
+# RT-06 场所说明
+RT-06-01,机械室：她在这里上机械课。墙上挂满了工具，桌上是拆开的旧电机。,"Machine Room: where she takes mechanics class. Tools on every wall, an old motor taken apart on the bench."
+RT-06-02,工作台上的旧电机。老师说，修东西前要先听它哪里在响。,"An old motor on the bench. The teacher says: before you fix it, listen to where it hurts."
+RT-06-03,一排排的工具，每一把都刻着上一个使用者的名字。,"Rows of tools, each engraved with the name of the person who used it before."
+RT-06-04,温室：她在这里上生态课。方舟上所有的绿色都在这里。,Greenhouse: where she takes ecology class. All the green on the Ark lives here.
+RT-06-05,水培架上的生菜，叶子在灯下几乎透明。,"Lettuce on hydroponic racks, almost see-through under the lamps."
+RT-06-06,种子库的小柜子，上面写着：留给地球。,"A small seed vault. The label says: for Earth."
+RT-06-07,通讯室：她在这里上通信课。屏幕上是地球传回的雪花信号。,Comms Room: where she takes comms class. The screens show static from Earth.
+RT-06-08,一台旧收发器，天线断过一次，又被接上了。,"An old transceiver. The antenna broke once, and someone fixed it."
+RT-06-09,屏幕上的信号图。偶尔有一段规律的波，没人知道是什么。,A signal chart. Sometimes there's a regular wave nobody can explain.
+RT-06-10,人类保护区：胚胎和休眠的人都在这里。只能沿着过道看，不能靠近。,Human Preserve: embryos and sleepers rest here. You can only look from the walkway.
+RT-06-11,一排排休眠舱，玻璃上结着薄霜。每个舱上都有一个名字。,"Rows of sleep pods, frost on the glass. Every pod has a name."
+RT-06-12,胚胎库的指示灯一闪一闪，像很多很小的心跳。,"The embryo vault's lights blink, like many tiny heartbeats."
+RT-06-13,过道尽头的牌子：等地球准备好，我们就回家。,"A sign at the end of the walkway: when Earth is ready, we go home."
+# RT-09 主界面（11.19 按参考图"方舟生活"改版）
+RT-09-01,方舟生活,Ark Life
+RT-09-02,金属 {value},Metal {value}
+RT-09-03,元件 {value},Parts {value}
+RT-09-04,{age} 岁 · 方舟第 {week} 周,Age {age} · Ark week {week}
+RT-09-05,当前状态,Status
+RT-09-06,{girl},{girl}
+RT-09-07,终端,Terminal
+RT-09-08,方舟时间,Ark Time
+RT-09-09,第 {week} / {last} 周,Week {week} / {last}
+RT-09-10,本周计划,This Week
+RT-09-11,成长记录,Growth Log
+RT-09-12,记忆日志,Memories
+RT-09-13,方舟总览,Ark Overview
+RT-09-14,能源 {value}%,Power {value}%
+RT-09-15,水资源 {value}%,Water {value}%
+RT-09-16,本周成长计划,This Week's Plan
+RT-09-17,本周目标,This Week's Goal
+RT-09-18,{girl}想做：{intent},{girl} wants to: {intent}
+RT-09-19,还没有想做的事，聊聊天也许就有了。,No plans yet. Maybe a chat will spark one.
+RT-09-20,周一,Mon
+RT-09-21,周二,Tue
+RT-09-22,周三,Wed
+RT-09-23,周四,Thu
+RT-09-24,周五,Fri
+RT-09-25,周六,Sat
+RT-09-26,周日,Sun
+RT-09-27,已安排,Planned
+RT-09-28,放松一天,Day off
+RT-09-29,点"结束本周"后按这张课表上课，第二天早上看结果。,"Classes follow this plan after you end the week. Results arrive the next morning."
+RT-09-30,调整计划,Adjust Plan
+RT-09-31,状态,Status
+RT-09-32,舱门,Door
+RT-09-33,她记得的事,What she remembers
+RT-09-34,还没有记住什么。,Nothing remembered yet.
+RT-09-35,第 {week} 周：{text},Week {week}: {text}
+RT-09-36,很好,Great
+RT-09-37,平稳,Steady
+RT-09-38,偏低,Low
+RT-09-39,收起,Hide
+RT-09-40,方舟各处,Around the Ark
+RT-09-41,{name}：第 {week} 周开放,{name}: opens week {week}
+RT-09-42,{name}：可以去,{name}: open
+# RT-07 地下居民区（第 7 周；世界观没定，先用临时文字）
+RT-07-01,地下居民区,Underground Settlement
+RT-07-02,跟着幸存者去地下,Follow the survivor underground
+RT-07-03,ARK-01 跟着幸存者走下长长的阶梯。黑暗的尽头，亮起了灯。,"ARK-01 follows the survivor down a long stairway. At the end of the dark, lights come on."
+RT-07-04,用旧管道拼成的水渠，水声在洞里回响。他们自己把水引了下来。,"A channel built from old pipes, water echoing in the cave. They brought the water down themselves."
+RT-07-05,一片用镜子把地面阳光引下来的菜地。叶子很小，但都活着。,"A garden lit by mirrors that bring sunlight down from above. Small leaves, but all alive."
+RT-07-06,墙上画满了孩子的画：太阳、树、还有一个长得像 ARK-01 的机器人。,"Children's drawings cover the wall: the sun, trees, and a robot that looks like ARK-01."
+RT-07-07,洞顶挂着一盏盏手工做的灯，像地下的星星。,"Handmade lamps hang from the ceiling, like stars underground."
+RT-07-08,一块刻满名字的石碑。最下面一行是新刻的，还很浅。,"A stone carved with names. The newest line at the bottom is still shallow."
+RT-07-09,她小声说：原来……一直有人在这里活着。,"She whispers: so... people were living here all along."
+# RT-08 科技（女孩技能值够了自动解锁）
+RT-08-01,科技,Tech
+RT-08-02,她的技能够了就会自动解锁。,Unlocks automatically when her skills are high enough.
+RT-08-03,已解锁,Unlocked
+RT-08-04,需要 {stat} {need},Needs {stat} {need}
+RT-08-10,基础焊接,Basic Welding
+RT-08-11,发电设备,Generator
+RT-08-12,机械臂改装,Arm Upgrade
+RT-08-13,土壤检测,Soil Testing
+RT-08-14,净水站,Purifier
+RT-08-15,土壤改良器,Soil Improver
+RT-08-16,信号解码,Signal Decoding
+RT-08-17,通信中继,Relay
+RT-08-18,远程收发,Long-range Link
+RT-08-20,ARK-01 能修好断开的零件。,ARK-01 can weld broken parts.
+RT-08-21,能建发电设备，范围内通电。,Can build generators that power the area.
+RT-08-22,ARK-01 的机械臂更稳，施工更快。（展示用，暂不改数值）,"ARK-01's arm is steadier, building goes faster. (Display only for now)"
+RT-08-23,扫描时能看出哪里的土还能种东西。,Scans show which soil can still grow things.
+RT-08-24,能建净水站，产出清洁水。,Can build purifiers for clean water.
+RT-08-25,能建土壤改良器，每周降低污染。,Can build soil improvers that lower pollution.
+RT-08-26,能听懂地球传回的一部分信号。,Can understand some of the signals from Earth.
+RT-08-27,能建通信中继，扩大可操作范围。,Can build relays to extend range.
+RT-08-28,能和更远的地方说话。（展示用，暂不改数值）,Can talk to places farther away. (Display only for now)
