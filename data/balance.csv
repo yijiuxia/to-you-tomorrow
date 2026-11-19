@@ -128,3 +128,7 @@ chat_ark_name_max_zh,4,她给 ARK-01 起的名字，中文最多几个字
 chat_ark_name_max_en,12,她给 ARK-01 起的名字，英文最多几个字母
 chat_ark_name_pattern,"(?i)(?:叫你|叫它|call you|call it)?[^“""「'‘]{0,3}[“""「'‘](?<name>[^”""」'’，。！？,.!?\s]+)[”""」'’]",从她的话里取名字：引号里的字（她是对玩家说话，说“叫它”也算）
 chat_ark_name_banned,名字|新名字|name|ark|arky,她把这些当名字时不算（模型会把提示里的“名字”原样抄出来）
+room_look_distance,0.6,房间：近看时镜头离物件多远（米）
+room_walk_speed,3,场所里沿过道走的速度（米/秒）
+room_glow,0.35,鼠标指着能点的东西时发光多亮
+room_music_volume_db,-22,房间合成音乐的音量（分贝）

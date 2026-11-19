@@ -1,0 +1,12 @@
+id,group,name_key,color,value,note
+# 平板里能换的东西（房间线程）。view 窗外景色（color 是窗户颜色）· light 室内灯光（color 是灯色）· music 室内音乐（value 是基音频率，0 表示不放）
+view_stars,view,RM-03-08,#101830,0,
+view_earth,view,RM-03-09,#2a6ab0,0,
+view_corridor,view,RM-03-10,#a0a8b0,0,
+view_sunrise,view,RM-03-11,#f0a060,0,
+light_warm,light,RM-03-15,#fff0d8,0,
+light_cool,light,RM-03-16,#e0f0ff,0,
+light_night,light,RM-03-17,#ffa060,0,
+music_none,music,RM-03-12,,0,占位：还没有音乐素材，先用程序合成的和弦
+music_soft,music,RM-03-13,,220,
+music_bright,music,RM-03-14,,330,

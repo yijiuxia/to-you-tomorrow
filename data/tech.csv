@@ -1,0 +1,12 @@
+id,name_key,desc_key,stat,need,note
+# 科技（房间线程，yi 11.19 加）：她的技能达到 need 就自动解锁，只在平板里显示。
+# 和 buildings.csv 的建造门槛一致（发电 45、净水 40、改良器 45、中继 45），改门槛时两边一起改。
+weld,RM-08-10,RM-08-20,mechanics,20,
+generator,RM-08-11,RM-08-21,mechanics,45,同 buildings.csv generator
+arm,RM-08-12,RM-08-22,mechanics,60,展示用
+soil_test,RM-08-13,RM-08-23,ecology,20,
+purifier,RM-08-14,RM-08-24,ecology,40,同 buildings.csv purifier（还要机械 40）
+soil_improver,RM-08-15,RM-08-25,ecology,45,同 buildings.csv soil_improver
+decode,RM-08-16,RM-08-26,comms,20,
+relay,RM-08-17,RM-08-27,comms,45,同 buildings.csv relay
+long_link,RM-08-18,RM-08-28,comms,60,展示用

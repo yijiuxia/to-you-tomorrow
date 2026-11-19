@@ -5,6 +5,7 @@ signal town_pressed
 signal chat_pressed
 signal schedule_pressed
 signal end_week_confirmed
+signal place_pressed(id: String)  # 房间线程加：从舱门电梯或第 7 周按钮去别的场所
 
 const NUMBER_STATS: Array[String] = ["mood", "mechanics", "ecology", "comms", "confidence", "curiosity", "empathy", "trust"]
 const GIRL_BLOCK_COLOR := Color(0.35, 0.45, 0.6)
@@ -13,6 +14,9 @@ const PANEL_MIN_WIDTH := 420.0
 const EndWeekDialog := preload("res://scripts/ui/end_week_dialog.gd")
 
 var _confirm: EndWeekDialog
+var room: RoomView          # 房间线程加：主界面中间换成 3D 房间
+var tablet: TabletPanel
+var elevator: ElevatorMenu
 
 
 func _ready() -> void:
@@ -34,27 +38,49 @@ func _ready() -> void:
 	# 最后一周结束直接进结局，课不会再结算，排了也没用
 	schedule_button.disabled = GameState.week >= int(DataDB.balance("last_week"))
 	UiKit.button(buttons, Text.t("UI-01-04"), func() -> void: _confirm.ask())
+	# 房间线程加：第 7 周跟幸存者去地下居民区
+	if RoomRules.can_go_underground():
+		UiKit.button(buttons, Text.t("RM-07-02"), func() -> void: place_pressed.emit("underground"))
 
 	_confirm = EndWeekDialog.new()
 	_confirm.confirmed.connect(func() -> void: end_week_confirmed.emit())
 	add_child(_confirm)
 
 
-## 她的位置先放一个方块
+## 房间线程改：原来她的位置是一个方块，现在换成 3D 房间（她坐在书桌前），房间里的东西都能点。
 func _build_girl_block(parent: Control) -> void:
-	var block := ColorRect.new()
-	block.color = GIRL_BLOCK_COLOR
-	block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	parent.add_child(block)
-	var note := UiKit.label(block, Text.t("UI-01-07"))
-	note.set_anchors_preset(Control.PRESET_FULL_RECT)
-	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	note.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	room = RoomView.new()
+	room.scene_id = "cabin"
+	parent.add_child(room)
+	room.talk_requested.connect(func() -> void: chat_pressed.emit())
+	room.tablet_requested.connect(open_tablet)
+	room.door_requested.connect(open_elevator)
 	# 人物 AI 线程加：她自己做事、偶尔主动开口（比赛版 4.5）
 	var presence := ChatPresence.new()
-	presence.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	presence.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	block.add_child(presence)
+	presence.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	presence.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	room.add_child(presence)
+	presence.spoke.connect(func(_text: String, _action: String) -> void: room.set_exclaim(true))
+	var hint := UiKit.short_label(room, Text.t("RM-02-17"))
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	hint.grow_vertical = Control.GROW_DIRECTION_BEGIN
+
+
+func open_tablet() -> void:
+	if tablet == null:
+		tablet = TabletPanel.new()
+		tablet.changed.connect(room.refresh)
+		add_child(tablet)
+	tablet.visible = true
+
+
+func open_elevator() -> void:
+	if elevator == null:
+		elevator = ElevatorMenu.new()
+		elevator.place_chosen.connect(func(id: String) -> void: place_pressed.emit(id))
+		add_child(elevator)
+	elevator.visible = true
 
 
 func _build_stat_panel(parent: Control) -> void:

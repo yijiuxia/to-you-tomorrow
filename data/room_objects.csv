@@ -1,0 +1,35 @@
+id,scene,kind,effect,name_key,info_key,x,y,z,sx,sy,sz,color,note
+# 房间和各场所里能点的东西（房间线程）。scene 是所在场所（见 places.csv）。坐标单位米，x 左右、y 上下、z 前后（负数是往里）。
+# kind：talk 聊天 · info 看说明 · look 近看再看说明 · toggle 开关（effect：light 灯、hide 收起、cover 灯罩）· tablet 平板 · door 舱门 · prop 只是摆设不能点
+# 现在都是方块，换模型时按 id 换，规则不用动。
+girl,cabin,talk,,RM-01-01,,-0.6,0.6,-1.0,0.4,1.2,0.4,#e8a0a0,她坐在书桌前；以后换 VRoid 模型
+desk,cabin,prop,,RM-01-03,,-0.6,0.375,-1.8,1.6,0.75,0.7,#8a6a4a,
+book_desk,cabin,toggle,hide,RM-01-04,RM-02-01,-1.05,0.78,-1.75,0.3,0.05,0.22,#c04848,桌上的书：可收起
+lamp,cabin,toggle,light,RM-01-08,,0.05,0.95,-1.95,0.12,0.4,0.12,#f0e0a0,台灯
+plant,cabin,toggle,cover,RM-01-07,RM-02-04,-1.25,0.85,-1.95,0.15,0.2,0.15,#5aa05a,植物和灯罩
+model_ark,cabin,look,,RM-01-10,RM-02-05,-0.2,0.84,-1.7,0.14,0.16,0.14,#d0a040,ARK-01 模型
+tablet,cabin,tablet,,RM-01-11,,-0.6,0.77,-1.55,0.26,0.02,0.18,#303848,
+bed,cabin,prop,,RM-01-02,,1.9,0.25,-1.95,2.0,0.5,1.0,#7080a0,
+bookshelf,cabin,info,,RM-01-05,RM-02-02,-2.75,1.0,0.0,0.4,2.0,1.2,#6a5038,
+wall_album,cabin,look,,RM-01-06,RM-02-03,1.2,1.6,-2.42,0.6,0.45,0.04,#e0d8c0,
+window,cabin,info,window,RM-01-13,RM-02-06,-0.6,1.85,-2.43,1.4,0.9,0.02,#101830,颜色跟平板选的窗景走
+ceiling_light,cabin,toggle,light,RM-01-09,,0.0,2.95,0.0,0.6,0.05,0.6,#f8f8f0,顶灯
+door,cabin,door,,RM-01-12,,2.92,1.05,-0.6,0.06,2.1,1.0,#9098a8,点了出电梯菜单
+machine_motor,machine,info,,RM-06-02,RM-06-02,-2.0,0.9,-2.0,1.2,0.5,0.6,#a07040,
+machine_tools,machine,info,,RM-06-03,RM-06-03,2.5,1.5,-3.4,2.4,1.4,0.1,#707880,
+machine_bench,machine,prop,,RM-06-02,,-2.0,0.4,-2.0,2.0,0.8,1.0,#505860,
+greenhouse_rack1,greenhouse,info,,RM-06-05,RM-06-05,-3.0,1.0,-2.5,1.0,2.0,3.0,#4a9a4a,
+greenhouse_rack2,greenhouse,prop,,RM-06-05,,0.0,1.0,-2.5,1.0,2.0,3.0,#4a9a4a,
+greenhouse_vault,greenhouse,info,,RM-06-06,RM-06-06,3.5,0.6,-3.0,0.8,1.2,0.6,#c0b080,
+comms_radio,comms,info,,RM-06-08,RM-06-08,-2.5,0.8,-2.8,1.2,0.8,0.6,#606870,
+comms_screen,comms,info,,RM-06-09,RM-06-09,1.5,1.8,-3.4,3.0,1.6,0.1,#203040,
+preserve_pods1,preserve,info,,RM-06-11,RM-06-11,-6.0,1.0,-3.0,4.0,2.0,1.2,#a0c0e0,
+preserve_vault,preserve,info,,RM-06-12,RM-06-12,0.0,1.2,-3.2,3.0,2.4,0.8,#80a0c0,
+preserve_pods2,preserve,prop,,RM-06-11,,6.0,1.0,-3.0,4.0,2.0,1.2,#a0c0e0,
+preserve_sign,preserve,info,,RM-06-13,RM-06-13,10.5,1.6,-1.0,0.1,0.8,1.2,#e0e0e0,
+preserve_rail,preserve,prop,,RM-06-13,,0.0,1.0,-1.6,22.0,0.08,0.06,#c0c8d0,过道栏杆：只能沿过道看
+under_water,underground,info,,RM-07-04,RM-07-04,-8.0,0.3,-4.0,6.0,0.6,1.5,#4080c0,
+under_garden,underground,info,,RM-07-05,RM-07-05,-2.0,0.4,-6.0,5.0,0.8,3.0,#5aa05a,
+under_drawings,underground,info,,RM-07-06,RM-07-06,4.0,2.0,-8.9,5.0,2.5,0.1,#e0c090,
+under_lamps,underground,info,,RM-07-07,RM-07-07,0.0,7.0,-4.0,1.0,0.4,1.0,#ffd080,
+under_stone,underground,info,,RM-07-08,RM-07-08,10.0,1.2,-6.0,1.2,2.4,0.5,#808080,

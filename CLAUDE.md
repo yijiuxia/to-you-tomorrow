@@ -96,3 +96,12 @@
 - 下一步：按 `制作清单（草稿）.md`（2026-11-08 改成按系统模块）和上面的「多线程分工」并行做；文案到了做 7，模型到了做 9。yi 定：不再每一步停下来等试玩，每个模块写完跑自动测试，全部接起来后 yi 完整试玩一次。
 - 文案正在重新讨论，代码里先用临时文字，编号保持一致。
 - yi 已定：存档只做每周自动存 + 继续；中英文都做；温室不管建没建完都进结局。
+
+## 房间线程（2026-11-19，yi 的 11.12 新想法 4 项 + 科技树）
+
+- 主界面中间换成 3D 方块房间（`scripts/room/room_view.gd`），通用交互：看说明 / 近看（右键退出）/ 开关（灯、灯罩、收书）/ 点她聊天 / 点平板 / 点舱门出电梯菜单。她主动开口时头上冒"!"。
+- 平板（`tablet_panel.gd`）：窗景、音乐（没有素材，先程序合成和弦）、周记、地球情况、灯光、科技（她技能够了自动解锁，门槛和 buildings.csv 一致）。
+- 场所（`place_screen.gd`）：机械室、温室、通讯室、人类保护区（只能沿过道走），A/D 左右走。第 7 周主界面多一个按钮去地下居民区（临时文字，世界观定了再换；条件在 `RoomRules.can_go_underground()`）。
+- 规则在 `scripts/systems/room_rules.gd`，状态存在 `GameState.flags` 的 `room_` 开头的键里（随自动存档保存）。数据：`data/room_objects.csv`（物件和位置）、`places.csv`、`room_options.csv`、`tech.csv`；文字 `text/rm.csv`，编号前缀 RM；balance 前缀 `room_`。
+- 测试 `scenes/tests/room_tests.tscn`（后台）；`room_shot.tscn` 会开窗口截图，跑前先告诉 yi。
+- 注意：`--model=` 要写在 `--` 后面才生效（`... xxx.tscn -- --model=none.gguf`），否则会加载真模型。

@@ -96,6 +96,15 @@ func show_hub() -> void:
 	screen.chat_pressed.connect(show_chat)
 	screen.schedule_pressed.connect(show_schedule)
 	screen.end_week_confirmed.connect(_on_end_week)
+	screen.place_pressed.connect(show_place)  # 房间线程加
+	_show(screen)
+
+
+## 房间线程加：去机械室、温室、通讯室、人类保护区、地下居民区，看完回主界面
+func show_place(id: String) -> void:
+	var screen := PlaceScreen.new()
+	screen.place_id = id
+	screen.finished.connect(show_hub)
 	_show(screen)
 
 
