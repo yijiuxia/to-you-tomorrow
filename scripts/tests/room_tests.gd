@@ -13,6 +13,7 @@ func _ready() -> void:
 	GameState.reset()
 	test_tables()
 	test_toggles_and_options()
+	await test_morning_music()
 	test_journal()
 	test_tech()
 	test_places_open_by_week()
@@ -37,6 +38,30 @@ func test_tables() -> void:
 	for table: String in ["places", "room_options", "tech"]:
 		for row: Dictionary in DataDB.table(table).values():
 			_ok(Text.has_language(row["name_key"], "zh"), "%s 的名字编号存在：%s" % [table, row["name_key"]])
+
+
+func test_morning_music() -> void:
+	GameState.flags.erase(RoomRules.FLAG_OPTION + "music")
+	_eq(RoomRules.current_option("music")["id"], "music_morning", "主界面默认早晨")
+	_eq(RoomRules.options("music").size(), 2, "只提供早晨与关闭，未采用草稿不播放")
+	var room := RoomView.new()
+	add_child(room)
+	await _frames(2)
+	_ok(room._music != null, "早晨音频可加载")
+	if room._music != null:
+		_ok(room._music.stream is AudioStreamOggVorbis, "使用真实OGG音乐")
+		_ok(room._music.stream.loop, "启用循环")
+		_ok(room._music.playing, "主界面自动播放早晨")
+		RoomRules.choose_option("music", "music_off")
+		room._refresh_music()
+		_ok(not room._music.playing, "关闭音乐")
+		RoomRules.choose_option("music", "music_morning")
+		room._refresh_music()
+		_ok(room._music.playing, "关闭后可重新播放")
+	room.free()
+	RoomRules.choose_option("music", "music_greenhouse")
+	_eq(RoomRules.current_option("music")["id"], "music_morning", "旧存档未采用曲目回退到早晨")
+	GameState.flags.erase(RoomRules.FLAG_OPTION + "music")
 
 
 func test_toggles_and_options() -> void:

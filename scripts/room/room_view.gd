@@ -48,8 +48,6 @@ var _home := Transform3D()   # 不近看时镜头的位置
 var _looking := false
 var _main_light: OmniLight3D
 var _music: AudioStreamPlayer
-var _music_base := 0.0
-var _music_phase := 0.0
 var _info_title: Label
 var _info_text: Label
 var _info_buttons: HBoxContainer
@@ -495,7 +493,7 @@ func refresh() -> void:
 			mat.emission = mat.albedo_color
 			mat.emission_energy_multiplier = float(DataDB.balance("room_glow"))
 	if _music != null:
-		_music_base = float(RoomRules.current_option("music").get("value", 0))
+		_refresh_music()
 
 
 ## 她想说话时头上冒感叹号，点她聊过就消失
@@ -633,37 +631,23 @@ func info_text() -> String:
 	return _info_text.text if info_panel.visible else ""
 
 
-# ---------- 音乐（还没有素材，先合成一个很轻的和弦） ----------
+# ---------- 主界面音乐：仅使用已认可的早晨第四版 ----------
 
 func _build_music() -> void:
-	var stream := AudioStreamGenerator.new()
-	stream.mix_rate = 22050.0
-	stream.buffer_length = 0.3
+	var stream := load("res://assets/audio/morning_v4.ogg") as AudioStreamOggVorbis
+	if stream == null:
+		return
+	stream.loop = true
 	_music = AudioStreamPlayer.new()
 	_music.stream = stream
 	_music.volume_db = float(DataDB.balance("room_music_volume_db"))
 	add_child(_music)
-	_music.play()
-	set_process_internal(true)
+	_refresh_music()
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_INTERNAL_PROCESS and _music != null and _music.playing:
-		_fill_music()
-
-
-## 三个音（根音、大三度、五度）叠在一起，音量慢慢起伏
-func _fill_music() -> void:
-	var playback := _music.get_stream_playback() as AudioStreamGeneratorPlayback
-	if playback == null:
-		return
-	var rate := (_music.stream as AudioStreamGenerator).mix_rate
-	var frames := playback.get_frames_available()
-	for i in frames:
-		var sample := 0.0
-		if _music_base > 0.0:
-			var t := _music_phase / rate
-			var swell := 0.6 + 0.4 * sin(TAU * 0.1 * t)
-			sample = (sin(TAU * _music_base * t) + sin(TAU * _music_base * 1.25 * t) + sin(TAU * _music_base * 1.5 * t)) / 3.0 * swell * 0.5
-		playback.push_frame(Vector2(sample, sample))
-		_music_phase += 1.0
+func _refresh_music() -> void:
+	var enabled := str(RoomRules.current_option("music").get("id", "")) != "music_off"
+	if enabled and not _music.playing:
+		_music.play()
+	elif not enabled and _music.playing:
+		_music.stop()

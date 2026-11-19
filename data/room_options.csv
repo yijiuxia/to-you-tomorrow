@@ -1,5 +1,5 @@
 id,group,name_key,color,value,earth,note
-# 平板里能换的东西（定稿 13_平板与房间 TB-02～TB-04）。view 窗外景色 · light 室内灯光（color 是灯色）· music 室内音乐（value 是基音频率，0 表示不放）
+# 平板里能换的东西（定稿 13_平板与房间 TB-02～TB-04）。view 窗外景色 · light 室内灯光（color 是灯色）· music 室内音乐（音乐只使用已认可的早晨第四版）
 # view 的 color 是窗外星空和地球的色调（白色是原样）；earth 为 1 时窗外有地球；实时画面偏灰（未经色彩优化）
 view_standard,view,TB-02-01,#ffffff,0,1,默认
 view_live,view,TB-02-02,#8c9096,0,1,实时画面：原始图像，偏灰
@@ -10,7 +10,5 @@ light_warm,light,TB-03-02,#ffd8a8,0,0,
 light_cool,light,TB-03-03,#e0f0ff,0,0,
 light_night,light,TB-03-04,#ffa060,0,0,
 light_off,light,TB-03-05,#000000,0,0,关闭：灯色为黑，等于不亮
-music_morning,music,TB-04-01,,220,0,还没有音乐素材，先用程序合成的和弦
-music_greenhouse,music,TB-04-02,,262,0,
-music_starlight,music,TB-04-03,,330,0,
+music_morning,music,TB-04-01,,0,0,主界面默认播放早晨第四版
 music_off,music,TB-04-04,,0,0,
