@@ -5,7 +5,8 @@ extends Node3D
 ## 用来替换房间模型里的垂藤贴片（Card_Vine_*），从侧面看也是立体的。
 ## 数值都在 balance.csv 的 room_vine_ 开头几行。
 
-const LEAF_COLORS: Array[Color] = [Color(0.22, 0.42, 0.16), Color(0.30, 0.52, 0.20), Color(0.38, 0.60, 0.24), Color(0.18, 0.34, 0.14)]
+## 叶子颜色：跟房间里其他绿植（绿萝、盆栽）差不多的黄绿到深绿，每根藤再整体偏一点（yi 11.19）
+const LEAF_COLORS: Array[Color] = [Color(0.36, 0.62, 0.20), Color(0.46, 0.70, 0.24), Color(0.56, 0.76, 0.30), Color(0.28, 0.50, 0.16), Color(0.64, 0.80, 0.36), Color(0.22, 0.42, 0.14)]
 const STEM_COLOR := Color(0.36, 0.30, 0.18)
 
 var width := 0.5         # 横杆多长（米）
@@ -34,6 +35,7 @@ func _ready() -> void:
 		var strand_len := length * pow(rng.randf(), 1.0 / 2.2)  # 长短分布：多数短、少数长
 		strand_len = maxf(strand_len, length * 0.15)
 		var sway := rng.randf_range(-0.12, 0.12)
+		var strand_tint := rng.randf_range(-0.12, 0.12)  # 这根藤整体偏亮还是偏暗
 		var start := axis * along + side * depth
 		var steps := maxi(2, int(strand_len / spacing))
 		var prev := start
@@ -47,7 +49,10 @@ func _ready() -> void:
 			var basis := Basis(Vector3.UP, rng.randf_range(0, TAU)) * Basis(Vector3.RIGHT, rng.randf_range(0.6, 1.4))
 			var size := leaf_size * rng.randf_range(0.6, 1.2) * lerpf(1.0, 0.6, t)
 			leaves.append(Transform3D(basis.scaled(Vector3.ONE * size), point))
-			colors.append(LEAF_COLORS[rng.randi() % LEAF_COLORS.size()].lightened(rng.randf_range(0.0, 0.15)))
+			var leaf_color := LEAF_COLORS[rng.randi() % LEAF_COLORS.size()]
+			leaf_color = leaf_color.lightened(strand_tint) if strand_tint > 0.0 else leaf_color.darkened(-strand_tint)
+			# 越往下的叶子越嫩、越浅
+			colors.append(leaf_color.lightened(t * 0.06 + rng.randf_range(0.0, 0.05)))
 	var stem_mesh := MeshInstance3D.new()
 	stem_mesh.mesh = stems.commit()
 	var stem_mat := StandardMaterial3D.new()
@@ -67,6 +72,7 @@ func _ready() -> void:
 	leaves_node.multimesh = multi
 	var leaf_mat := StandardMaterial3D.new()
 	leaf_mat.vertex_color_use_as_albedo = true
+	leaf_mat.vertex_color_is_srgb = true  # 颜色按屏幕上看到的算，不然整体发白
 	leaf_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	leaf_mat.roughness = 0.7
 	leaves_node.material_override = leaf_mat
