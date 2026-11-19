@@ -1,23 +1,23 @@
 class_name GlassTheme
 extends RefCounted
-## 玻璃面板样式（房间线程，按 yi 的参考图"方舟生活"）：半透明深青底、细青色描边、圆角。
+## 玻璃面板样式（房间线程，按 yi 的参考图"方舟生活"的布局，颜色 yi 定为科技蓝）：半透明深蓝底、细蓝色描边、圆角。
 ## main.gd 把它设在根窗口上，所有画面（包括暂停菜单这种 CanvasLayer 里的）都会用上。
 ## 想改颜色只改这里的常量。
 
-const BG := Color(0.03, 0.1, 0.12, 0.84)         # 面板底色
-const BG_BUTTON := Color(0.08, 0.19, 0.21, 0.88)
-const BG_HOVER := Color(0.12, 0.27, 0.29, 0.92)
-const BG_PRESSED := Color(0.22, 0.52, 0.54, 0.95)
-const BORDER := Color(0.45, 0.85, 0.85, 0.45)     # 细描边
-const BORDER_HOVER := Color(0.55, 0.95, 0.95, 0.85)
-const ACCENT := Color(0.42, 0.88, 0.82)           # 强调色：进度条、选中的页签
-const TEXT := Color(0.9, 0.97, 0.97)
-const TEXT_DIM := Color(0.65, 0.76, 0.77)
+const BG := Color(0.03, 0.07, 0.15, 0.84)         # 面板底色
+const BG_BUTTON := Color(0.06, 0.13, 0.26, 0.88)
+const BG_HOVER := Color(0.09, 0.2, 0.38, 0.92)
+const BG_PRESSED := Color(0.13, 0.4, 0.75, 0.95)
+const BORDER := Color(0.35, 0.65, 1.0, 0.5)     # 细描边
+const BORDER_HOVER := Color(0.5, 0.8, 1.0, 0.9)
+const ACCENT := Color(0.3, 0.7, 1.0)           # 强调色：进度条、选中的页签
+const TEXT := Color(0.9, 0.95, 1.0)
+const TEXT_DIM := Color(0.62, 0.72, 0.85)
 const TEXT_DISABLED := Color(0.5, 0.58, 0.6)
 const RADIUS := 10
 const BUTTON_RADIUS := 8
-const SCREEN_TOP := Color(0.04, 0.1, 0.13)        # 没有 3D 场景的画面用的背景渐变
-const SCREEN_BOTTOM := Color(0.02, 0.05, 0.07)
+const SCREEN_TOP := Color(0.04, 0.08, 0.17)        # 没有 3D 场景的画面用的背景渐变
+const SCREEN_BOTTOM := Color(0.01, 0.03, 0.08)
 
 
 static func make() -> Theme:
