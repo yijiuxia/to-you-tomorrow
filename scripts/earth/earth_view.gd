@@ -48,12 +48,14 @@ const TIME_EVENING := "evening"
 const TIME_NIGHT := "night"
 const OUTER_GROUND_SIZE := 900.0
 const OUTER_GROUND_Y := -0.25
+const SKY_CURVE := 0.06  # 越小，天顶颜色离地平线越近，天空渐变越明显
+const RIVER_TINT := Color(0.62, 0.6, 0.56)  # 河道泥土贴图偏红，压成灰褐色
 const FOG_DENSITY := 0.0012
 const SKY_PRESETS := {
 	"day": {"top": Color(0.33, 0.55, 0.85), "horizon": Color(0.75, 0.8, 0.85), "ground": Color(0.35, 0.33, 0.3),
 		"sun_rotation": Vector3(-55.0, -30.0, 0.0), "sun_color": Color(1.0, 0.97, 0.9), "sun_energy": 1.0, "ambient": Color.WHITE},
-	"evening": {"top": Color(0.3, 0.3, 0.55), "horizon": Color(0.95, 0.6, 0.38), "ground": Color(0.3, 0.24, 0.2),
-		"sun_rotation": Vector3(-12.0, -70.0, 0.0), "sun_color": Color(1.0, 0.68, 0.42), "sun_energy": 0.8, "ambient": Color(1.0, 0.85, 0.75)},
+	"evening": {"top": Color(0.22, 0.26, 0.48), "horizon": Color(0.93, 0.68, 0.5), "ground": Color(0.3, 0.25, 0.22),
+		"sun_rotation": Vector3(-12.0, -70.0, 0.0), "sun_color": Color(1.0, 0.75, 0.55), "sun_energy": 0.75, "ambient": Color(0.95, 0.85, 0.8)},
 	"night": {"top": Color(0.03, 0.04, 0.1), "horizon": Color(0.12, 0.14, 0.24), "ground": Color(0.05, 0.05, 0.06),
 		"sun_rotation": Vector3(-40.0, 150.0, 0.0), "sun_color": Color(0.6, 0.7, 1.0), "sun_energy": 0.25, "ambient": Color(0.45, 0.5, 0.75)},
 }
@@ -223,6 +225,7 @@ func _build_environment() -> void:
 	add_child(_sun)
 	_environment = Environment.new()
 	_sky_material = ProceduralSkyMaterial.new()
+	_sky_material.sky_curve = SKY_CURVE
 	var sky := Sky.new()
 	sky.sky_material = _sky_material
 	_environment.background_mode = Environment.BG_SKY
@@ -250,7 +253,8 @@ func set_time_of_day(mode: String) -> void:
 	_sun.light_color = preset["sun_color"]
 	_sun.light_energy = preset["sun_energy"]
 	_environment.ambient_light_color = preset["ambient"]
-	_environment.fog_light_color = preset["horizon"]
+	# 雾用天顶和地平线中间的颜色，傍晚不会整片发橙
+	_environment.fog_light_color = (preset["horizon"] as Color).lerp(preset["top"], 0.5)
 
 
 ## 地面用 MultiMesh：900 格一次画完，改颜色不用重建
@@ -368,6 +372,8 @@ func _update_ground() -> void:
 					color = SEEDLING_TINT
 				elif world.holes.has(cell):
 					color = HOLE_TINT
+				elif region == EarthWorld.RIVER:
+					color = RIVER_TINT
 			multimesh.set_instance_custom_data(_cell_index(cell), Color(kind, 0, 0, 0))
 			if not world.is_region_open(region):
 				color = color.lerp(LOCKED_TINT, LOCKED_STRENGTH)

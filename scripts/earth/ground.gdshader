@@ -9,6 +9,7 @@ uniform sampler2D tex_grass : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex_soil : source_color, filter_linear_mipmap, repeat_enable;
 uniform float tile_meters = 6.0;
 uniform float light_pollution_mix = 0.5;
+uniform float soil_desaturate = 0.65; // 泥土贴图偏红，去掉一部分颜色变成灰褐
 
 varying vec3 world_pos;
 varying float kind;
@@ -25,6 +26,7 @@ void fragment() {
 	vec3 base = polluted;
 	if (kind > 3.5) {
 		base = texture(tex_soil, uv).rgb;
+		base = mix(base, vec3(dot(base, vec3(0.333))), soil_desaturate);
 	} else if (kind > 2.5) {
 		base = texture(tex_grass, uv).rgb;
 	} else if (kind > 1.5) {
