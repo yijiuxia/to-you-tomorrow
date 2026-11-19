@@ -63,7 +63,7 @@ func test_every_text_has_both_languages() -> void:
 func test_language_switch() -> void:
 	Text.language = "en"
 	_eq(Text.t("UI-50-02"), "New Game", "切到英文")
-	_eq(Text.t("UI-01-01"), "Town", "原表里写的英文优先")
+	_eq(Text.t("UI-01-01"), "Earth Build", "原表里写的英文优先")  # 11.19 "小镇"按钮改名"地球建造"
 	_eq(Text.t("UI-06-01"), "Continue", "补充表里的英文生效")
 	Text.language = "zh"
 	_eq(Text.t("UI-50-02"), "开始游戏", "切回中文")

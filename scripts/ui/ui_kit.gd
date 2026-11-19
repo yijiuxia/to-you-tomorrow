@@ -9,6 +9,7 @@ const TITLE_SIZE := 28
 
 ## 铺满屏幕的竖排容器，带边距。返回里面的 VBox，画面内容往里加。
 static func page(parent: Control) -> VBoxContainer:
+	GlassTheme.add_background(parent)  # 房间线程加：没有 3D 场景的画面铺深青色渐变（11.19 界面改版）
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	for side: String in ["left", "right", "top", "bottom"]:

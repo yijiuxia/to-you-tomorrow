@@ -108,6 +108,16 @@ RM-06-10,人类保护区：胚胎和休眠的人都在这里。只能沿着过�
 RM-06-11,一排排休眠舱，玻璃上结着薄霜。每个舱上都有一个名字。,"Rows of sleep pods, frost on the glass. Every pod has a name."
 RM-06-12,胚胎库的指示灯一闪一闪，像很多很小的心跳。,"The embryo vault's lights blink, like many tiny heartbeats."
 RM-06-13,过道尽头的牌子：等地球准备好，我们就回家。,"A sign at the end of the walkway: when Earth is ready, we go home."
+# RM-09 主界面（11.19 按参考图"方舟生活"改版）
+RM-09-01,方舟生活,Ark Life
+RM-09-02,金属 {value},Metal {value}
+RM-09-03,元件 {value},Parts {value}
+RM-09-04,{age} 岁 · 方舟第 {week} 周,Age {age} · Ark week {week}
+RM-09-05,当前状态,Status
+RM-09-06,{girl},{girl}
+RM-09-07,终端,Terminal
+RM-09-08,方舟时间,Ark Time
+RM-09-09,第 {week} / {last} 周,Week {week} / {last}
 # RM-07 地下居民区（第 7 周；世界观没定，先用临时文字）
 RM-07-01,地下居民区,Underground Settlement
 RM-07-02,跟着幸存者去地下,Follow the survivor underground

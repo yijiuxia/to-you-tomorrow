@@ -84,7 +84,10 @@ func _ready() -> void:
 	_build_info_panel()
 	_hover_label = UiKit.short_label(self, "")
 	_hover_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hover_label.position = Vector2(12, 32)
+	_hover_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	_hover_label.offset_top = 80  # 顶栏下面
+	_hover_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_hover_label.add_theme_color_override("font_color", GlassTheme.ACCENT)
 	if scene_id == "cabin":
 		_build_music()
 	refresh()
@@ -483,11 +486,12 @@ func _place_camera() -> void:
 
 func _build_info_panel() -> void:
 	info_panel = PanelContainer.new()
-	info_panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	info_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	info_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	info_panel.custom_minimum_size = Vector2(520, 0)
-	info_panel.offset_bottom = -16
+	info_panel.custom_minimum_size = Vector2(420, 0)
+	# 放在右边中间，不挡底部按钮和左边的状态面板
+	info_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_MINSIZE)
+	info_panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	info_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	info_panel.offset_right = -24
 	var box := VBoxContainer.new()
 	info_panel.add_child(box)
 	_info_title = UiKit.title(box, "")

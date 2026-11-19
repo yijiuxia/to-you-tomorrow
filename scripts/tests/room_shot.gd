@@ -13,9 +13,12 @@ func _ready() -> void:
 			_dir = arg.trim_prefix("--shot-dir=")
 	DirAccess.make_dir_recursive_absolute(_dir)
 	get_window().size = Vector2i(1280, 720)
+	# 主题只顺着 Control 往下传，这个测试的根是 Node，所以每个画面单独设
+	var theme := GlassTheme.make()
 	GameState.reset()
 	var hub := HubScreen.new()
 	hub.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hub.theme = theme
 	add_child(hub)
 	await _shot("1_room")
 	hub.room.click("model_ark")
@@ -27,11 +30,21 @@ func _ready() -> void:
 	await _shot("3_tablet")
 	hub.tablet.tabs.current_tab = 5
 	await _shot("4_tech")
+	hub.tablet.close()
+	hub.room.click("door")
+	await _shot("4b_elevator")
 	hub.queue_free()
+	var schedule: Control = preload("res://scripts/ui/schedule_screen.gd").new()
+	schedule.set_anchors_preset(Control.PRESET_FULL_RECT)
+	schedule.theme = theme
+	add_child(schedule)
+	await _shot("6_schedule")
+	schedule.queue_free()
 	for id: String in ["preserve", "underground"]:
 		var screen := PlaceScreen.new()
 		screen.place_id = id
 		screen.set_anchors_preset(Control.PRESET_FULL_RECT)
+		screen.theme = theme
 		add_child(screen)
 		await _shot("5_" + id)
 		screen.queue_free()

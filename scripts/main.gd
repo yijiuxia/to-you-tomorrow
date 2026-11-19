@@ -23,6 +23,7 @@ var pause_menu: PauseMenu
 
 
 func _ready() -> void:
+	get_tree().root.theme = GlassTheme.make()  # 房间线程加：全部画面用玻璃面板样式（11.19 界面改版）
 	SaveSettings.load_and_apply()  # 先读设置：语言要在第一个画面出来前定好
 	ModelService.ensure_loaded()  # 后台加载，不挡住界面；没加载好时聊天用后备句
 	pause_menu = PauseMenu.new()
