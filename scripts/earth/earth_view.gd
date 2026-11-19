@@ -73,6 +73,11 @@ const LUX3D_SCENERY := [
 	["b01_power", -0.45, 0.42, 26.0, 90.0],
 	["b03_factory", 1.45, 0.47, 26.0, -90.0],
 	["shed", -0.4, 0.12, 22.0, 90.0],
+	["landing_pod", 1.12, 0.08, 6.0, 20.0],
+	["cable_reel", -0.06, 0.35, 2.5, 0.0],
+	["street_terminal", 1.04, 0.8, 1.6, -90.0],
+	["planter_green", -0.07, 0.84, 3.0, 0.0],
+	["planter_dry", -0.07, 0.88, 3.0, 0.0],
 ]
 
 var world: EarthWorld
