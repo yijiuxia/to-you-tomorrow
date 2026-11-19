@@ -46,7 +46,9 @@ const SUN_ROTATION := Vector3(-55.0, -30.0, 0.0)
 const TIME_DAY := "day"
 const TIME_EVENING := "evening"
 const TIME_NIGHT := "night"
-const FOG_DENSITY := 0.004
+const OUTER_GROUND_SIZE := 900.0
+const OUTER_GROUND_Y := -0.25
+const FOG_DENSITY := 0.0012
 const SKY_PRESETS := {
 	"day": {"top": Color(0.33, 0.55, 0.85), "horizon": Color(0.75, 0.8, 0.85), "ground": Color(0.35, 0.33, 0.3),
 		"sun_rotation": Vector3(-55.0, -30.0, 0.0), "sun_color": Color(1.0, 0.97, 0.9), "sun_energy": 1.0, "ambient": Color.WHITE},
@@ -102,7 +104,7 @@ const LUX3D_PROPS := {
 	"landmark_factory_ruined": "b03_ruin", "landmark_factory_repaired": "b03_factory",
 	"landmark_shed_ruined": "shed_ruin", "landmark_shed_repaired": "shed",
 	"landmark_purifier_ruined": "purifier_ruin", "landmark_purifier_repaired": "purifier",
-	"tank_full": "tank", "tank_empty": "tank", "bridge_fixed": "bridge_fixed", "bridge_temp": "bridge_temp",
+	"tank_full": "tank", "tank_empty": "tank", "pile_high": "tarp", "pile_low": "parts", "bridge_fixed": "bridge_fixed", "bridge_temp": "bridge_temp",
 }
 ## 线索种类 -> 模型（脚印、信号还用发光块）
 const LUX3D_CLUES := {"hole": "hole", "item": "seed_capsule"}
@@ -115,9 +117,8 @@ const LUX3D_SCENERY := [
 	["planter_dry", -0.07, 0.88, 3.0, 0.0],
 	["van", 1.1, 0.75, 5.0, 75.0],
 	["tarp", -0.08, 0.22, 3.0, 0.0],
-	# 新布局（照参考图 A5/B1/C1）：东边高架路、C 区东边渡槽、北面和西面残楼天际线
+	# 新布局（照参考图 A5/B1）：东边高架路、北面和西面残楼天际线（渡槽模型带了一大块地面，效果不好先不放）
 	["viaduct", 1.35, 0.15, 40.0, 90.0],
-	["aqueduct", 1.45, 0.83, 45.0, 90.0],
 	["ruin_big", -0.6, 0.3, 24.0, 90.0],
 	["ruin_big", -0.65, 0.6, 28.0, 80.0],
 	["ruin_big", -0.55, 0.9, 22.0, 100.0],
@@ -270,6 +271,16 @@ func _build_ground() -> void:
 	_ground = MultiMeshInstance3D.new()
 	_ground.multimesh = multimesh
 	add_child(_ground)
+
+	# 地图外的荒地：一大片重度污染地面，远景楼才不是飘在天上
+	var outer := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2.ONE * OUTER_GROUND_SIZE
+	plane.material = mesh.material.duplicate() if _ground_textured else _box_mesh(Vector3.ONE, SLAB_COLOR).mesh.material
+	outer.mesh = plane
+	outer.position = Vector3(map_size().x / 2.0, OUTER_GROUND_Y, map_size().y / 2.0)
+	# 外圈不是 MultiMesh，没有 INSTANCE_CUSTOM，着色器读到 0，整片按"重度污染"画
+	add_child(outer)
 
 	# 格子之间留了缝当网格线；缝下面垫一层，不然描边滤镜会把缝当成很深的沟
 	var slab := _box_mesh(Vector3(map_size().x, SLAB_THICKNESS, map_size().y), SLAB_COLOR)
