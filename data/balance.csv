@@ -234,3 +234,8 @@ earth_veg_road_crack_moss,0.45,裂缝苔痕覆盖
 earth_veg_a_road_moss,0.3,A区道路少量积土苔痕
 
 earth_veg_road_edge_blend,0.45,草带与道路衔接宽度
+earth_veg_object_clearance,0.12,叶片边界距物体外轮廓的距离
+earth_veg_cover_low,-0.18,不规则苔毯斑块下界
+earth_veg_cover_high,0.08,不规则苔毯斑块上界
+earth_veg_obstacle_min_height,0.18,实际物件遮挡最小高度
+earth_veg_obstacle_max_base,3.0,草层需避让的物件底部高度

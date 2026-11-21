@@ -36,6 +36,10 @@ func _ready() -> void:
 		assert(has_culm,"Imported groundcover has no stalk geometry: "+asset)
 	assert(vegetation.counts.get("a",0)<vegetation.counts.get("b",0)/10)
 	assert(vegetation.counts.get("b",0)>0 and vegetation.counts.get("c",0)>0)
+	assert(not vegetation.obstacle_bounds.is_empty())
+	for footprint: Rect2 in vegetation.placement_bounds:
+		for obstacle: Rect2 in vegetation.obstacle_bounds:
+			assert(not footprint.intersects(obstacle),"Foliage overlaps a real model footprint")
 	var first: String = vegetation.signature
 	view.refresh()
 	assert(first==vegetation.signature)

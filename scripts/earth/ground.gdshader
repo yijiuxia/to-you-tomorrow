@@ -59,9 +59,9 @@ void fragment() {
 	} else if (kind > 0.5) {
 		base = mix(polluted, cleared, light_pollution_mix);
 	}
-    float coverage = 0.0;
+    float coverage = moss_cover * texture(road_growth,world_pos.xz/map_meters).r;
     if (road_pollution > 0.0 && kind > 4.5 && kind < 6.5) {
-        coverage=texture(road_growth,world_pos.xz/map_meters).r*road_pollution*0.18;
+        coverage=texture(road_growth,world_pos.xz/map_meters).r*road_pollution;
     }
     if (coverage > 0.001) {
         // 世界坐标连续铺满，不把噪声当透明洞；噪声只改变苔层颜色和微表面。
