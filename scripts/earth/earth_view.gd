@@ -155,6 +155,7 @@ var _workshop: Node3D  # 坏掉的旧车间：修好之前一直立在那里
 var _prop_nodes := {}    # 物件 id -> { node, state }
 var _clue_nodes := {}
 var _hole_nodes := {}
+var _vegetation: Node3D
 var _weed_nodes := {}     # 格子 -> 毒草/毒灌木模型     # 格子 -> 坑的模型    # 线索 id -> 节点
 var _terrain_walls: Node3D
 var _terrain_key := ""   # 区域开放和桥的状态；变了才重建挡墙
@@ -367,8 +368,20 @@ func _ground_material() -> Material:
 			_ground_textured = false
 			return plain
 		shader_material.set_shader_parameter(key, load(path))
+	shader_material.set_shader_parameter("tex_moss", load("res://assets/models/vegetation/botanical_atlas.png"))
+	shader_material.set_shader_parameter("moss_scale", float(DataDB.balance("earth_veg_moss_scale")))
+	shader_material.set_shader_parameter("moss_tint", Vector3(float(DataDB.balance("earth_veg_moss_r")), float(DataDB.balance("earth_veg_moss_g")), float(DataDB.balance("earth_veg_moss_b"))))
 	_ground_textured = true
 	return shader_material
+
+
+func pollution_surface(cell: Vector2i) -> Vector2i:
+	# 与实际地面着色共用的状态查询，也用于无显卡后台测试。
+	if int(world.pollution.get(cell,0))<=0 or world.plants.has(cell) or world.holes.has(cell) or _road_cells.has(cell):
+		return Vector2i(-1,0)
+	var region := world.region_of(cell)
+	if region=="a": return Vector2i(7,0)
+	return Vector2i(-1,1 if region in ["b","c"] else 0)
 
 
 func _update_ground() -> void:
@@ -400,7 +413,10 @@ func _update_ground() -> void:
 					color = HOLE_TINT
 				elif region == EarthWorld.RIVER:
 					color = RIVER_TINT
-			multimesh.set_instance_custom_data(_cell_index(cell), Color(kind, 0, 0, 0))
+			# A 区污染地表保留水泥；B/C 区所有污染裸地都是连续苔毯。
+			var surface := pollution_surface(cell)
+			if surface.x>=0: kind=surface.x
+			multimesh.set_instance_custom_data(_cell_index(cell), Color(kind, surface.y, 0, 0))
 			if not world.is_region_open(region):
 				color = color.lerp(LOCKED_TINT, LOCKED_STRENGTH)
 			if world.is_cell_wet(cell):
@@ -566,28 +582,16 @@ func _sync_props() -> void:
 
 
 ## 线索：俯视看到地上的标记，第三人称看到发光路标（美术清单），这里先用同一个发光方块
-## 重度污染的地上零星长着毒草（暗紫、灰褐，世界观：只有她种的才是真绿）。
+## 污染苔毯和连续草海共享真实污染/种植状态，A 区只长裂缝草。
 ## 哪些格子长按格子坐标算，每次都一样；污染降下去、建了东西、种了植物，毒草就消失。
 func _sync_weeds() -> void:
-	for z in world.grid_height:
-		for x in world.grid_width:
-			var cell := Vector2i(x, z)
-			var want := _weed_for(cell)
-			if want.is_empty():
-				if _weed_nodes.has(cell):
-					_weed_nodes[cell].queue_free()
-					_weed_nodes.erase(cell)
-				continue
-			if _weed_nodes.has(cell):
-				continue
-			var model := Lux3DModels.make_spec("lux3d:" + want, WEED_SIZE if want == WEED_MODEL else SHRUB_SIZE)
-			if model == null:
-				return
-			var jitter := _cell_hash(cell, 7)
-			model.position = cell_center(cell) + Vector3(jitter - 0.5, 0.0, _cell_hash(cell, 13) - 0.5) * cell_size * 0.5
-			model.rotation_degrees.y = jitter * 360.0
-			add_child(model)
-			_weed_nodes[cell] = model
+	if _vegetation == null:
+		_vegetation = preload("res://scripts/earth/earth_vegetation.gd").new()
+		_vegetation.name = "ContinuousVegetation"
+		add_child(_vegetation)
+		_vegetation.setup(self)
+	else:
+		_vegetation.refresh()
 
 
 func _weed_for(cell: Vector2i) -> String:

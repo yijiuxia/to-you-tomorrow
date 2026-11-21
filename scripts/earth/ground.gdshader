@@ -14,11 +14,22 @@ uniform float light_pollution_mix = 0.5;
 uniform float soil_desaturate = 0.65; // 泥土贴图偏红，去掉一部分颜色变成灰褐
 
 varying vec3 world_pos;
+uniform sampler2D tex_moss : source_color, filter_linear_mipmap, repeat_enable;
+uniform float moss_scale;
+uniform vec3 moss_tint : source_color;
+varying float moss_cover;
 varying float kind;
+
+float hash21(vec2 p) { return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+float moss_noise(vec2 p) {
+    vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
+    return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),f.y);
+}
 
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	kind = INSTANCE_CUSTOM.r;
+	moss_cover = INSTANCE_CUSTOM.g;
 }
 
 void fragment() {
@@ -26,7 +37,10 @@ void fragment() {
 	vec3 polluted = texture(tex_polluted, uv).rgb;
 	vec3 cleared = texture(tex_cleared, uv).rgb;
 	vec3 base = polluted;
-	if (kind > 4.5) {
+	if (kind > 6.5) {
+        vec3 concrete = texture(tex_cleared, uv).rgb;
+        base = vec3(dot(concrete,vec3(0.333)))*vec3(0.93,0.95,1.0);
+    } else if (kind > 4.5) {
 		base = texture(tex_road, uv).rgb;
 		if (kind > 5.5 && fract(world_pos.x / (stripe_meters * 2.0)) < 0.5) {
 			base = mix(base, vec3(0.85), 0.8);
@@ -41,6 +55,15 @@ void fragment() {
 	} else if (kind > 0.5) {
 		base = mix(polluted, cleared, light_pollution_mix);
 	}
+    if (moss_cover > 0.5) {
+        // 世界坐标连续铺满，不把噪声当透明洞；噪声只改变苔层颜色和微表面。
+        vec2 moss_uv = (vec2(2.04,0.04)+fract(world_pos.xz/moss_scale)*0.92)/vec2(3.0,2.0);
+        vec3 moss = texture(tex_moss,moss_uv).rgb;
+        float broad = moss_noise(world_pos.xz*0.22);
+        float fine = moss_noise(world_pos.xz*19.0);
+        base = mix(moss_tint*0.55,moss_tint*1.35,broad)*(0.55+dot(moss,vec3(0.333)))*mix(0.78,1.12,fine);
+        NORMAL_MAP=normalize(vec3((moss_noise(world_pos.xz*19.0+vec2(0.05,0))-fine)*2.0,(moss_noise(world_pos.xz*19.0+vec2(0,0.05))-fine)*2.0,1.0))*0.5+0.5;
+    }
 	ALBEDO = base * COLOR.rgb;
 	ROUGHNESS = 0.95;
 }
