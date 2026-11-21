@@ -145,7 +145,8 @@ func _attach_vines() -> void:
 		_add("rustvine",pos,setting("rustvine_height"),0,cell)
 
 func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_cell: Vector2i) -> void:
-	var variant := int(view._cell_hash(seed_cell,43)*setting("variants"))
+	var variants := setting("base_variants") if kind in ["finegrass","broadgrass","dryshoots"] else setting("variants")
+	var variant := int(view._cell_hash(seed_cell,43)*variants)
 	var asset := "%s/%s_%02d" % [kind,kind,variant]
 	var parts := _load_parts(asset)
 	if parts.is_empty(): return
@@ -187,7 +188,7 @@ func _collect(node: Node, parent: Transform3D, parts: Array, asset: String) -> v
 			var material := mesh.surface_get_material(i).duplicate() as StandardMaterial3D
 			if material!=null:
 				material.cull_mode=BaseMaterial3D.CULL_DISABLED
-				if asset.begins_with("finegrass") or asset.begins_with("broadgrass") or asset.begins_with("dryshoots"):
+				if not material.resource_name.begins_with("Culm") and (asset.begins_with("finegrass") or asset.begins_with("broadgrass") or asset.begins_with("dryshoots")):
 					material.albedo_color=Color(setting("grass_tint_r"),setting("grass_tint_g"),setting("grass_tint_b"))
 					material.roughness=setting("roughness")
 				mesh.surface_set_material(i,material)

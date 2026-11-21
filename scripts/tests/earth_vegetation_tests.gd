@@ -14,6 +14,15 @@ func _ready() -> void:
 		return
 	var vegetation: Node3D = view.get("_vegetation")
 	assert(vegetation != null)
+	# 导入后的网格必须包含真实茎秆面，防止只剩叶片仍被当作通过。
+	for asset: String in vegetation._meshes:
+		if not (asset.begins_with("finegrass") or asset.begins_with("broadgrass") or asset.begins_with("dryshoots")): continue
+		var has_culm := false
+		for part: Dictionary in vegetation._meshes[asset]["parts"]:
+			var mesh: Mesh = part["mesh"]
+			for surface in mesh.get_surface_count():
+				has_culm = has_culm or mesh.surface_get_material(surface).resource_name.begins_with("Culm")
+		assert(has_culm,"Imported groundcover has no stalk geometry: "+asset)
 	assert(vegetation.counts.get("a",0)<vegetation.counts.get("b",0)/10)
 	assert(vegetation.counts.get("b",0)>0 and vegetation.counts.get("c",0)>0)
 	var first: String = vegetation.signature

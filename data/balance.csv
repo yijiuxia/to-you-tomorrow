@@ -219,3 +219,4 @@ earth_veg_understory_height,0.52,阔叶保持低层
 earth_veg_minimum_distance,0.24,不规则采样最小间距
 earth_veg_spread_min,0.75,横向展开下限
 earth_veg_spread_max,1.45,横向展开上限
+earth_veg_base_variants,12,有秆基础草每类变体数
