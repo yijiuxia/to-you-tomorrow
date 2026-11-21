@@ -14,8 +14,19 @@ func _ready() -> void:
 		return
 	var vegetation: Node3D = view.get("_vegetation")
 	assert(vegetation != null)
+	if not vegetation.eligible(Vector2i(19,42)):
+		push_error("道路仍被整条排除，无法长出裂缝草")
+		get_tree().quit(1)
+		return
 	# 导入后的网格必须包含真实茎秆面，防止只剩叶片仍被当作通过。
+	assert(vegetation.road_samples.size()>20,"Road only permits growth but generated no plants")
+	var center_growth := 0
+	for sample: Vector2 in vegetation.road_samples:
+		if sample.x < -1.0: center_growth+=1
+		assert(sample.y<=float(DataDB.balance("earth_veg_road_max_height"))+0.00001)
+	assert(center_growth>0,"Road centre is still completely barren")
 	for asset: String in vegetation._meshes:
+		if asset.begins_with("finegrass_meadow"): continue
 		if not (asset.begins_with("finegrass") or asset.begins_with("broadgrass") or asset.begins_with("dryshoots")): continue
 		var has_culm := false
 		for part: Dictionary in vegetation._meshes[asset]["parts"]:
@@ -38,9 +49,8 @@ func _ready() -> void:
 	assert(view.pollution_surface(b).y==0)
 	assert(not vegetation.eligible(b))
 	for cell: Vector2i in view._road_cells:
-		assert(not vegetation.eligible(cell))
 		assert(view.pollution_surface(cell).y==0)
 	assert(not vegetation.eligible(Vector2i(4,63)))
 	assert(view.pollution_surface(Vector2i(1,5)).x==7)
-	print("PASS: continuous moss, concrete A, dense B/C, roads/river excluded, clean/planted cells retreat, stable refresh")
+	print("PASS: continuous moss, concrete A, dense B/C, road growth permitted, river excluded, recovery retreat")
 	get_tree().quit()

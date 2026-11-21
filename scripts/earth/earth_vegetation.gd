@@ -15,6 +15,7 @@ var _settings: Dictionary = {}
 var _occupied: Dictionary = {}
 var _road_rects: Array[Rect2] = []
 var _wall_rects: Array[Rect2] = []
+var road_samples: Array[Vector2] = [] # x=距道路边界的有符号距离，y=草高。
 
 func setting(key: String) -> float:
 	if not _settings.has(key): _settings[key] = float(DataDB.balance("earth_veg_"+key))
@@ -29,7 +30,7 @@ func setup(owner_view: EarthView) -> void:
 
 func eligible(cell: Vector2i) -> bool:
 	var world := view.world
-	return world.in_bounds(cell) and world.region_of(cell)!=EarthWorld.RIVER and int(world.pollution.get(cell,0))>0 and not world.is_blocked(cell) and not view._road_cells.has(cell) and not world.plants.has(cell) and not world.holes.has(cell)
+	return world.in_bounds(cell) and world.region_of(cell)!=EarthWorld.RIVER and int(world.pollution.get(cell,0))>0 and not world.is_blocked(cell) and not world.plants.has(cell) and not world.holes.has(cell)
 
 func refresh() -> void:
 	# 只在影响覆盖的状态变化时重建；材料、周数变化不重复生成草海。
@@ -55,6 +56,7 @@ func refresh() -> void:
 			var rect := world.prop_rect(id)
 			_wall_rects.append(Rect2(Vector2(rect.position)*view.cell_size,Vector2(rect.size)*view.cell_size))
 	counts={"a":0,"b":0,"c":0}
+	road_samples.clear()
 	for z in world.grid_height:
 		for x in world.grid_width:
 			var cell := Vector2i(x,z)
@@ -69,10 +71,12 @@ func refresh() -> void:
 			_fill_cell(cell,world.region_of(cell))
 	_attach_vines()
 	_flush()
+	_update_road_mask()
 
 func _fill_cell(cell: Vector2i, region: String) -> void:
 	var wall: bool = _near_wall[cell]
-	var road: bool = _near_road[cell]
+	var road: bool = _near_road[cell] or view._road_cells.has(cell)
+	var on_road: bool = view._road_cells.has(cell)
 	# 候选点不再位于格内小网格；跨格共享最小间距，消除行列和方格边界。
 	var attempts := ceili(view.cell_size*view.cell_size*setting("candidate_density"))
 	for i in attempts:
@@ -83,10 +87,15 @@ func _fill_cell(cell: Vector2i, region: String) -> void:
 		var p := Vector2(px,pz)
 		var field := clampf(noise.get_noise_2d(px,pz)*setting("noise_contrast")+0.5,0,1)
 		var detail := clampf(noise.get_noise_2d(px*setting("detail_frequency"),pz*setting("detail_frequency"))+0.5,0,1)
-		var road_distance := _distance_to_rects(p,_road_rects)
+		var road_distance := _road_distance(p)
 		var wall_distance := _distance_to_rects(p,_wall_rects)
-		var edge := smoothstep(0.0,setting("road_transition"),road_distance+noise.get_noise_2d(px*2,pz*2)*setting("edge_warp"))
-		if region=="a":
+		var profile := road_profile(p)
+		var edge := profile.x
+		if on_road:
+			var density := (setting("road_base_density")+edge*setting("road_invasion_density")+profile.y*setting("road_crack_density"))*lerpf(setting("density_low"),setting("density_high"),field)
+			if region=="a": density*=setting("a_road_density")
+			if random>density: continue
+		elif region=="a":
 			var crack := absf(sin(px*setting("crack_frequency")+noise.get_noise_2d(px,pz)*TAU))
 			if not wall or crack>setting("crack_width") or random>setting("a_chance"): continue
 		else:
@@ -97,13 +106,17 @@ func _fill_cell(cell: Vector2i, region: String) -> void:
 		height*=lerpf(setting("individual_min"),setting("individual_max"),view._cell_hash(key,19))
 		height*=lerpf(setting("wall_height"),1.0,smoothstep(0.0,setting("wall_transition"),wall_distance))
 		height*=lerpf(setting("road_height"),1.0,edge)
+		if on_road:
+			height=lerpf(setting("road_min_height"),setting("road_max_height"),edge)*lerpf(setting("individual_min"),1.0,detail)
+			if region=="a": height*=setting("a_road_height")
 		var species := view._cell_hash(key,23)
-		var kind := "finegrass"
+		var kind := "finegrass_meadow" if species>0.2 else "finegrass"
 		if species<setting("dry_ratio"): kind="dryshoots"
 		elif species<setting("broad_ratio"):
 			kind="broadgrass"
 			height*=setting("understory_height")
 		_add(kind,Vector3(px,setting("ground_y"),pz),height,view._cell_hash(key,29)*TAU,key)
+		if on_road: road_samples.append(Vector2(road_distance,height))
 		counts[region]+=1
 	# 特色植物只在连续草海中的少数高密区域出现。
 	if region=="a" or road: return
@@ -122,6 +135,42 @@ func _distance_to_rects(p: Vector2, rects: Array[Rect2]) -> float:
 		distance=minf(distance,p.distance_to(nearest))
 	return distance
 
+func _road_distance(p: Vector2) -> float:
+	var distance := INF
+	for rect in _road_rects:
+		if rect.has_point(p):
+			distance=minf(distance,-minf(minf(p.x-rect.position.x,rect.end.x-p.x),minf(p.y-rect.position.y,rect.end.y-p.y)))
+		else: distance=minf(distance,p.distance_to(p.clamp(rect.position,rect.end)))
+	return distance
+
+func road_profile(p: Vector2) -> Vector2:
+	# 道路与草海共享连续生长场，边界不是按格子截断。
+	var warp := noise.get_noise_2d(p.x*2,p.y*2)*setting("road_warp")
+	var edge := smoothstep(-setting("road_intrusion"),setting("road_edge_blend"),_road_distance(p)+warp)
+	var fissure := minf(absf(sin(p.x*setting("crack_frequency")+p.y*0.31+warp)),absf(sin(p.y*0.71-p.x*0.17+warp)))
+	var crack := 1.0-smoothstep(setting("crack_width"),setting("crack_width")*2,fissure)
+	return Vector2(edge,crack)
+
+func _update_road_mask() -> void:
+	# 同一生长场驱动路上积土/苔痕，草根不再长在毫无破损的干净柏油上。
+	var size := view.map_size()
+	var pixels := Vector2i(ceili(size.x/setting("road_mask_meter")),ceili(size.y/setting("road_mask_meter")))
+	var mask := Image.create(pixels.x,pixels.y,false,Image.FORMAT_RF)
+	for z in pixels.y:
+		for x in pixels.x:
+			var p := Vector2((x+0.5)*size.x/pixels.x,(z+0.5)*size.y/pixels.y)
+			var profile := road_profile(p)
+			# 原道路边线处完全接上苔层，向路内退成曲折轮廓，避免直线接缝仍透出。
+			var warp := maxf(0,noise.get_noise_2d(p.x*2,p.y*2)*setting("road_warp"))
+			var invasion := smoothstep(-setting("road_intrusion"),0.0,_road_distance(p)+warp)
+			var amount := clampf(invasion+profile.y*setting("road_crack_moss"),0,1)
+			mask.set_pixel(x,z,Color(amount,0,0))
+	mask.generate_mipmaps()
+	var material := view._ground.multimesh.mesh.material as ShaderMaterial
+	if material!=null:
+		material.set_shader_parameter("road_growth",ImageTexture.create_from_image(mask))
+		material.set_shader_parameter("map_meters",size)
+
 func _reserve(p: Vector2) -> bool:
 	var radius := setting("minimum_distance")
 	var bucket := Vector2i(floori(p.x/radius),floori(p.y/radius))
@@ -138,14 +187,14 @@ func _attach_vines() -> void:
 	for ruin: Dictionary in view.world.ruins.values():
 		if ruin["cleared"] or ruin["kind"]!=EarthWorld.RUIN_BIG: continue
 		var cell := Vector2i(int(ruin["x"]),int(ruin["z"])-1)
-		if not eligible(cell) or view.world.region_of(cell)=="a": continue
+		if not eligible(cell) or view.world.region_of(cell)=="a" or view._road_cells.has(cell): continue
 		var pos := view.rect_center(int(ruin["x"]),int(ruin["z"]),int(ruin["w"]),int(ruin["h"]))
 		pos.z = int(ruin["z"])*view.cell_size-setting("vine_offset")
 		pos.y=setting("ground_y")
 		_add("rustvine",pos,setting("rustvine_height"),0,cell)
 
 func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_cell: Vector2i) -> void:
-	var variants := setting("base_variants") if kind in ["finegrass","broadgrass","dryshoots"] else setting("variants")
+	var variants := setting("base_variants") if kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"] else setting("variants")
 	var variant := int(view._cell_hash(seed_cell,43)*variants)
 	var asset := "%s/%s_%02d" % [kind,kind,variant]
 	var parts := _load_parts(asset)
@@ -153,13 +202,13 @@ func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_
 	var native_height: float = _meshes[asset]["height"]
 	var scale_value := height/maxf(native_height,0.01)
 	var basis := Basis(Vector3.UP,angle)
-	if kind in ["finegrass","broadgrass","dryshoots"]:
+	if kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]:
 		var width := lerpf(setting("spread_min"),setting("spread_max"),view._cell_hash(seed_cell,59))
 		basis=basis.scaled(Vector3(scale_value*width,scale_value,scale_value/width))
 	else: basis=basis.scaled(Vector3.ONE*scale_value)
 	var chunk := Vector2i(floori(position_3d.x/setting("chunk_meters")),floori(position_3d.z/setting("chunk_meters")))
 	var batch_key := str(chunk)+asset
-	if not _groups.has(batch_key): _groups[batch_key]={"asset":asset,"transforms":[],"grass":kind in ["finegrass","broadgrass","dryshoots"]}
+	if not _groups.has(batch_key): _groups[batch_key]={"asset":asset,"transforms":[],"grass":kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]}
 	_groups[batch_key]["transforms"].append(Transform3D(basis,position_3d))
 
 func _load_parts(asset: String) -> Array:

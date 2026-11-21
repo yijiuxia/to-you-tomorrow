@@ -416,7 +416,10 @@ func _update_ground() -> void:
 			# A 区污染地表保留水泥；B/C 区所有污染裸地都是连续苔毯。
 			var surface := pollution_surface(cell)
 			if surface.x>=0: kind=surface.x
-			multimesh.set_instance_custom_data(_cell_index(cell), Color(kind, surface.y, 0, 0))
+			var road_growth := 0.0
+			if _road_cells.has(cell) and level>0 and region!=EarthWorld.RIVER and not world.plants.has(cell) and not world.holes.has(cell):
+				road_growth=float(DataDB.balance("earth_veg_a_road_moss")) if region=="a" else 1.0
+			multimesh.set_instance_custom_data(_cell_index(cell), Color(kind, surface.y, road_growth, 0))
 			if not world.is_region_open(region):
 				color = color.lerp(LOCKED_TINT, LOCKED_STRENGTH)
 			if world.is_cell_wet(cell):

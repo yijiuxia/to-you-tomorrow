@@ -19,6 +19,9 @@ uniform float moss_scale;
 uniform vec3 moss_tint : source_color;
 varying float moss_cover;
 varying float kind;
+uniform sampler2D road_growth : filter_linear_mipmap, repeat_disable;
+uniform vec2 map_meters;
+varying float road_pollution;
 
 float hash21(vec2 p) { return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
 float moss_noise(vec2 p) {
@@ -30,6 +33,7 @@ void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	kind = INSTANCE_CUSTOM.r;
 	moss_cover = INSTANCE_CUSTOM.g;
+	road_pollution = INSTANCE_CUSTOM.b;
 }
 
 void fragment() {
@@ -55,13 +59,18 @@ void fragment() {
 	} else if (kind > 0.5) {
 		base = mix(polluted, cleared, light_pollution_mix);
 	}
-    if (moss_cover > 0.5) {
+    float coverage = 0.0;
+    if (road_pollution > 0.0 && kind > 4.5 && kind < 6.5) {
+        coverage=texture(road_growth,world_pos.xz/map_meters).r*road_pollution*0.18;
+    }
+    if (coverage > 0.001) {
         // 世界坐标连续铺满，不把噪声当透明洞；噪声只改变苔层颜色和微表面。
         vec2 moss_uv = (vec2(2.04,0.04)+fract(world_pos.xz/moss_scale)*0.92)/vec2(3.0,2.0);
         vec3 moss = texture(tex_moss,moss_uv).rgb;
         float broad = moss_noise(world_pos.xz*0.22);
         float fine = moss_noise(world_pos.xz*19.0);
-        base = mix(moss_tint*0.55,moss_tint*1.35,broad)*(0.55+dot(moss,vec3(0.333)))*mix(0.78,1.12,fine);
+        vec3 moss_base = mix(moss_tint*0.55,moss_tint*1.35,broad)*(0.55+dot(moss,vec3(0.333)))*mix(0.78,1.12,fine);
+        base=mix(base,moss_base,coverage);
         NORMAL_MAP=normalize(vec3((moss_noise(world_pos.xz*19.0+vec2(0.05,0))-fine)*2.0,(moss_noise(world_pos.xz*19.0+vec2(0,0.05))-fine)*2.0,1.0))*0.5+0.5;
     }
 	ALBEDO = base * COLOR.rgb;
