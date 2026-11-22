@@ -40,6 +40,12 @@ func _ready() -> void:
 	for footprint: Rect2 in vegetation.placement_bounds:
 		for obstacle: Rect2 in vegetation.obstacle_bounds:
 			assert(not footprint.intersects(obstacle),"Foliage overlaps a real model footprint")
+	# 重现箱边整丛被删形成空圈：根在箱外，宽叶会碰箱，应缩成矮草保留。
+	var saved_obstacles = vegetation.obstacle_bounds.duplicate()
+	vegetation.obstacle_bounds.clear()
+	vegetation.obstacle_bounds.append(Rect2(0,0,2,2))
+	assert(vegetation._add("finegrass_meadow",Vector3(2.25,0.012,1),1.2,0,Vector2i(11,11)),"Box edge removes whole grass instead of fitting low growth")
+	vegetation.obstacle_bounds.assign(saved_obstacles)
 	var first: String = vegetation.signature
 	view.refresh()
 	assert(first==vegetation.signature)

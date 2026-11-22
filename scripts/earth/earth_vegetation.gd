@@ -32,7 +32,7 @@ func setup(owner_view: EarthView) -> void:
 
 func eligible(cell: Vector2i) -> bool:
 	var world := view.world
-	return world.in_bounds(cell) and world.region_of(cell)!=EarthWorld.RIVER and int(world.pollution.get(cell,0))>0 and not world.is_blocked(cell) and not world.plants.has(cell) and not world.holes.has(cell)
+	return world.in_bounds(cell) and world.region_of(cell)!=EarthWorld.RIVER and int(world.pollution.get(cell,0))>0 and not world.plants.has(cell) and not world.holes.has(cell)
 
 func refresh() -> void:
 	# 只在影响覆盖的状态变化时重建；材料、周数变化不重复生成草海。
@@ -95,7 +95,7 @@ func _fill_cell(cell: Vector2i, region: String) -> void:
 		var road_distance := _road_distance(p)
 		var wall_distance := _distance_to_rects(p,_wall_rects)
 		var cover := cover_at(p)
-		if view._cell_hash(key,103)>cover: continue
+		if view._cell_hash(key,103)>lerpf(setting("low_cover_density"),1.0,cover): continue
 		var profile := road_profile(p)
 		var edge := profile.x
 		if on_road:
@@ -116,6 +116,7 @@ func _fill_cell(cell: Vector2i, region: String) -> void:
 		if on_road:
 			height=lerpf(setting("road_min_height"),setting("road_max_height"),edge)*lerpf(setting("individual_min"),1.0,detail)
 			if region=="a": height*=setting("a_road_height")
+		height*=lerpf(setting("low_cover_height"),1.0,smoothstep(0.0,1.0,cover))
 		var species := view._cell_hash(key,23)
 		var kind := "finegrass_meadow" if species>0.2 else "finegrass"
 		if species<setting("dry_ratio"): kind="dryshoots"
@@ -208,14 +209,17 @@ func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_
 		var width := lerpf(setting("spread_min"),setting("spread_max"),view._cell_hash(seed_cell,59))
 		basis=basis.scaled(Vector3(scale_value*width,scale_value,scale_value/width))
 	else: basis=basis.scaled(Vector3.ONE*scale_value)
-	var full := AABB()
-	var first := true
-	var proposed := Transform3D(basis,position_3d)
-	for part: Dictionary in parts:
-		var box: AABB = proposed*part["transform"]*(part["mesh"] as Mesh).get_aabb()
-		full=box if first else full.merge(box)
-		first=false
-	var footprint := Rect2(Vector2(full.position.x,full.position.z),Vector2(full.size.x,full.size.z)).grow(setting("object_clearance"))
+	var grass := kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]
+	var footprint := _footprint(parts,basis,position_3d)
+	if grass:
+		# 根据根部至实际物件的净空连续收窄，避免整丛删除造成宽空圈。
+		var root := Vector2(position_3d.x,position_3d.z)
+		var clearance := _distance_to_rects(root,obstacle_bounds)-setting("object_clearance")
+		if clearance<=0: return false
+		var reach := maxf(root.distance_to(footprint.position),root.distance_to(footprint.end))
+		var fit := clampf(clearance/maxf(reach,0.001),setting("edge_min_scale"),1.0)
+		basis=basis.scaled(Vector3(fit,lerpf(setting("edge_height_floor"),1.0,fit),fit))
+		footprint=_footprint(parts,basis,position_3d)
 	for obstacle in obstacle_bounds:
 		if footprint.intersects(obstacle): return false
 	placement_bounds.append(footprint)
@@ -224,6 +228,16 @@ func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_
 	if not _groups.has(batch_key): _groups[batch_key]={"asset":asset,"transforms":[],"grass":kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]}
 	_groups[batch_key]["transforms"].append(Transform3D(basis,position_3d))
 	return true
+
+func _footprint(parts: Array, basis: Basis, origin: Vector3) -> Rect2:
+	var full := AABB()
+	var first := true
+	var proposed := Transform3D(basis,origin)
+	for part: Dictionary in parts:
+		var box: AABB = proposed*part["transform"]*(part["mesh"] as Mesh).get_aabb()
+		full=box if first else full.merge(box)
+		first=false
+	return Rect2(Vector2(full.position.x,full.position.z),Vector2(full.size.x,full.size.z)).grow(setting("object_clearance"))
 
 func _load_parts(asset: String) -> Array:
 	if _meshes.has(asset): return _meshes[asset]["parts"]
@@ -277,7 +291,7 @@ func cover_at(p: Vector2) -> float:
 	var cell := view.cell_at(Vector3(p.x,0,p.y))
 	if not eligible(cell): return 0.0
 	var field := noise.get_noise_2d(p.x*0.7,p.y*0.7)+noise.get_noise_2d(p.x*3.1,p.y*3.1)*0.22
-	var coverage := smoothstep(setting("cover_low"),setting("cover_high"),field)
+	var coverage := lerpf(setting("moss_film"),1.0,smoothstep(setting("cover_low"),setting("cover_high"),field))
 	if view.world.region_of(cell)=="a": coverage*=setting("a_road_moss")
 	if view._road_cells.has(cell):
 		var profile := road_profile(p)
