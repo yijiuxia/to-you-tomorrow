@@ -181,7 +181,7 @@ earth_veg_crack_width,0.17,连续污染植被美术参数
 earth_veg_a_chance,0.3,连续污染植被美术参数
 earth_veg_ground_y,0.012,连续污染植被美术参数
 earth_veg_broad_threshold,0.38,连续污染植被美术参数
-earth_veg_dry_ratio,0.05,连续污染植被美术参数
+earth_veg_dry_ratio,0.035,连续污染植被美术参数
 earth_veg_feature_chance,0.035,连续污染植被美术参数
 earth_veg_bladder_height,0.7,连续污染植被美术参数
 earth_veg_crystal_height,0.55,连续污染植被美术参数
@@ -203,7 +203,7 @@ earth_veg_moss_scale,1.7,连续污染植被美术参数
 earth_veg_moss_r,0.038,连续污染植被美术参数
 earth_veg_moss_g,0.018,连续污染植被美术参数
 earth_veg_moss_b,0.052,连续污染植被美术参数
-earth_veg_candidate_density,8.0,不按行列的草层候选密度
+earth_veg_candidate_density,140.0,不按行列的草层候选密度
 earth_veg_noise_contrast,2.2,连续群落噪声对比
 earth_veg_detail_frequency,4.7,局部高低变化频率
 earth_veg_road_transition,2.7,踩踏边缘渐变米数
@@ -216,7 +216,7 @@ earth_veg_individual_max,1.5,单株高度变化上限
 earth_veg_wall_transition,3.0,墙根增高渐变米数
 earth_veg_broad_ratio,0.12,阔叶和枯草累计占比
 earth_veg_understory_height,0.52,阔叶保持低层
-earth_veg_minimum_distance,0.24,不规则采样最小间距
+earth_veg_minimum_distance,0.045,不规则采样最小间距
 earth_veg_spread_min,0.75,横向展开下限
 earth_veg_spread_max,1.45,横向展开上限
 earth_veg_base_variants,12,有秆基础草每类变体数
@@ -241,7 +241,16 @@ earth_veg_obstacle_min_height,0.18,实际物件遮挡最小高度
 earth_veg_obstacle_max_base,3.0,草层需避让的物件底部高度
 
 earth_veg_low_cover_density,0.65,苔毯薄处仍有矮草的候选比例
-earth_veg_low_cover_height,0.18,苔毯薄处草高比例
+earth_veg_low_cover_height,0.32,苔毯薄处草高比例
 earth_veg_edge_min_scale,0.025,物件边缘草宽最小比例
 earth_veg_edge_height_floor,0.12,物件边缘贴地草高度比例
 earth_veg_moss_film,0.23,污染地表稀薄苔痕底层
+
+earth_veg_stem_ratio,0.12,单根茎草和枯叶的累计比例
+earth_veg_direction_frequency,1.6,草叶共同倒伏方向的空间变化
+earth_veg_direction_scatter,4.8,单根草偏离主要方向的角度范围
+earth_veg_color_min,0.68,单根草色差下限
+
+earth_veg_single_tint_r,0.92,单叶材质红色乘数
+earth_veg_single_tint_g,0.85,单叶材质绿色乘数
+earth_veg_single_tint_b,0.9,单叶材质蓝色乘数

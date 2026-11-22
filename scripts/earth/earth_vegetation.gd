@@ -2,6 +2,7 @@ extends Node3D
 ## 连续污染地表由 ground.gdshader 绘制；本模块只管上层草海和特色植物。
 ## 噪声调整连续草层的高度与物种，不用随机空格制造秃斑。
 
+const GRASS_KINDS := ["single_blade","single_stem","single_dry"]
 const ROOT := "res://assets/models/vegetation/"
 var view: EarthView
 var noise := FastNoiseLite.new()
@@ -118,12 +119,13 @@ func _fill_cell(cell: Vector2i, region: String) -> void:
 			if region=="a": height*=setting("a_road_height")
 		height*=lerpf(setting("low_cover_height"),1.0,smoothstep(0.0,1.0,cover))
 		var species := view._cell_hash(key,23)
-		var kind := "finegrass_meadow" if species>0.2 else "finegrass"
-		if species<setting("dry_ratio"): kind="dryshoots"
-		elif species<setting("broad_ratio"):
-			kind="broadgrass"
-			height*=setting("understory_height")
-		if not _add(kind,Vector3(px,setting("ground_y"),pz),height,view._cell_hash(key,29)*TAU,key): continue
+		var kind := "single_blade"
+		if species<setting("dry_ratio"): kind="single_dry"
+		elif species<setting("stem_ratio"): kind="single_stem"
+		# 邻域共享主要倒伏方向，每根另有偏转，避免放射草团与齐刷刷的行列。
+		var direction := noise.get_noise_2d(px*setting("direction_frequency"),pz*setting("direction_frequency"))*TAU
+		direction+=(view._cell_hash(key,29)-0.5)*setting("direction_scatter")
+		if not _add(kind,Vector3(px,setting("ground_y"),pz),height,direction,key): continue
 		if on_road: road_samples.append(Vector2(road_distance,height))
 		counts[region]+=1
 	# 特色植物只在连续草海中的少数高密区域出现。
@@ -197,7 +199,7 @@ func _attach_vines() -> void:
 		_add("rustvine",pos,setting("rustvine_height"),0,cell)
 
 func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_cell: Vector2i) -> bool:
-	var variants := setting("base_variants") if kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"] else setting("variants")
+	var variants := setting("base_variants") if kind in GRASS_KINDS else setting("variants")
 	var variant := int(view._cell_hash(seed_cell,43)*variants)
 	var asset := "%s/%s_%02d" % [kind,kind,variant]
 	var parts := _load_parts(asset)
@@ -205,11 +207,11 @@ func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_
 	var native_height: float = _meshes[asset]["height"]
 	var scale_value := height/maxf(native_height,0.01)
 	var basis := Basis(Vector3.UP,angle)
-	if kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]:
+	if kind in GRASS_KINDS:
 		var width := lerpf(setting("spread_min"),setting("spread_max"),view._cell_hash(seed_cell,59))
 		basis=basis.scaled(Vector3(scale_value*width,scale_value,scale_value/width))
 	else: basis=basis.scaled(Vector3.ONE*scale_value)
-	var grass := kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]
+	var grass := kind in GRASS_KINDS
 	var footprint := _footprint(parts,basis,position_3d)
 	if grass:
 		# 根据根部至实际物件的净空连续收窄，避免整丛删除造成宽空圈。
@@ -225,7 +227,7 @@ func _add(kind: String, position_3d: Vector3, height: float, angle: float, seed_
 	placement_bounds.append(footprint)
 	var chunk := Vector2i(floori(position_3d.x/setting("chunk_meters")),floori(position_3d.z/setting("chunk_meters")))
 	var batch_key := str(chunk)+asset
-	if not _groups.has(batch_key): _groups[batch_key]={"asset":asset,"transforms":[],"grass":kind in ["finegrass","finegrass_meadow","broadgrass","dryshoots"]}
+	if not _groups.has(batch_key): _groups[batch_key]={"asset":asset,"transforms":[],"grass":kind in GRASS_KINDS}
 	_groups[batch_key]["transforms"].append(Transform3D(basis,position_3d))
 	return true
 
@@ -265,9 +267,10 @@ func _collect(node: Node, parent: Transform3D, parts: Array, asset: String) -> v
 			var material := mesh.surface_get_material(i).duplicate() as StandardMaterial3D
 			if material!=null:
 				material.cull_mode=BaseMaterial3D.CULL_DISABLED
-				if not material.resource_name.begins_with("Culm") and (asset.begins_with("finegrass") or asset.begins_with("broadgrass") or asset.begins_with("dryshoots")):
-					material.albedo_color=Color(setting("grass_tint_r"),setting("grass_tint_g"),setting("grass_tint_b"))
+				if not material.resource_name.begins_with("Culm") and asset.begins_with("single_"):
+					material.albedo_color=Color(setting("single_tint_r"),setting("single_tint_g"),setting("single_tint_b"))
 					material.roughness=setting("roughness")
+					material.vertex_color_use_as_albedo=true
 				mesh.surface_set_material(i,material)
 		parts.append({"mesh":mesh,"transform":transform})
 	for child in node.get_children(): _collect(child,transform,parts,asset)
@@ -278,9 +281,15 @@ func _flush() -> void:
 			var batch := MultiMeshInstance3D.new()
 			var mm := MultiMesh.new()
 			mm.transform_format=MultiMesh.TRANSFORM_3D
+			mm.use_colors=bool(group["grass"])
 			mm.mesh=part["mesh"]
 			mm.instance_count=group["transforms"].size()
-			for i in mm.instance_count: mm.set_instance_transform(i,group["transforms"][i]*part["transform"])
+			for i in mm.instance_count:
+				mm.set_instance_transform(i,group["transforms"][i]*part["transform"])
+				if group["grass"]:
+					var origin: Vector3=group["transforms"][i].origin
+					var tint := lerpf(setting("color_min"),1.0,view._cell_hash(Vector2i(origin.x*100,origin.z*100),107))
+					mm.set_instance_color(i,Color(tint,tint,tint,1))
 			batch.multimesh=mm
 			batch.visibility_range_end=setting("grass_distance") if group["grass"] else setting("feature_distance")
 			batch.visibility_range_end_margin=setting("distance_margin")

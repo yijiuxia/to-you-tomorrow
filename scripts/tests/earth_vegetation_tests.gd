@@ -18,6 +18,9 @@ func _ready() -> void:
 		push_error("道路仍被整条排除，无法长出裂缝草")
 		get_tree().quit(1)
 		return
+	for group: Dictionary in vegetation._groups.values():
+		if group["grass"]:
+			assert(str(group["asset"]).begins_with("single_"),"Main grass still scatters radial clump assets")
 	# 导入后的网格必须包含真实茎秆面，防止只剩叶片仍被当作通过。
 	assert(vegetation.road_samples.size()>20,"Road only permits growth but generated no plants")
 	var center_growth := 0
@@ -26,8 +29,7 @@ func _ready() -> void:
 		assert(sample.y<=float(DataDB.balance("earth_veg_road_max_height"))+0.00001)
 	assert(center_growth>0,"Road centre is still completely barren")
 	for asset: String in vegetation._meshes:
-		if asset.begins_with("finegrass_meadow"): continue
-		if not (asset.begins_with("finegrass") or asset.begins_with("broadgrass") or asset.begins_with("dryshoots")): continue
+		if not asset.begins_with("single_stem"): continue
 		var has_culm := false
 		for part: Dictionary in vegetation._meshes[asset]["parts"]:
 			var mesh: Mesh = part["mesh"]
@@ -44,8 +46,16 @@ func _ready() -> void:
 	var saved_obstacles = vegetation.obstacle_bounds.duplicate()
 	vegetation.obstacle_bounds.clear()
 	vegetation.obstacle_bounds.append(Rect2(0,0,2,2))
-	assert(vegetation._add("finegrass_meadow",Vector3(2.25,0.012,1),1.2,0,Vector2i(11,11)),"Box edge removes whole grass instead of fitting low growth")
+	assert(vegetation._add("single_blade",Vector3(2.25,0.012,1),1.2,0,Vector2i(11,11)),"Box edge removes whole grass instead of fitting low growth")
 	vegetation.obstacle_bounds.assign(saved_obstacles)
+	for asset: String in vegetation._meshes:
+		if not asset.begins_with("single_blade"): continue
+		var triangles := 0
+		for part: Dictionary in vegetation._meshes[asset]["parts"]:
+			var mesh: Mesh=part["mesh"]
+			for surface in mesh.get_surface_count():
+				triangles+=mesh.surface_get_array_index_len(surface)/3
+		assert(triangles<=40,"Single blade contains multiple blades")
 	var first: String = vegetation.signature
 	view.refresh()
 	assert(first==vegetation.signature)
